@@ -1,3 +1,5 @@
+/* $Id$ */
+
 Brilliant Gallery
 
 Fully customizable table gallery of quality-scaled images from a defined folder.

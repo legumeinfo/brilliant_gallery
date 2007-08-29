@@ -1,4 +1,5 @@
 <?php
+/* $Id$ */
 
 /*
 # Require some PEAR fruit :-)
