@@ -1,7 +1,6 @@
 <?php
 
-$systempath = '/home/14656/domains/vacilando.org/html/quidne/';
-
+/*
 # Require some PEAR fruit :-)
   require_once('Cache/Lite/Function.php');
   $cachloptions = array(
@@ -16,10 +15,14 @@ if ( $_GET['imgp'] <> '' ) { # Means there's a request to draw one image.
       $cache->call( 'resizeimage', $_GET['imgp'], $_GET['imgw'], $_GET['imgh'] );
      exit();
    }
+*/
 
+resizeimage ( $_GET['imgp'], $_GET['imgw'], $_GET['imgh'] );
+   
 function resizeimage( $imgp, $imgw, $imgh ) {
-         global $systempath;
-         $imagepath = $systempath . base64_decode( $imgp );
+         $imagepath = base64_decode( $imgp );
+         #echo '.... ' . base64_decode( $imgp );
+         #flush();die(' stop!');
          $suffix = strtolower( substr( $imagepath, strlen( $imagepath ) - 4 ) );
          if ( $suffix == ".gif" ) {
               Header("Content-type: image/gif");
