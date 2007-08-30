@@ -246,7 +246,7 @@ function render_brilliant_gallery() {
                          }
 
                          $result .= '>';
-                         $result .= '<img src="' . '/sites/all/modules/brilliant_gallery/image.php' . '?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" border="0">'; # width="' . $imgw . '"
+                         $result .= '<img style="display: block;" src="' . '/sites/all/modules/brilliant_gallery/image.php' . '?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" border="0">'; # width="' . $imgw . '"
                          $result .= '</a>';
 
                        } else {
