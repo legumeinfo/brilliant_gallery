@@ -121,7 +121,7 @@ function brilliant_gallery_admin() {
       'thickbox' => t('Thickbox'),
       'none' => t('None'),
     ),
-    '#default_value' => variable_get('brilliant_gallery_overbrowser', 'none'),
+    '#default_value' => variable_get('brilliant_gallery_overbrowser', 'thickbox'),
     '#description' => t('Select the overlay image browser (must be installed, of course).'),
   );
   return system_settings_form($form);
@@ -166,7 +166,7 @@ function render_brilliant_gallery() {
         $columns = variable_get('brilliant_gallery_maxcol', 3);
         $bgcolour = variable_get('brilliant_gallery_bcgcolour', '#000000');
         $padding = variable_get('brilliant_gallery_padding', 3);
-        $overbrowser = variable_get('brilliant_gallery_overbrowser', 'none');
+        $overbrowser = variable_get('brilliant_gallery_overbrowser', 'thickbox');
 
         $fullresolutionmaxwidth = 1000; # Totally full resolution display would be impractical, so this is the maximum width of "full" resolution.
 
