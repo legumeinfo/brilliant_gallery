@@ -157,7 +157,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
         $result = '';
         $defaultgalleryfolder = '';
         $galleryfolder = variable_get('brilliant_gallery_folder', $defaultgalleryfolder);
-        if ( $galleryfolder == '' or substr( $galleryfolder, strlen( $galleryfolder ) - 1, 1 ) == '/' or substr( $galleryfolder, 0, 1 ) == '/' ) {
+        if ( substr( $galleryfolder, strlen( $galleryfolder ) - 1, 1 ) == '/' or substr( $galleryfolder, 0, 1 ) == '/' ) {
              #watchdog('error', 'failed to notify "weblogs.com" (site)');
              #form_set_error('yemail', t('Header injection attempt detected.  Do not enter line feed characters into the from field!'));
              return 'Incorrect main gallery folder path - please fix it <a href="/admin/settings/brilliant_gallery">here</a>.';
