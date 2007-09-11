@@ -262,7 +262,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
                          }
 
                          $result .= '>';
-                         $result .= '<img style="display: block;border:0" src="'. drupal_get_path('module', 'brilliant_gallery') .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
+                         $result .= '<img style="display: block;border:0" src="/'. drupal_get_path('module', 'brilliant_gallery') .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
                          $result .= '</a>';
 
                        } else {
