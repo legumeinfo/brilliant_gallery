@@ -47,6 +47,9 @@ If you use this module, find it useful, send me a message via http://www.vacilan
 
 The author can also be contacted for paid customizations of this and other modules.
 
+Thanks for patches and comments providing or leading to improvements:
+* incrn8 ( http://drupal.org/user/51467 )
+
 Development of this module is sponsored by Vacilando.org ( http://www.vacilando.org/ )
 
 Installation and configuration instructions, demonstration and other information about this module are at http://quidne.vacilando.org/bg.
