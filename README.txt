@@ -27,7 +27,7 @@ Installation:
         * Table background colour = Colour on the background of the table that holds the images.
         * Table cell padding = Cell padding (around each image) in pixels.
         * Overlay browser = Select the overlay image browser (must be installed, of course). Currently Lightbox V2 and Thickbox are supported.
-   6. Using FTP, create your gallery directory, e.g. 2007_Tomas, in the main folder you have created above. Still using FTP, upload all images into that directory.
+   6. Using FTP, create your gallery directory, e.g. 2007_Tomas, in the main folder you have created above. Still using FTP, upload all images into that directory. (Make sure your file names do not contain characters forbidden in a file system, such as # or :)
 
 Use:
 
