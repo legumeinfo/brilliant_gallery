@@ -13,7 +13,7 @@ function brilliant_galery_help($section='') {
 
   switch ($section) {
     case "admin/help#brilliant_galery":
-      $output = '<p>'.  t("Creates a fully customizable table gallery of quality-scaled images from a pre-defined folder."). '</p>';
+      $output = '<p>'.  t("Highly customizable Drupal module creating a table gallery of quality-scaled images from any number of folders."). '</p>';
       break;
   }
 
