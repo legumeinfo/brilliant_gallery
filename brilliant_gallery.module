@@ -243,7 +243,8 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
                          if ( $smallenough === true ) {
                               $result .= '<a href="' . $fullimgpath . '"';
                             } else {
-                              $result .= '<a href="'. drupal_get_path('module', 'brilliant_gallery') .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgwbig . '&imgh=' . $imghbig . '"';
+                              # Important to begin with the "/" otherwise thumbnails in non-root folders fail. See http://drupal.org/node/175292
+                              $result .= '<a href="/'. drupal_get_path('module', 'brilliant_gallery') .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgwbig . '&imgh=' . $imghbig . '"';
                             }
 
                          switch( $overbrowser ) {
@@ -262,6 +263,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
                          }
 
                          $result .= '>';
+                         # Important to begin with the "/" otherwise thumbnails in non-root folders fail. See http://drupal.org/node/175292
                          $result .= '<img style="display: block;border:0" src="/'. drupal_get_path('module', 'brilliant_gallery') .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
                          $result .= '</a>';
 
