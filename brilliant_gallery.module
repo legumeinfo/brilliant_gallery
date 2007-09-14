@@ -203,15 +203,15 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
         $column_count = 0;
         $pocetobr = 0;
         $setname = mt_rand( 1, 9999999 );
-        $result .= '<table BORDER="0" RULES="NONE" FRAME="BOX" cellpadding="0" cellspacing="0" bordercolor="' . $bgcolour . '"';
+        $result .= '<table border="0" rules="none" frame="box" cellpadding="0" cellspacing="0" bordercolor="' . $bgcolour . '"';
         if ( $thisfolder <> '' ) {
              $result .= ' align="center"';
            }
         $result .= ' style="width:' . $columns*$imagewidth . 'px;">'; #cell-spacing: 5px;
         for ( $poct = 1; $poct <= $maxpoct; $poct++ ) {
                $fullimgpath = '/' . $path . '/' . $retval[$poct-1];
-               if ($column_count == 0) { $result .= ('<TR>'); }
-               $result .= ('<TD align="center" bgcolor="' . $bgcolour . '" style="padding: ' . $padding . 'px ' . $padding . 'px ' . $padding . 'px ' . $padding . 'px;vertical-align: middle;">');
+               if ($column_count == 0) { $result .= ('<tr>'); }
+               $result .= ('<td align="center" bgcolor="' . $bgcolour . '" style="padding: ' . $padding . 'px ' . $padding . 'px ' . $padding . 'px ' . $padding . 'px;vertical-align: middle;">');
                     $pocetobr += 1;
                     if ( substr( strtolower( $retval[$poct-1] ), -4, 4 ) == ".jpg" or substr( strtolower( $retval[$poct-1] ), -5, 5 ) == ".jpeg" or substr( strtolower( $retval[$poct-1] ), -4, 4 ) == ".gif" or substr( strtolower( $retval[$poct-1] ), -4, 4 ) == ".png" ) {
                          $smallenough = false;
@@ -268,21 +268,21 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
                          $result .= '</a>';
 
                        } else {
-                         $result .= '<A href="' . $fullimgpath . '">';
+                         $result .= '<a href="' . $fullimgpath . '">';
                          $result .= '<center>' . $retval[$poct-1] . '</center>';
-                         $result .= '</A>';
+                         $result .= '</a>';
 
                        }
                     $result .= '</td>';
 
                $column_count += 1;
-               if ($column_count == $columns) { $result .= ("</TR>"); $column_count = 0; }
+               if ($column_count == $columns) { $result .= ("</tr>"); $column_count = 0; }
                }
-         if ($column_count <> 0) { $result .= ("</TR>"); }
+         if ($column_count <> 0) { $result .= ("</tr>"); }
          if ( $loggedin === true ) {
-              $result .= '<tr><td colspan="' . $maxpoct . '"><div align="right"><input type="Submit" value="Submit favourite image rating"</div></td></tr>';
+              $result .= '<tr><td colspan="' . $maxpoct . '"><div align="right"><input type="submit" value="Submit favourite image rating"</div></td></tr>';
             }
-         $result .= "</TABLE>"; 
+         $result .= "</table>"; 
          return $result;
    }
 
