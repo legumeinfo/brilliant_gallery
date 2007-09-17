@@ -209,7 +209,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
            }
         $result .= ' style="width:' . $columns*$imagewidth . 'px;">'; #cell-spacing: 5px;
         for ( $poct = 1; $poct <= $maxpoct; $poct++ ) {
-               $fullimgpath = '/' . $path . '/' . $retval[$poct-1];
+               $fullimgpath = '' . base_path() . $path . '/' . $retval[$poct-1];
                if ($column_count == 0) { $result .= ('<tr>'); }
                $result .= ('<td align="center" bgcolor="' . $bgcolour . '" style="padding: ' . $padding . 'px ' . $padding . 'px ' . $padding . 'px ' . $padding . 'px;vertical-align: middle;">');
                     $pocetobr += 1;
@@ -244,7 +244,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
                               $result .= '<a href="' . $fullimgpath . '"';
                             } else {
                               # Important to begin with the "/" otherwise thumbnails in non-root folders fail. See http://drupal.org/node/175292
-                              $result .= '<a href="/'. drupal_get_path('module', 'brilliant_gallery') .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgwbig . '&imgh=' . $imghbig . '"';
+                              $result .= '<a href="' . base_path() . drupal_get_path('module', 'brilliant_gallery') .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgwbig . '&imgh=' . $imghbig . '"'; #&dummy=.jpg
                             }
 
                          switch( $overbrowser ) {
@@ -264,7 +264,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
 
                          $result .= '>';
                          # Important to begin with the "/" otherwise thumbnails in non-root folders fail. See http://drupal.org/node/175292
-                         $result .= '<img style="display: block;border:0" src="/'. drupal_get_path('module', 'brilliant_gallery') .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
+                         $result .= '<img style="display: block;border:0" src="' . base_path() . drupal_get_path('module', 'brilliant_gallery') .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
                          $result .= '</a>';
 
                        } else {

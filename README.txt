@@ -2,16 +2,16 @@
 
 Highly customizable table gallery of quality-scaled images from multiple defined folders.
 
-• Configurable image size, number of columns, background colour.
-• High quality image re-sampling.
-• Automatic re-sizing of both landscape and portrait images.
-• Automatically recognizes and displays .png, .jpg and .jpeg, and .gif. (Other media in the specified folder (e.g. .mpg) are also linked.)
-• Browsing images via slick Lightbox V2 or Thickbox.
-• Has both a default page ( /brilliant_gallery ) and a block, for straightforward use, but any gallery can be entered into any page or custom block using a special tag.
+* Configurable image size, number of columns, background colour.
+* High quality image re-sampling.
+* Automatic re-sizing of both landscape and portrait images.
+* Automatically recognizes and displays .png, .jpg and .jpeg, and .gif. (Other media in the specified folder (e.g. .mpg) are also linked.)
+* Browsing images via slick Lightbox V2 or Thickbox.
+* Has both a default page ( /brilliant_gallery ) and a block, for straightforward use, but any gallery can be entered into any page or custom block using a special tag.
 
 Planned features:
-• Adding captions to display in the Lightbox or Thickbox overlays.
-• Caching of the thumbnails to further increase loading speed.
+* Adding captions to display in the Lightbox or Thickbox overlays.
+* Caching of the thumbnails to further increase loading speed.
 
 Installation:
 
@@ -33,13 +33,13 @@ Use:
 
 There are several ways in which you can display your picture gallery.
 
-• Anywhere in a node, using a special tag in the format [bg|pathtoyourgalleryfolderwithoutslashes]. The following table is generated using: [bg|2007_Tomas] (only uses settings set forth in /admin/settings/brilliant_gallery).
+* Anywhere in a node, using a special tag in the format [bg|pathtoyourgalleryfolderwithoutslashes]. The following table is generated using: [bg|2007_Tomas] (only uses settings set forth in /admin/settings/brilliant_gallery).
 
-• And you can add another table if you want. And you can also override the default number of columns and the thumbnail width (in pixels), respectively, using: [bg|2007_Tomas|15|50]
+* And you can add another table if you want. And you can also override the default number of columns and the thumbnail width (in pixels), respectively, using: [bg|2007_Tomas|15|50]
 
-• As a default block (only settings set forth in /admin/settings/brilliant_gallery apply).
+* As a default block (only settings set forth in /admin/settings/brilliant_gallery apply).
 
-• As a custom block. Create a block with a Brilliant Gallery Tag in it - e.g. the one in the right column here was created simply using the following tag: [bg|2007_Tomas|4|45]
+* As a custom block. Create a block with a Brilliant Gallery Tag in it - e.g. the one in the right column here was created simply using the following tag: [bg|2007_Tomas|4|45]
 
 Author: Tomas Fulopp (Vacilando)
 
