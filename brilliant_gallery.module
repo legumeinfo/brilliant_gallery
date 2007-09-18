@@ -119,6 +119,7 @@ function brilliant_gallery_admin() {
     '#options' => array(
       'lightbox' => t('Lightbox'),
       'thickbox' => t('Thickbox'),
+      'greybox' => t('Greybox'),
       'none' => t('None'),
     ),
     '#default_value' => variable_get('brilliant_gallery_overbrowser', 'thickbox'),
@@ -257,6 +258,10 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
                            case 'lightbox':
                              $result .= ' rel="lightbox[' . $setname . ']"';
                              #$attributes['rel'] = 'lightbox[' . ($node->nid? $node->nid: time()) . ']'; // 'insert' has no $node->nid
+                             break;
+                           case 'greybox':
+                             $result .= ' class="greybox"';
+                             #$result .= ' rel="gb_imageset[' . $setname . ']"';
                              break;
                            default:
                              break;
