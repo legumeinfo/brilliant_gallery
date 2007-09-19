@@ -7,12 +7,12 @@
 * @param section which section of the site we're displaying help
 * @return help text for section
 */
-function brilliant_galery_help($section='') {
+function brilliant_gallery_help($section='') {
 
   $output = '';
 
   switch ($section) {
-    case "admin/help#brilliant_galery":
+    case "admin/help#brilliant_gallery":
       $output = '<p>'.  t("Highly customizable Drupal module creating a table gallery of quality-scaled images from any number of folders."). '</p>';
       break;
   }
