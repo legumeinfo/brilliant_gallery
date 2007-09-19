@@ -212,7 +212,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
         $absolpath = realpath( $path );
         #$result .= $absolpath;
 
-        # Load Directory Into Array 
+        # Load Directory Into Array  
           $poct = -1;
           $retval = '';
           $handle = opendir($absolpath);
