@@ -24,11 +24,11 @@ function resizeimage( $imgp, $imgw, $imgh ) {
          $imagepath = base64_decode( $imgp );
          #echo '.... ' . base64_decode( $imgp );
          #flush();die(' stop!');
-         $suffix = strtolower( substr( $imagepath, strlen( $imagepath ) - 4 ) );
+         $suffix = strtolower(substr($imagepath, -4)); # Thanks to Michał Albrecht!
          if ( $suffix == ".gif" ) {
               Header("Content-type: image/gif");
               $img = imagecreatefromgif( $imagepath );
-            } else if ( $suffix == ".jpg" or $suffix == ".jpeg" ) {
+            } else if ( $suffix == ".jpg" or $suffix == "jpeg" ) { # Thanks to Michał Albrecht!
               Header("Content-type: image/jpeg");
               $img = imagecreatefromjpeg( $imagepath );
             } else if ( $suffix == ".png" ) {
