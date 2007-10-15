@@ -1,5 +1,5 @@
 ; $Id$
 name = Brilliant Gallery
 description = "Creates a fully customizable table gallery of quality-scaled images from a pre-defined folder."
-dependencies = lightbox2
+dependencies = lightbox2,colorpicker
 package = "Media"
