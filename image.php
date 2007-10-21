@@ -28,35 +28,76 @@ function drupalize() {
 #drupal_cron_run();
 }
 
+$bgcachexpire = 3600*24*7; # Cache expiration time.
+
 #chdir ('../../../../');
 #require_once './includes/bootstrap.inc';
 #require_once '../../../../../includes/bootstrap.inc';
 #drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 
-$my_data = unserialize(base64_decode( resizeimage_wrapper() ));
+#if ( $_SERVER['SERVER_ADDR'] == '64.13.192.90' ) {
+if ( variable_get('brilliant_gallery_cache', 'd') == 'f' ) {
+     #echo '.....................' . $_SERVER['SERVER_ADDR'];
+     $my_data = resizeimage_wrapper_filecache();
+   } else {
+     $my_data = resizeimage_wrapper_dbcache();
+   }
+
 header($my_data[0]);
 echo $my_data[1];
 
-function resizeimage_wrapper($reset = FALSE) {
-		global $user;
-			$userId = $user->uid;
-		$bgcacheid = 'bg_' . $userId . '_' . md5($_GET['imgp'] . $_GET['imgw'] . $_GET['imgh']);
-		#echo $bgcacheid;
-		static $my_data;
-		#echo '0.... ';
-		if (!isset($my_data) || $reset) {
-					if (!$reset && ($cache = cache_get($bgcacheid)) && !empty($cache->data)) {
-						$my_data = $cache->data;
-							#echo '1.... ' . $my_data;
-				}
-				else {
-						// Do your expensive calculations here, and populate $my_data
-						// with the correct stuff..
-						$my_data = resizeimage ( $_GET['imgp'], $_GET['imgw'], $_GET['imgh'] );
-							#echo ' 2.... ' . $my_data;
-						cache_set($bgcacheid, 'cache', $my_data, time() + 3600*24*7);
-				}
-		}
+function resizeimage_wrapper_filecache() {
+  global $bgcachexpire;
+  $bgcacheid = 'bg_' . md5($_GET['imgp'] . $_GET['imgw'] . $_GET['imgh']);
+  #echo $bgcacheid;
+  #echo '. 0.... ';
+  # Tested that both relative (eg sites/all/files/cache) and absolute (eg /home/data/tmp) tmp path settings work OK here.
+  $cachedfile = file_directory_temp() . '/' . $bgcacheid;
+  #$cachedfile = realpath(file_directory_temp() . '/' . $bgcacheid);
+  #echo file_directory_temp()  . '/' . $bgcacheid;
+  #echo " .... ";
+  #echo $cachedfile;
+  $lastchanged = filectime( $cachedfile );
+  if ( $lastchanged === false or ( time() - $lastchanged > ( $bgcachexpire ) ) ) {
+       #echo '. 1.... ';
+       # Cache file does not exist or is too old.
+       $my_data = resizeimage ( $_GET['imgp'], $_GET['imgw'], $_GET['imgh'] );
+       # Now put $my_data to cache!
+       $fh = fopen( $cachedfile, "w+" );
+        fwrite( $fh, $my_data );
+        fclose( $fh ); 
+       $my_data = unserialize( base64_decode( $my_data ) );
+     } else {
+       #echo '. 2.... ';
+       # Cache file exists.
+       $my_data = unserialize( base64_decode( file_get_contents( $cachedfile ) ) );
+     }
+  return $my_data;
+}
+
+function resizeimage_wrapper_dbcache($reset = FALSE) {
+  global $bgcachexpire;
+  global $user;
+   $userId = $user->uid;
+  $bgcacheid = 'bg_' . md5($_GET['imgp'] . $_GET['imgw'] . $_GET['imgh']);
+  #echo $bgcacheid;
+  static $my_data;
+  #echo '0.... ';
+  if (!isset($my_data) || $reset) {
+     if (!$reset && ($cache = cache_get($bgcacheid)) && !empty($cache->data)) {
+      #$my_data = $cache->data;
+      $my_data = unserialize(base64_decode( $cache->data ));
+       #echo '-1.... ' . $my_data;
+    }
+    else {
+      // Do your expensive calculations here, and populate $my_data
+      // with the correct stuff..
+      $my_data = resizeimage ( $_GET['imgp'], $_GET['imgw'], $_GET['imgh'] );
+       #echo ' -2.... ' . $my_data;
+      cache_set($bgcacheid, 'cache', $my_data, time() + $bgcachexpire);
+      $my_data = unserialize(base64_decode( $my_data ));
+    }
+  }
   return $my_data;
 }
 
