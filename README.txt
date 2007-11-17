@@ -2,7 +2,7 @@
 
 Highly customizable table gallery of quality-scaled images from multiple defined folders.
 
-Installation, demo and tips are all at http://quidne.vacilando.org/bg
+Installation, demo and tips are all at http://www.vacilando.eu/bg
 
 
 Author: Tomas Fulopp (Vacilando)

@@ -1,22 +1,10 @@
 <?php
 /* $Id$ */
 
-/*
-# Require some PEAR fruit :-)
-  require_once('Cache/Lite/Function.php');
-  $cachloptions = array(
-                        'cacheDir' => '/home/14656/domains/vacilando.org/cachelite_tmp/',
-                        'automaticCleaningFactor' => 100,
-                        'hashedDirectoryLevel' => 9 # THIS CANNOT BE CHANGED WHILE CACHE IS BEING ACCUMULATED! I therefore cleaned the cache and set it on 9 on 2006081.
-                      );
-  # For flexibility, 'caching' => true and 'lifeTime' => 3600 will be set for each class instance.
-
-if ( $_GET['imgp'] <> '' ) { # Means there's a request to draw one image.
-     $cache = new Cache_Lite_Function( array_merge( $GLOBALS['cachloptions'], array( 'caching' => false, 'lifeTime' => (60*60*24 * 30) ) ) ); # Photocollections can be cached for a long time as they do not change frequently. Besides, here it is not crucial if all pictures show randomly immediately or not.
-      $cache->call( 'resizeimage', $_GET['imgp'], $_GET['imgw'], $_GET['imgh'] );
+if ( strpos( base64_decode( $_GET['imgp'] ), ":" ) !== false ) { # Fixing a possible code injection problem.
+     header("HTTP/1.0 404 Not Found");
      exit();
    }
-*/
 
 drupalize();
 function drupalize() {
