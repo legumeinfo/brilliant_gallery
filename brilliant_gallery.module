@@ -1,6 +1,9 @@
 <?php
 /* $Id$ */
 
+if ( module_exists('views') ) {
+     require(drupal_get_path('module', 'brilliant_gallery') .'/views.inc');
+   }
 
 /**
 * Display help and module information
@@ -312,17 +315,18 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
                                    }
                                 #$result .= $imgw . ' / ' . $imgh;
                               }
+                         # Get this module's path:
+                           $modulepath = url(drupal_get_path('module', 'brilliant_gallery'), NULL, NULL, TRUE);
+                           # url() ads i18n codes to the URL ... we need to remove them here...
+                             if ( $langcode <> '' ) {
+                                  $modulepath = str_replace( '/' . $langcode . '/', '/', $modulepath );
+                                }
+                           # Non-clean URLs need removing ?q=
+                             $modulepath = str_replace( "?q=", "",  $modulepath );
                          if ( $smallenough === true ) {
                               $result .= '<a href="' . $fullimgpath . '"';
                             } else {
                               # Important to begin with the "/" otherwise thumbnails in non-root folders fail. See http://drupal.org/node/175292
-                              $modulepath = url(drupal_get_path('module', 'brilliant_gallery'), NULL, NULL, TRUE);
-                              # url() ads i18n codes to the URL ... we need to remove them here...
-                                if ( $langcode <> '' ) {
-                                     $modulepath = str_replace( '/' . $langcode . '/', '/', $modulepath );
-                                   }
-                              # Non-clean URLs need removing ?q=
-                                $modulepath = str_replace( "?q=", "",  $modulepath );
                               $result .= '<a href="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgwbig . '&imgh=' . $imghbig . '"'; #&dummy=.jpg
                             }
 
@@ -350,6 +354,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
                             }
                          $result .= '>';
                          # Important to begin with the "/" otherwise thumbnails in non-root folders fail. See http://drupal.org/node/175292
+/*
                          $modulepath = url(drupal_get_path('module', 'brilliant_gallery'), NULL, NULL, TRUE);
                          # url() ads i18n codes to the URL ... we need to remove them here...
                            if ( $langcode <> '' ) {
@@ -357,6 +362,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
                               }
                          # Non-clean URLs need removing ?q=
                            $modulepath = str_replace( "?q=", "",  $modulepath );
+*/
                          $result .= '<img style="display: block;border:0" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
                          #$result .= '</a>';
                          $result .= '</a>' . "\n";
