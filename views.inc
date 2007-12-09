@@ -74,7 +74,7 @@ function brilliant_gallery_views_handler_image_img($fieldinfo, $fielddata, $valu
       while ( $file = readdir($handle) ) {
               $poct += 1;
               $testending = strtolower( substr( $file, -4, 4 ) );
-              if (  strtolower( $testending ) <> '.jpg' and strtolower( $testending ) <> 'jpeg' and strtolower( $testending ) <> '.gif' and strtolower( $testending ) <> '.png' and strtolower( $testending ) <> '.mpg' and strtolower( $testending ) <> '.swf' ) { continue; }
+              if (  strtolower( $testending ) <> '.jpg' and strtolower( $testending ) <> 'jpeg' and strtolower( $testending ) <> '.gif' and strtolower( $testending ) <> '.png' ) { continue; }
               $retval[$poct] = $file;
             }
       closedir( $handle );

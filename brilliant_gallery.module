@@ -282,7 +282,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
         $column_count = 0;
         $pocetobr = 0;
         $setname = mt_rand( 1, 9999999 );
-        $result .= '<!-- Brilliant Gallery Table Beginning --><table border="0" rules="none" frame="box" cellpadding="0" cellspacing="0" bordercolor="' . $bgcolour . '"';
+        $result .= '<!-- Brilliant Gallery Table Beginning --><table border="0" rules="none" frame="box" cellpadding="0" cellspacing="0" bgcolor="' . $bgcolour . '"';
         #if ( $thisfolder <> '' ) {
              #$result .= ' align="center"';
         #   }
