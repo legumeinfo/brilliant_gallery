@@ -404,7 +404,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
 function brilliant_gallery_filter($op, $delta = 0, $format = -1, $text = '') {
   switch ($op) {
     case 'no cache':
-      return FALSE;
+      return true;
 
     case 'list':
       return array(0 => t('Brilliant Gallery Tag'));
