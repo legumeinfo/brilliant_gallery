@@ -45,7 +45,7 @@ function resizeimage_wrapper_filecache() {
   #echo file_directory_temp()  . '/' . $bgcacheid;
   #echo " .... ";
   #echo $cachedfile;
-  $lastchanged = filectime( $cachedfile );
+  $lastchanged = (file_exists($cachedfile) ? filemtime( $cachedfile ) : false); # See http://drupal.org/node/194923
   if ( $lastchanged === false or ( time() - $lastchanged > ( $bgcachexpire ) ) ) {
        #echo '. 1.... ';
        # Cache file does not exist or is too old.
