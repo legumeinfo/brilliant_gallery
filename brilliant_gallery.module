@@ -214,7 +214,7 @@ function brilliant_gallery_menu() {
   return $items;
 }
 
-function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $widthoverride = '', $sortoverride = '', $maximumnumbertoshow = '' ) {
+function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $widthoverride = '', $sortoverride = '', $maximumnumbertoshow = '', $colouroverride = '' ) {
          # First some household cleaning. Delete expired cache files at 11:11 (if someone calls this script, of course!)
            if ( date( 'h' ) == '11' and date( 'i' ) == '11' ) {
            #if ( date( 'h' ) == '12' ) {
@@ -249,8 +249,11 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
            } else {
              $brilliant_gallery_sort = $sortoverride;
            }
-        #$bgcolour = variable_get('brilliant_gallery_bcgcolour', '#000000');
-        $bgcolour = variable_get('brilliant_gallery_bcgcolour_textfield', '#000000');
+        if ( $colouroverride == '' ) {
+             $bgcolour = variable_get('brilliant_gallery_bcgcolour_textfield', '#000000');
+           } else {
+             $bgcolour = $colouroverride;
+           }
         $padding = variable_get('brilliant_gallery_padding', 3);
         $overbrowser = variable_get('brilliant_gallery_overbrowser', 'thickbox');
         $showcaption = variable_get('brilliant_gallery_caption', '');
@@ -441,7 +444,7 @@ function replace_brilliant_gallery_tags( $str ) {
                    $orig_match[] = $match;
                    $match = substr( $match, 1, ( strlen( $match ) - 2 ) );
                    $match = explode( "|", $match );
-                   $matchlink[] = render_brilliant_gallery( $match[1], $match[2], $match[3], $match[4], $match[5] );
+                   $matchlink[] = render_brilliant_gallery( $match[1], $match[2], $match[3], $match[4], $match[5], $match[6] );
                  }
          $str = str_replace( $orig_match, $matchlink, $str );
          return $str;
