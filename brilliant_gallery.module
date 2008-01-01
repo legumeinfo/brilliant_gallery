@@ -215,6 +215,7 @@ function brilliant_gallery_menu() {
 }
 
 function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $widthoverride = '', $sortoverride = '', $maximumnumbertoshow = '', $colouroverride = '' ) {
+         drupal_add_css(drupal_get_path('module', 'brilliant_gallery') .'/brilliant_gallery.css'); 
          # First some household cleaning. Delete expired cache files at 11:11 (if someone calls this script, of course!)
            if ( date( 'h' ) == '11' and date( 'i' ) == '11' ) {
            #if ( date( 'h' ) == '12' ) {

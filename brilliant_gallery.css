@@ -1,0 +1,25 @@
+// $Id$
+ul.brilliant_gallery {
+	/* 
+	Total 'width' controls the number of thumbnails in each row. 
+	The number, in pixels, should be calculated thusly:
+	[maximum width desired for thumbnails] + [padding - if any, x 2] + [margin - if any, x 2] + [border - if any, x 2] x [number of thumbnails desired in each row]
+	*/
+	width: 174px;
+	}
+	
+ul.brilliant_gallery li {
+	float: left;
+	list-style: none;
+	background: #000;
+	width: 44px;
+	height: 33px;
+	padding: 4px;
+	text-align: center;
+	margin: 0;
+	border: none;
+	}
+	
+ul.brilliant_gallery img, ul.brilliant_gallery li a {
+	border: none;
+	}
