@@ -98,14 +98,17 @@ function resizeimage( $imgp, $imgw, $imgh ) {
 														#Header("Content-type: image/gif");
               $head = "Content-type: image/gif";
               $img = imagecreatefromgif( $imagepath );
+              if (!$img) { brokenimage(); }
             } else if ( $suffix == ".jpg" or $suffix == "jpeg" ) { # Thanks to Michał Albrecht!
 														#Header("Content-type: image/jpeg");
               $head = "Content-type: image/jpeg";
               $img = imagecreatefromjpeg( $imagepath );
+              if (!$img) { brokenimage(); }
             } else if ( $suffix == ".png" ) {
 														#Header("Content-type: image/png");
               $head = "Content-type: image/png";
               $img = imagecreatefrompng( $imagepath );
+              if (!$img) { brokenimage(); }
             }
          # Resize the image
            $src_h = ImageSY( $img );
@@ -129,4 +132,15 @@ function resizeimage( $imgp, $imgw, $imgh ) {
          return $result;
        }
 
+function brokenimage() {
+         $im  = imagecreatetruecolor(150, 30); 
+         $bgc = imagecolorallocate($im, 255, 255, 255);
+         $tc  = imagecolorallocate($im, 0, 0, 0);
+         imagefilledrectangle($im, 0, 0, 150, 30, $bgc);
+         imagestring($im, 1, 5, 5, "Error loading image", $tc);
+         imagejpeg($im);
+         exit();
+         }
+                                                      
 ?>
+

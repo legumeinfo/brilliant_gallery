@@ -274,7 +274,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
           $retval_dimensions = array();
           $handle = opendir($absolpath);
           $imagemaxh = 0;
-          while ( $file = @readdir($handle) ) {
+          while ( $file = readdir($handle) ) {
                   $poct += 1;
                   $testending = strtolower( substr( $file, -4, 4 ) );
                   if ( !testext( $file ) and strtolower( $testending ) <> '.mpg' and strtolower( $testending ) <> '.swf' and strtolower( $testending ) <> '.mov' ) { continue; }
@@ -283,10 +283,11 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
 
                   # Is image horizontally or vertically oriented?
                     $temp = getimagesize( $absolpath . '/' . $file );
+                    if ( $temp === false ) { continue; }
                     if ( ( $temp[0] - $temp[1] ) >= 0 ) {
                          # this is a horizontal image
                          $retval_dimensions[$poct]['imgw'] = $imagewidth;
-                         $retval_dimensions[$poct]['imgh'] = @round( ($temp[1]/$temp[0]) * $imagewidth );
+                         $retval_dimensions[$poct]['imgh'] = round( ($temp[1]/$temp[0]) * $imagewidth );
                          if ( $temp[0] > $fullresolutionmaxwidth ) {
                               $retval_dimensions[$poct]['imgwbig'] = $fullresolutionmaxwidth;
                               $retval_dimensions[$poct]['imghbig'] = round( ($temp[1]/$temp[0]) * $fullresolutionmaxwidth );
@@ -425,6 +426,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
          $result .= '<br clear="all">';
          return $result;
    }
+
 
 # Implementation of hook_filter().
 function brilliant_gallery_filter($op, $delta = 0, $format = -1, $text = '') {
