@@ -408,7 +408,9 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
 
                        } else {
                          $result .= '<a href="' . $fullimgpath . '">';
-                         $result .= '<center>' . $retval[$poct-1] . '</center>';
+                         #$result .= '<center>' . $retval[$poct-1] . '</center>';
+                         $result .= $retval[$poct-1];
+                         #brokenimage("Error loading PNG");
                          #$result .= '</a>';
                          $result .= '</a>' . "\n";
 
@@ -469,7 +471,7 @@ function replace_brilliant_gallery_tags( $str ) {
 
 
 function cleantmpdir() { # Delete "bg_*" files from the temp directory if they are expired.
-        $bgcachexpire = 3600*24*7; # Cache expiration time. This is primarily set in image.php - use the same value here.
+        $bgcachexpire = 3600*24*3; # Cache expiration time. This is primarily set in image.php - use the same value here.
         $directory = file_directory_temp();
 
         if( !$dirhandle = @opendir($directory) )
@@ -495,6 +497,16 @@ function testext( $filename ) {
          # Otherwise return false.
            return false;
        }
+
+function brokenimage($msg) {
+         $im  = imagecreatetruecolor(150, 30); 
+         $bgc = imagecolorallocate($im, 0, 0, 0);
+         $tc  = imagecolorallocate($im, 255, 255, 255);
+         imagefilledrectangle($im, 0, 0, 150, 30, $bgc);
+         imagestring($im, 1, 5, 5, $msg, $tc);
+         imagejpeg($im);
+         exit();
+         }
 
 
 /**

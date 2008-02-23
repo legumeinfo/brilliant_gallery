@@ -16,7 +16,8 @@ function drupalize() {
 #drupal_cron_run();
 }
 
-$bgcachexpire = 3600*24*7; # Cache expiration time.
+$bgcachexpire = 3600*24*3; # Cache expiration time.
+#$bgcachexpire = 3; # Cache expiration time.
 
 #chdir ('../../../../');
 #require_once './includes/bootstrap.inc';
@@ -32,8 +33,9 @@ if ( variable_get('brilliant_gallery_cache', 'd') == 'f' ) {
    }
 
 header($my_data[0]);
-echo $my_data[1];
-
+#echo $my_data[0] . '<br>';
+echo base64_decode($my_data[1]);           
+                                                                         
 function resizeimage_wrapper_filecache() {
   global $bgcachexpire;
   $bgcacheid = 'bg_' . md5($_GET['imgp'] . $_GET['imgw'] . $_GET['imgh']);
@@ -54,11 +56,18 @@ function resizeimage_wrapper_filecache() {
        $fh = fopen( $cachedfile, "w+" );
         fwrite( $fh, $my_data );
         fclose( $fh ); 
-       $my_data = unserialize( base64_decode( $my_data ) );
+       #test
+       /*
+       $my_data_t = unserialize( $my_data );
+       $fh = fopen( $cachedfile . '_2', "w+" );
+        fwrite( $fh, $my_data_t[1] );
+        fclose( $fh ); 
+       */
+       $my_data = unserialize( $my_data );
      } else {
        #echo '. 2.... ';
        # Cache file exists.
-       $my_data = unserialize( base64_decode( file_get_contents( $cachedfile ) ) );
+       $my_data = unserialize( file_get_contents( $cachedfile ) );
      }
   return $my_data;
 }
@@ -74,7 +83,7 @@ function resizeimage_wrapper_dbcache($reset = FALSE) {
   if (!isset($my_data) || $reset) {
      if (!$reset && ($cache = cache_get($bgcacheid)) && !empty($cache->data)) {
       #$my_data = $cache->data;
-      $my_data = unserialize(base64_decode( $cache->data ));
+      $my_data = unserialize( $cache->data );
        #echo '-1.... ' . $my_data;
     }
     else {
@@ -82,8 +91,8 @@ function resizeimage_wrapper_dbcache($reset = FALSE) {
       // with the correct stuff..
       $my_data = resizeimage ( $_GET['imgp'], $_GET['imgw'], $_GET['imgh'] );
        #echo ' -2.... ' . $my_data;
-      cache_set($bgcacheid, 'cache', $my_data, time() + $bgcachexpire);
-      $my_data = unserialize(base64_decode( $my_data ));
+      cache_set($bgcacheid, 'cache', mysql_escape_string($my_data), time() + $bgcachexpire);
+      $my_data = unserialize( $my_data );
     }
   }
   return $my_data;
@@ -94,21 +103,20 @@ function resizeimage( $imgp, $imgw, $imgh ) {
          #echo '.... ' . base64_decode( $imgp );
          #flush();die(' stop!');
          $suffix = strtolower(substr($imagepath, -4)); # Thanks to Michał Albrecht!
+         $imgsize = @getimagesize($imagepath);
+          $head = "Content-type: {$imgsize['mime']}"; # http://be.php.net/getimagesize
          if ( $suffix == ".gif" ) {
-														#Header("Content-type: image/gif");
-              $head = "Content-type: image/gif";
+              #$head = "Content-type: image/gif";
               $img = imagecreatefromgif( $imagepath );
-              if (!$img) { brokenimage(); }
+              if (!$img) { brokenimage("Error loading GIF"); }
             } else if ( $suffix == ".jpg" or $suffix == "jpeg" ) { # Thanks to Michał Albrecht!
-														#Header("Content-type: image/jpeg");
-              $head = "Content-type: image/jpeg";
+              #$head = "Content-type: image/jpeg";
               $img = imagecreatefromjpeg( $imagepath );
-              if (!$img) { brokenimage(); }
+              if (!$img) { brokenimage("Error loading JPG"); }
             } else if ( $suffix == ".png" ) {
-														#Header("Content-type: image/png");
-              $head = "Content-type: image/png";
+              #$head = "Content-type: image/png";
               $img = imagecreatefrompng( $imagepath );
-              if (!$img) { brokenimage(); }
+              if (!$img) { brokenimage("Error loading PNG"); }
             }
          # Resize the image
            $src_h = ImageSY( $img );
@@ -128,19 +136,9 @@ function resizeimage( $imgp, $imgw, $imgh ) {
               }
          $result = ob_get_clean();
          #ImageDestroy($img);
-         $result = mysql_escape_string(base64_encode(serialize(array($head, $result))));
+         $result = serialize(array($head, base64_encode( $result )));
          return $result;
        }
-
-function brokenimage() {
-         $im  = imagecreatetruecolor(150, 30); 
-         $bgc = imagecolorallocate($im, 255, 255, 255);
-         $tc  = imagecolorallocate($im, 0, 0, 0);
-         imagefilledrectangle($im, 0, 0, 150, 30, $bgc);
-         imagestring($im, 1, 5, 5, "Error loading image", $tc);
-         imagejpeg($im);
-         exit();
-         }
                                                       
 ?>
 
