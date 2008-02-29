@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 
-if ( strpos( base64_decode( $_GET['imgp'] ), "://" ) !== false ) { # Fixing a possible code injection problem.
+if ( strpos( base64_decode( $_GET['imgp'] ), "://" ) !== false ) { # Fixing a possible URL injection problem. Using ':' was not enough because Windows paths contain it as well.
      header("HTTP/1.0 404 Not Found");
      exit();
    }
