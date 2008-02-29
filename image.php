@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 
-if ( strpos( base64_decode( $_GET['imgp'] ), ":" ) !== false ) { # Fixing a possible code injection problem.
+if ( strpos( base64_decode( $_GET['imgp'] ), "://" ) !== false ) { # Fixing a possible code injection problem.
      header("HTTP/1.0 404 Not Found");
      exit();
    }
@@ -12,7 +12,8 @@ function drupalize() {
    chdir ('..');
  }
  require_once './includes/bootstrap.inc';
- drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+ #drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+ drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
 #drupal_cron_run();
 }
 
@@ -32,6 +33,7 @@ if ( variable_get('brilliant_gallery_cache', 'd') == 'f' ) {
      $my_data = resizeimage_wrapper_dbcache();
    }
 
+#echo '....'. sess_read('vacilando');
 header($my_data[0]);
 #echo $my_data[0] . '<br>';
 echo base64_decode($my_data[1]);           
