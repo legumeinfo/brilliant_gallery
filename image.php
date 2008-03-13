@@ -84,16 +84,14 @@ function resizeimage_wrapper_dbcache($reset = FALSE) {
   #echo '0.... ';
   if (!isset($my_data) || $reset) {
      if (!$reset && ($cache = cache_get($bgcacheid)) && !empty($cache->data)) {
-      #$my_data = $cache->data;
+      #$my_data = $cache->data; echo '-1.... ' . $my_data;
       $my_data = unserialize( $cache->data );
-       #echo '-1.... ' . $my_data;
-    }
-    else {
+     } else {
       // Do your expensive calculations here, and populate $my_data
       // with the correct stuff..
       $my_data = resizeimage ( $_GET['imgp'], $_GET['imgw'], $_GET['imgh'] );
-       #echo ' -2.... ' . $my_data;
-      cache_set($bgcacheid, 'cache', mysql_escape_string($my_data), time() + $bgcachexpire);
+      #echo ' -2.... ' . $bgcachexpire . ' // ' . $my_data;
+      cache_set($bgcacheid, 'cache', $my_data, time() + $bgcachexpire); # For some reason I could not use: mysql_escape_string($my_data)
       $my_data = unserialize( $my_data );
     }
   }
