@@ -404,7 +404,8 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
                          # Non-clean URLs need removing ?q=
                            $modulepath = str_replace( "?q=", "",  $modulepath );
 */
-                         $result .= '<img style="display: block;border:0" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
+                         #$result .= '<img style="display: block;border:0" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
+                         $result .= '<img style="border:0" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
                          #$result .= '</a>';
                          $result .= '</a>' . "\n";
 
