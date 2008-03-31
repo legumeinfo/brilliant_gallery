@@ -16,6 +16,7 @@ function drupalize() {
  drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
 #drupal_cron_run();
 }
+$GLOBALS['devel_shutdown'] = FALSE; # Crucial - to suppress Devel (if installed and enabled) output appearing in the generated XML!
 
 $bgcachexpire = 3600*24*3; # Cache expiration time.
 #$bgcachexpire = 3; # Cache expiration time.
@@ -37,6 +38,7 @@ if ( variable_get('brilliant_gallery_cache', 'd') == 'f' ) {
 header($my_data[0]);
 #echo $my_data[0] . '<br>';
 echo base64_decode($my_data[1]);           
+exit(); # IMPORTANT - otherwise some process after BG adds strings and breaks the image!
                                                                          
 function resizeimage_wrapper_filecache() {
   global $bgcachexpire;
