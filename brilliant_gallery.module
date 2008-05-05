@@ -216,7 +216,7 @@ function brilliant_gallery_menu() {
   return $items;
 }
 
-function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $widthoverride = '', $sortoverride = '', $maximumnumbertoshow = '', $colouroverride = '', $beginfromoverride = 1 ) {
+function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $widthoverride = '', $sortoverride = '', $maximumnumbertoshow = '', $colouroverride = '', $beginfromoverride = 1, $captionyesnotext ) {
          #drupal_add_css(drupal_get_path('module', 'brilliant_gallery') .'/brilliant_gallery.css');
          # First some household cleaning. Delete expired cache files at 11:11 (if someone calls this script, of course!)
            if ( date( 'h' ) == '11' and date( 'i' ) == '11' ) {
@@ -258,9 +258,15 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
            } else {
              $bgcolour = $colouroverride;
            }
+        if ( $captionyesornot == 'yes' or $captionyesornot == '' or ( variable_get('brilliant_gallery_caption', '') <> '' and $captionyesornot <> 'no' ) ) {
+             $showcaption = 'filename';
+           } else if ( $captionyesornot == 'no' ) {
+             $showcaption = '';
+           } else {
+             $showcaption = $captionyesornot;
+           }
         $padding = variable_get('brilliant_gallery_padding', 3);
         $overbrowser = variable_get('brilliant_gallery_overbrowser', 'thickbox');
-        $showcaption = variable_get('brilliant_gallery_caption', '');
         $fullresolutionmaxwidth = variable_get('brilliant_gallery_maxwidth', '1000'); # Totally full resolution display would be impractical, so this is the maximum width of "full" resolution.
         $path = url(file_directory_path() . '/' . $galleryfolder, NULL, NULL, TRUE);
         # url() ads i18n codes to the URL ... we need to remove them here...
@@ -396,6 +402,9 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
                          }
 
                          if ( $showcaption <> '' ) {
+                              if ( $showcaption <> 'filename' ) {
+                                   $caption = $showcaption;
+                                 }
                               $result .= ' title="' . $caption . '"';
                             }
                          $result .= '>';
@@ -463,7 +472,7 @@ function brilliant_gallery_filter($op, $delta = 0, $format = -1, $text = '') {
 
 
 function replace_brilliant_gallery_tags( $str ) {
-         # [bg|path/to/gallery_folder|colcountoverride|widthoverride|sortorrandomoverride|maximumnumbertoshow|colouroverride|beginfromoverride]
+         # [bg|path/to/gallery_folder|colcountoverride|widthoverride|sortorrandomoverride|maximumnumbertoshow|colouroverride|beginfromoverride|caption-yes-no-text]
            # no slashes around this path!
          $matchlink = '';
          $orig_match = '';
@@ -472,7 +481,7 @@ function replace_brilliant_gallery_tags( $str ) {
                    $orig_match[] = $match;
                    $match = substr( $match, 1, ( strlen( $match ) - 2 ) );
                    $match = explode( "|", $match );
-                   $matchlink[] = render_brilliant_gallery( $match[1], $match[2], $match[3], $match[4], $match[5], $match[6], $match[7] );
+                   $matchlink[] = render_brilliant_gallery( $match[1], $match[2], $match[3], $match[4], $match[5], $match[6], $match[7], $match[8] );
                  }
          $str = str_replace( $orig_match, $matchlink, $str );
          return $str;
