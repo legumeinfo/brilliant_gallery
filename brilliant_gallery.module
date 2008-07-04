@@ -9,19 +9,17 @@ if ( module_exists('views') ) {
 
 /**
 * Display help and module information
-* @param section which section of the site we're displaying help
-* @return help text for section
+* @param path which path of the site we're displaying help
+* @param arg array that holds the current path as would be returned from arg() function
+* @return help text for the path
 */
-function brilliant_gallery_help($section='') {
-
+function brilliant_gallery_help($path, $arg) {
   $output = '';
-
-  switch ($section) {
+  switch ($path) {
     case "admin/help#brilliant_gallery":
       $output = '<p>'.  t("Highly customizable Drupal module creating a table gallery of quality-scaled images from any number of folders."). '</p>';
       break;
   }
-
   return $output;
 } // function brilliant_gallery_help
 
@@ -56,7 +54,7 @@ function brilliant_gallery_block($op='list', $delta=0) {
     #$block_content .= l($links->title, 'node/'.$links->nid) . '<br />';
     #$block_content .= l('vacilando', 'http://www.vacilando.org') . '<br />';
 
-    $block_content .= render_brilliant_gallery();
+    #$block_content .= render_brilliant_gallery();
 
     // set up the block
     $block['subject'] = 'Brilliant gallery';
@@ -84,6 +82,7 @@ function brilliant_gallery_admin() {
     '#size' => 50,
     '#maxlength' => 100,
     '#description' => t("Path to the main folder in which your individual gallery folders will be placed. This folder must exist under your 'files' folder. Exclude trailing slashes. Example: <i>albums</i>")
+    #'#required' => TRUE,
   );
   $form['brilliant_gallery_maxcol'] = array(
     '#type' => 'textfield',
@@ -183,41 +182,37 @@ function brilliant_gallery_menu() {
 
   $items = array();
 
-  $items[] = array(
-    'path' => 'admin/settings/brilliant_gallery',
-    'title' => t('Brilliant gallery'),
+   $items['admin/settings/brilliant_gallery'] = array(
+    'title' => 'Brilliant gallery',
     'description' => t('Brilliant gallery module settings'),
-    'callback' => 'drupal_get_form',
-    'callback arguments' => 'brilliant_gallery_admin',
-    'access' => user_access('access administration pages'),
-    'type' => MENU_NORMAL_ITEM,
-   );
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('brilliant_gallery_admin'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_TASK,
+  );
 
-  # Probably not the right way of doing it but it works...
-    $items[] = array(
-      'path' => 'admin/settings/brilliant_gallery/brilliant_gallery_perms',
-      #'path' => 'admin/user/access#module-brilliant_gallery',
-      'title' => t('Configure permissions'),
-      'description' => t('Configure access permissions for the Brilliant gallery module'),
-      'callback' => 'brilliant_gallery_perms',
-      #'callback arguments' => 'brilliant_gallery_perms',
-      'access' => user_access('access administration pages'),
-      'type' => MENU_NORMAL_ITEM,
-     );
-
-  $items[] = array(
-    'path' => 'brilliant_gallery',
-    'title' => t('Brilliant gallery'),
-    'callback' => 'brilliant_gallery_all',
-    'access' => user_access('access brilliant_gallery'),
-    'type' => MENU_CALLBACK
+   $items['brilliant_gallery'] = array(
+    'title' => 'Brilliant gallery',
+    'page callback' => 'brilliant_gallery_all',
+    'page arguments' => array(2),
+    'access arguments' => array('access brilliant_gallery'),
+    'type' => MENU_CALLBACK,
   ); # The type MENU_CALLBACK tells Drupal to not display the link in the user's menu, just use this function when the URL is accessed. Use MENU_NORMAL_ITEM if you want the user to see the link in the side navigation block.
 
   return $items;
 }
 
-function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $widthoverride = '', $sortoverride = '', $maximumnumbertoshow = '', $colouroverride = '', $beginfromoverride = 1, $captionyesnotext ) {
-         #drupal_add_css(drupal_get_path('module', 'brilliant_gallery') .'/brilliant_gallery.css');
+
+function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $widthoverride = '', $sortoverride = '', $maximumnumbertoshow = '', $colouroverride = '', $beginfromoverride = 1, $captionyesnotext = '' ) {
+         /* drupal_add_css(drupal_get_path('module', 'brilliant_gallery') .'/brilliant_gallery.css');
+            In D5, it was common practice to use drupal_add_css (or _js) within the hook_menu code. In D6 this doesn't work.
+            However, hook_init was also changed and is now a good place to add the CSS. See http://api.drupal.org/api/function/hook_init.
+            <?php
+            function hook_init() {
+              drupal_add_css(drupal_get_path('module', 'faq_ask') .'/faq_ask.css');
+            }
+            ?>
+            */
          # First some household cleaning. Delete expired cache files at 11:11 (if someone calls this script, of course!)
            if ( date( 'h' ) == '11' and date( 'i' ) == '11' ) {
            #if ( date( 'h' ) == '12' ) {
@@ -268,7 +263,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
         $padding = variable_get('brilliant_gallery_padding', 3);
         $overbrowser = variable_get('brilliant_gallery_overbrowser', 'thickbox');
         $fullresolutionmaxwidth = variable_get('brilliant_gallery_maxwidth', '1000'); # Totally full resolution display would be impractical, so this is the maximum width of "full" resolution.
-        $path = url(file_directory_path() . '/' . $galleryfolder, NULL, NULL, TRUE);
+        $path = url(file_directory_path() . '/' . $galleryfolder, $options = array(NULL, NULL, TRUE));
         # url() ads i18n codes to the URL ... we need to remove them here...
           if ( $langcode <> '' ) {
                $path = str_replace( '/' . $langcode . '/', '/', $path );
@@ -285,6 +280,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
           $imagemaxh = 0;
           while ( $file = readdir($handle) ) {
                   $testending = strtolower( substr( $file, -4, 4 ) );
+                  echo '<p>'.$absolpath . ' ... ' . $file;
                   if ( !testext( $file ) and strtolower( $testending ) <> '.mpg' and strtolower( $testending ) <> '.swf' and strtolower( $testending ) <> '.mov' ) { continue; }
                   $poct += 1; # Index of a real image or something we are going to display.
                   #$retval[$poct] = $file;
