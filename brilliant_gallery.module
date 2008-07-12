@@ -699,7 +699,7 @@ function load_dir_to_array( $absolpath, $imagewidth, $fullresolutionmaxwidth, $b
     $retval_dimensions = array();
     $handle = opendir($absolpath);
     $imagemaxh = 0;
-    while ( @$file = readdir($handle) ) {
+    while ( $file = readdir($handle) ) {
             $testending = strtolower( substr( $file, -4, 4 ) );
             if ( !testext( $file ) and strtolower( $testending ) <> '.mpg' and strtolower( $testending ) <> '.swf' and strtolower( $testending ) <> '.mov' ) { continue; }
             $poct += 1; # Index of a real image or something we are going to display.
