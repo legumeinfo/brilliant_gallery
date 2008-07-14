@@ -171,12 +171,6 @@ function brilliant_gallery_admin() {
   return system_settings_form($form);
 }
 
-# Probably not the right way of doing it but it works...
-  function brilliant_gallery_perms() {
-           header("HTTP/1.1 301 Moved Permanently");
-           header("Location: " . url("admin/user/access", NULL, "module-brilliant_gallery", TRUE));
-           exit();
-         }
 
 function brilliant_gallery_menu() {
 
@@ -184,24 +178,43 @@ function brilliant_gallery_menu() {
 
    $items['admin/settings/brilliant_gallery'] = array(
     'title' => 'Brilliant gallery',
-    'description' => t('Brilliant gallery module settings'),
+    'description' => 'Brilliant gallery module settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('brilliant_gallery_admin'),
     'access arguments' => array('access administration pages'),
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_NORMAL_ITEM,
   );
-
+ 
    $items['brilliant_gallery'] = array(
     'title' => 'Brilliant gallery',
+    #'description' => 'Brilliant gallery access permissions',
     'page callback' => 'brilliant_gallery_all',
-    'page arguments' => array(2),
+    #'page arguments' => array(),
     'access arguments' => array('access brilliant_gallery'),
     'type' => MENU_CALLBACK,
   ); # The type MENU_CALLBACK tells Drupal to not display the link in the user's menu, just use this function when the URL is accessed. Use MENU_NORMAL_ITEM if you want the user to see the link in the side navigation block.
 
+/*
+  # A shortcut to the permissions settings for this module.
+    $items['admin/settings/brilliant_gallery/permissions'] = array(
+      #'path' => 'admin/user/access#module-brilliant_gallery',
+      'title' => 'Brilliant gallery permissions',
+      'description' => 'Configure access permissions for the Brilliant gallery module',
+      'callback' => 'brilliant_gallery_permz',
+      #'callback arguments' => 'brilliant_gallery_perms',
+      'access' => user_access('access administration pages'),
+      'type' => MENU_NORMAL_ITEM,
+     );
+*/
   return $items;
-}
-
+} 
+/*
+function brilliant_gallery_permz() {
+         header("HTTP/1.1 301 Moved Permanently");
+         header("Location: /?q=admin/user/access#module-brilliant_gallery");
+         exit();
+       }
+*/
 
 function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $widthoverride = '', $sortoverride = '', $maximumnumbertoshow = '', $colouroverride = '', $beginfromoverride = 1, $captionyesnotext = '' ) {
          /* drupal_add_css(drupal_get_path('module', 'brilliant_gallery') .'/brilliant_gallery.css');
