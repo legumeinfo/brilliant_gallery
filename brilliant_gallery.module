@@ -627,7 +627,8 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
                               $result .= '<a href="' . $fullimgpath . '"';
                             } else {
                               # Important to begin with the "/" otherwise thumbnails in non-root folders fail. See http://drupal.org/node/175292
-                              $result .= '<a href="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&amp;imgw=' . $imgwbig . '&amp;imgh=' . $imghbig . '"'; #&dummy=.jpg
+                              #$result .= '<a href="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&amp;imgw=' . $imgwbig . '&amp;imgh=' . $imghbig . '"'; #&dummy=.jpg
+                              $result .= '<a href="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgwbig . '&imgh=' . $imghbig . '"'; #&dummy=.jpg
                             }
 
                          switch( $overbrowser ) {
@@ -667,7 +668,8 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
                            $modulepath = str_replace( "?q=", "",  $modulepath );
 */
                          #$result .= '<img style="display: block;border:0" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
-                         $result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&amp;imgw=' . $imgw . '&amp;imgh=' . $imgh . '" />'; # width="' . $imgw . '"
+                         #$result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&amp;imgw=' . $imgw . '&amp;imgh=' . $imgh . '" />'; # width="' . $imgw . '"
+                         $result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
                          #$result .= '</a>';
                          $result .= '</a>' . "\n";
 
