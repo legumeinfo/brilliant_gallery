@@ -453,7 +453,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
          #if ($column_count <> 0) { $result .= ("</tr>\n"); }
          #$result .= "</table>\n";
          $result .= "</ul>\n";
-         $result .= '<br style="clear: both;" />';
+         #$result .= '<br style="clear: both;" />';
          #$result .= '<p>';
          return $result;
    }
