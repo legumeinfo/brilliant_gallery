@@ -424,7 +424,7 @@ HEADER;
                                    $displayimage .= ' title="' . $caption . '"';
                                  }
                               $displayimage .= '>';
-                              $displayimage .= '<img style="border:0" alt="" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . $path_middle . '/' . $retval[$poct-1] ) . '&amp;imgw=' . $imgw . '&amp;imgh=' . $imgh . '" />'; # width="' . $imgw . '"
+                              $displayimage .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . $path_middle . '/' . $retval[$poct-1] ) . '&amp;imgw=' . $imgw . '&amp;imgh=' . $imgh . '" />'; # width="' . $imgw . '"
                               $displayimage .= '</a>';
 
                             } else {
@@ -551,7 +551,9 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
           $retval_dimensions = $temp[0];
           $imagemaxh = $temp[1];
           $maxpoct = count( $retval_dimensions );
-          #print_r( $retval_dimensions );
+          if ( arg(2) == 'edit' ) {
+           #print_r( $retval_dimensions );
+          }
 
         # Get a list of images that are forbidden from display.
           #$uid=$user->uid;
@@ -571,7 +573,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
           }
           #print_r($excludedimgs);
 
-        $style_ul = "width: " . ( ( $imagewidth + 2*$padding ) * $columns ) . "px;"; # Total 'width' controls the number of thumbnails in each row. The number, in pixels, should be calculated thusly: [maximum width desired for thumbnails] + [padding - if any, x 2] + [margin - if any, x 2] + [border - if any, x 2] x [number of thumbnails desired in each row]
+        $style_ul = "font-size:0; margin:0px; padding:0px; width: " . ( ( $imagewidth + 2*$padding ) * $columns ) . "px;"; # Total 'width' controls the number of thumbnails in each row. The number, in pixels, should be calculated thusly: [maximum width desired for thumbnails] + [padding - if any, x 2] + [margin - if any, x 2] + [border - if any, x 2] x [number of thumbnails desired in each row]
         $column_count = 0;
         #$pocetobr = 0;
         $setname = mt_rand( 1, 9999999 );
@@ -611,7 +613,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
                          $imgwbig = $retval_dimensions[$poct-1]['imgwbig'];
                          $imghbig = $retval_dimensions[$poct-1]['imghbig'];
                          $smallenough = $retval_dimensions[$poct-1]['smallenough'];
-                         $style_li = "float: left; width: " . $imagewidth . "px; list-style: none; background: " . $bgcolour . "; height: " . $imagemaxh . "px; padding: " . $padding . "px; text-align: center; margin: 0; border: none;"; #$style_li = "float: left; list-style: none; background: #000; width: 44px; height: 33px; padding: 4px; text-align: center; margin: 0; border: none;";
+                         $style_li = "font-size:0; float: left; width: " . $imagewidth . "px; list-style: none; background: " . $bgcolour . "; height: " . $imagemaxh . "px; padding: " . $padding . "px; text-align: center; margin: 0px; border: none;"; #$style_li = "float: left; list-style: none; background: #000; width: 44px; height: 33px; padding: 4px; text-align: center; margin: 0; border: none;";
                          $result .= ('<li style="' . $style_li . '">' . "\n");
                          # Get this module's path:
                            $modulepath = url(drupal_get_path('module', 'brilliant_gallery'), NULL, NULL, TRUE);
@@ -665,7 +667,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
                            $modulepath = str_replace( "?q=", "",  $modulepath );
 */
                          #$result .= '<img style="display: block;border:0" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
-                         $result .= '<img style="border:0" alt="" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&amp;imgw=' . $imgw . '&amp;imgh=' . $imgh . '" />'; # width="' . $imgw . '"
+                         $result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&amp;imgw=' . $imgw . '&amp;imgh=' . $imgh . '" />'; # width="' . $imgw . '"
                          #$result .= '</a>';
                          $result .= '</a>' . "\n";
 
@@ -688,7 +690,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
          #if ($column_count <> 0) { $result .= ("</tr>\n"); }
          #$result .= "</table>\n";
          $result .= "</ul>\n";
-         $result .= '<br style="clear: both;" />';
+         #$result .= '<br style="clear: both;" />';
          #$result .= '<p>';
          return $result;
    }
@@ -737,7 +739,7 @@ function load_dir_to_array( $absolpath, $imagewidth, $fullresolutionmaxwidth, $b
           }
     @closedir( $handle );
     if ( $brilliant_gallery_sort == '1' ) {
-         sort( $retval_dimensions );
+         @sort( $retval_dimensions );
        } else {
          shuffle( $retval_dimensions );
        }
