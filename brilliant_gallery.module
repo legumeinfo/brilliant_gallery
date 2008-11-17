@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 
-sess_write('vacilando', 'this is a test');
+#sess_write('vacilando', 'this is a test');
 
 if ( module_exists('views') ) {
      require(drupal_get_path('module', 'brilliant_gallery') .'/views.inc');
@@ -338,7 +338,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
              }
           #print_r( $retval_dimensions );
 
-        $style_ul = "width: " . ( ( $imagewidth + 2*$padding ) * $columns ) . "px;"; # Total 'width' controls the number of thumbnails in each row. The number, in pixels, should be calculated thusly: [maximum width desired for thumbnails] + [padding - if any, x 2] + [margin - if any, x 2] + [border - if any, x 2] x [number of thumbnails desired in each row]
+        $style_ul = "font-size:0; margin:0px; padding:0px; width: " . ( ( $imagewidth + 2*$padding ) * $columns ) . "px;"; # Total 'width' controls the number of thumbnails in each row. The number, in pixels, should be calculated thusly: [maximum width desired for thumbnails] + [padding - if any, x 2] + [margin - if any, x 2] + [border - if any, x 2] x [number of thumbnails desired in each row]
         $column_count = 0;
         #$pocetobr = 0;
         $setname = mt_rand( 1, 9999999 );
@@ -457,6 +457,7 @@ function render_brilliant_gallery( $thisfolder = '', $colcountoverride = '', $wi
          $result .= "</ul>\n";
          #$result .= '<br style="clear: both;" />';
          #$result .= '<p>';
+
          return $result;
    }
 
@@ -528,16 +529,6 @@ function testext( $filename ) {
          # Otherwise return false.
            return false;
        }
-
-function brokenimage($msg) {
-         $im  = imagecreatetruecolor(150, 30);
-         $bgc = imagecolorallocate($im, 0, 0, 0);
-         $tc  = imagecolorallocate($im, 255, 255, 255);
-         imagefilledrectangle($im, 0, 0, 150, 30, $bgc);
-         imagestring($im, 1, 5, 5, $msg, $tc);
-         imagejpeg($im);
-         exit();
-         }
 
 
 /**

@@ -143,6 +143,16 @@ function resizeimage( $imgp, $imgw, $imgh ) {
          $result = serialize(array($head, base64_encode( $result )));
          return $result;
        }
+
+function brokenimage($msg) {
+         $im  = imagecreatetruecolor(150, 30);
+         $bgc = imagecolorallocate($im, 0, 0, 0);
+         $tc  = imagecolorallocate($im, 255, 255, 255);
+         imagefilledrectangle($im, 0, 0, 150, 30, $bgc);
+         imagestring($im, 1, 5, 5, $msg, $tc);
+         imagejpeg($im);
+         exit();
+         }
                                                       
 ?>
 
