@@ -79,7 +79,7 @@ function resizeimage_wrapper_filecache() {
 function resizeimage_wrapper_dbcache($reset = FALSE) {
   global $bgcachexpire;
   global $user;
-   $userId = $user->uid;
+  #$userId = $user->uid;
   $bgcacheid = 'bg_' . md5($_GET['imgp'] . $_GET['imgw'] . $_GET['imgh']);
   #echo $bgcacheid;
   static $my_data;
@@ -155,4 +155,3 @@ function brokenimage($msg) {
          }
                                                       
 ?>
-
