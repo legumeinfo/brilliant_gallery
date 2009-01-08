@@ -174,6 +174,3 @@ function brokenimage($msg) {
   imagejpeg($im);
   exit();
 }
-
-
-

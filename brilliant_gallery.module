@@ -515,6 +515,12 @@ function bg_iterative_recurse_dir($from = '.') {
 }
 
 function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $widthoverride = '', $sortoverride = '', $maximumnumbertoshow = '', $colouroverride = '', $beginfromoverride = 1, $captionyesnotext = '') {
+  // Is this a Picasa gallery?
+    $picasafolder = false;
+    #echo '....'.substr($thisfolder,0,29);
+    if (substr($thisfolder,0,28) == 'http://picasaweb.google.com/') {
+      $picasafolder = true;
+    }
   #drupal_add_css(drupal_get_path('module', 'brilliant_gallery') .'/brilliant_gallery.css');
   # First some household cleaning. Delete expired cache files at 11:11 (if someone calls this script, of course!)
   if (date('h') == '11' and date('i') == '11') {
@@ -586,20 +592,35 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
   }
   $padding = variable_get('brilliant_gallery_padding', 3);
   $overbrowser = variable_get('brilliant_gallery_overbrowser', 'lightbox');
-  # Totally full resolution display would be impractical, so this is the maximum width of "full" resolution.
+  // Totally full resolution display would be impractical, so this is the maximum width of "full" resolution.
   $fullresolutionmaxwidth = variable_get('brilliant_gallery_maxwidth', '1000');
   $path = url(file_directory_path() .'/'. $galleryfolder, array('absolute' => TRUE));
-  # url() ads i18n codes to the URL ... we need to remove them here...
+  // url() ads i18n codes to the URL ... we need to remove them here...
   if ($langcode <> '') {
     $path = str_replace('/'. $langcode .'/', '/', $path);
   }
-  # Non-clean URLs need removing ?q=
+
+  // Non-clean URLs need removing ?q=
   $path = str_replace("?q=", "", $path);
-  $rp = file_directory_path();
-  if ($galleryfolder <> '') {
-    $rp .= '/'. $galleryfolder;
+
+  // Get absolute path
+  if ($picasafolder) {
+    $url_to_fetch = $thisfolder;
+    #echo '.--..'.$url_to_fetch;
+    #module_load_include('php', 'brilliant_gallery', 'picasa');
+    #include ('./'. drupal_get_path('module', 'brilliant_gallery') ."/picasa.php");
+    $absolpath = $mkdirek;
+    #$absolpath = '/tmp/bg_picasa_838e4e98afdffbec2ed6d34e6bfa497c';
+    #echo $absolpath;
+    #drupal_set_message(t('absol: '.$absolpath));
   }
-  $absolpath = realpath($rp);
+  else {
+    $rp = file_directory_path();
+    if ($galleryfolder <> '') {
+      $rp .= '/'. $galleryfolder;
+    }
+    $absolpath = realpath($rp);
+  }
   #$result .= $absolpath;
 
   # Make an array with images in this folder, and their properties.
@@ -636,7 +657,7 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
   #$pocetobr = 0;
   $setname = mt_rand(1, 9999999);
   #$result .= '<!-- Brilliant Gallery Table Beginning --><table border="0" rules="none" frame="box" cellpadding="0" cellspacing="0" bgcolor="' . $bgcolour . '"';
-  $result .= '<!-- Brilliant Gallery Table Beginning -->';
+  #$result .= '<!-- Brilliant Gallery Table Beginning -->';
   #$result .= '<ul class="brilliant_gallery" style="' . $style_ul . '">';
   $result .= '<ul style="'. $style_ul .'">';
   #if ( $thisfolder <> '' ) {
@@ -935,4 +956,3 @@ function brilliant_gallery_filter_tips($delta, $format, $long = FALSE) {
   }
 }
 */
-
