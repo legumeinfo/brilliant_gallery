@@ -210,10 +210,10 @@ function brilliant_gallery_admin() {
     '#options' => array(
       'lightbox' => t('Lightbox'),
       'thickbox' => t('Thickbox'),
-      'greyboxr' => t('Greybox Redux'),
+      'greybox' => t('Greybox'),
       'none' => t('None'),
     ),
-    '#default_value' => variable_get('brilliant_gallery_overbrowser', 'thickbox'),
+    '#default_value' => variable_get('brilliant_gallery_overbrowser', 'lightbox'),
     '#description' => t('Select the overlay image browser (must be installed, of course).'),
   );
   $form['brilliant_gallery_maxwidth'] = array(
@@ -337,7 +337,7 @@ function render_brilliant_gallery_manage() {
       </div>
 HEADER;
   $result .= $ac_header;
-  $overbrowser   = variable_get('brilliant_gallery_overbrowser', 'thickbox');
+  $overbrowser   = variable_get('brilliant_gallery_overbrowser', 'lightbox');
   $setname       = mt_rand(1, 9999999);
   $galleryfolder = variable_get('brilliant_gallery_folder', '');
   $path          = url(file_directory_path() .'/'. $galleryfolder, array('absolute' => TRUE));
@@ -416,6 +416,7 @@ HEADER;
           }
 
           switch ($overbrowser) {
+              
             case 'thickbox':
               $displayimage .= ' class="thickbox"';
               $displayimage .= ' rel="img_'. $setname .'"';
@@ -428,9 +429,8 @@ HEADER;
               #$attributes['rel'] = 'lightbox[' . ($node->nid? $node->nid: time()) . ']'; // 'insert' has no $node->nid
               break;
 
-            case 'greyboxr':
+            case 'greybox':
               $displayimage .= ' class="greybox"';
-              #$result .= ' rel="gb_imageset[' . $setname . ']"';
               break;
 
             default:
@@ -562,7 +562,7 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
     $showcaption = $captionyesornot;
   }
   $padding = variable_get('brilliant_gallery_padding', 3);
-  $overbrowser = variable_get('brilliant_gallery_overbrowser', 'thickbox');
+  $overbrowser = variable_get('brilliant_gallery_overbrowser', 'lightbox');
   # Totally full resolution display would be impractical, so this is the maximum width of "full" resolution.
   $fullresolutionmaxwidth = variable_get('brilliant_gallery_maxwidth', '1000');
   $path = url(file_directory_path() .'/'. $galleryfolder, array('absolute' => TRUE));
@@ -688,9 +688,8 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
           #$attributes['rel'] = 'lightbox[' . ($node->nid? $node->nid: time()) . ']'; // 'insert' has no $node->nid
           break;
 
-        case 'greyboxr':
+        case 'greybox':
           $result .= ' class="greybox"';
-          #$result .= ' rel="gb_imageset[' . $setname . ']"';
           break;
 
         default:
