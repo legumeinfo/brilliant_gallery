@@ -404,7 +404,7 @@ HEADER;
           $imgh        = $retval_dimensions[$poct - 1]['imgh'];
           $imgwbig     = $retval_dimensions[$poct - 1]['imgwbig'];
           $imghbig     = $retval_dimensions[$poct - 1]['imghbig'];
-          $smallenough = $retval_dimensions[$poct - 1]['smallenough'];
+          @$smallenough = $retval_dimensions[$poct - 1]['smallenough'];
           #$style_li = "float: left; width: " . $imagewidth . "px; list-style: none; background: " . $bgcolour . "; height: " . $imagemaxh . "px; padding: " . $padding . "px; text-align: center; margin: 0; border: none;"; #$style_li = "float: left; list-style: none; background: #000; width: 44px; height: 33px; padding: 4px; text-align: center; margin: 0; border: none;";
           #$result .= ('<li style="' . $style_li . '">' . "\n");
           # Get this module's path:
@@ -572,15 +572,17 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
   else {
     $bgcolour = $colouroverride;
   }
-  if ($captionyesornot == 'yes' or $captionyesornot == '' or (variable_get('brilliant_gallery_caption', '') <> '' and $captionyesornot <> 'no')) {
-  #if ($captionyesnotext == 'yes' or $captionyesnotext == '' or (variable_get('brilliant_gallery_caption', '') <> '' and $captionyesnotext <> 'no') ) {
+  #if ($captionyesornot == 'yes' or $captionyesornot == '' or (variable_get('brilliant_gallery_caption', '') <> '' and $captionyesornot <> 'no')) {
+  if (($captionyesnotext == 'yes' or $captionyesnotext == '') and variable_get('brilliant_gallery_caption', '') <> '' ) {
     $showcaption = 'filename';
   }
-  else if ($captionyesornot == 'no') {
+  #else if ($captionyesornot == 'no') {
+  else if ($captionyesnotext == 'no' or (variable_get('brilliant_gallery_caption', '') == '' and ($captionyesnotext == 'yes' or $captionyesnotext == 'no'))) {
     $showcaption = '';
   }
   else {
-    $showcaption = $captionyesornot;
+    #$showcaption = $captionyesornot;
+    $showcaption = $captionyesnotext;
   }
   $padding = variable_get('brilliant_gallery_padding', 3);
   $overbrowser = variable_get('brilliant_gallery_overbrowser', 'lightbox');
@@ -678,7 +680,7 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
       $imgh        = $retval_dimensions[$poct - 1]['imgh'];
       $imgwbig     = $retval_dimensions[$poct - 1]['imgwbig'];
       $imghbig     = $retval_dimensions[$poct - 1]['imghbig'];
-      $smallenough = $retval_dimensions[$poct - 1]['smallenough'];
+      @$smallenough = $retval_dimensions[$poct - 1]['smallenough'];
       #$style_li = "float: left; list-style: none; background: #000; width: 44px; height: 33px; padding: 4px; text-align: center; margin: 0; border: none;";
       $style_li = "font-size:0; float: left; width: ". $imagewidth ."px; list-style: none; background: ". $bgcolour ."; height: ". $imagemaxh ."px; padding: ". $padding ."px; text-align: center; margin: 0px; border: none;";
       $result .= ('<li style="'. $style_li .'">' . "\n");
