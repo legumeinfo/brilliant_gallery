@@ -128,7 +128,6 @@ function resizeimage($imgp, $imgw, $imgh) {
     }
   }
   else if ($suffix == ".jpg" or $suffix == "jpeg") {
-    # Thanks to Michał Albrecht!
     #$head = "Content-type: image/jpeg";
     $img = imagecreatefromjpeg($imagepath);
     if (!$img) {
