@@ -729,6 +729,9 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
       $result .= '</a>' . "\n";
     }
     else {
+      $fosiz = ceil($imagewidth/13);
+      $style_li = "font-size:". $fosiz ."px; float: left; width: ". $imagewidth ."px; list-style: none; background: ". $bgcolour ."; height: ". $imagemaxh ."px; padding: ". $padding ."px; text-align: center; margin: 0px; border: none;";
+      $result .= ('<li style="'. $style_li .'">' . "\n");
       $result .= '<a href="'. $fullimgpath .'">';
       #$result .= '<center>' . $retval[$poct-1] . '</center>';
       $result .= $retval[$poct - 1];
