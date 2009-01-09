@@ -607,7 +607,6 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
   if ($picasafolder) {
     $url_to_fetch = $thisfolder;
     #echo '.--..'.$url_to_fetch;
-    #module_load_include('php', 'brilliant_gallery', 'picasa');
     #include ('./'. drupal_get_path('module', 'brilliant_gallery') ."/picasa.php");
     $absolpath = $mkdirek;
     #$absolpath = '/tmp/bg_picasa_838e4e98afdffbec2ed6d34e6bfa497c';

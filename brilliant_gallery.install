@@ -67,43 +67,6 @@ CREATE TABLE `db14656_vacil_drupal`.`brilliant_gallery_checklist` (
 PRIMARY KEY (nid, user, qid(255))
 );
 */
-/*
-function brilliant_gallery_install() {
-  // Create tables.
-  drupal_set_message(t('Creating brilliant_gallery_checklist table.'));
-  switch ($GLOBALS['db_type']) {
-    case 'mysql':
-    case 'mysqli':
-      db_query("CREATE TABLE brilliant_gallery_checklist (
-	    nid int NOT NULL default 0,
-      user int NOT NULL default 0,
-	    qid text NOT NULL,
-	    state int NOT NULL default 0,
-	    PRIMARY KEY (nid, user, qid(255))
-	    );"
-      );
-      $sucess = TRUE;
-      break;
-    case 'pgsql':
-      db_query("CREATE TABLE brilliant_gallery_checklist (
-	    nid int NOT NULL default 0,
-            user int NOT NULL default 0,
-	    qid text NOT NULL,
-	    state int NOT NULL default 0,
-	    PRIMARY KEY (nid, user, qid)
-	    );
-          ");
-      $sucess = TRUE;
-      break;
-    default:
-      drupal_set_message(t("Error: Unsupported database"));
-  }
-  if ($success) {
-    drupal_set_message(t("Tables created successfully"));
-  }
-}
-*/
-
 
 /**
 * Implementation of hook_uninstall().
@@ -116,7 +79,49 @@ function brilliant_gallery_uninstall() {
 /**
  * Implementation(s) of hook_update_N().
  */
-function brilliant_gallery_update_6000() {
+function brilliant_gallery_update_6001() {
   $ret = array();
+
+  $schema['brilliant_gallery_checklist'] = array(
+    'description' => t('Table tracing which Brilliant Gallery images are hidden or visible.'),
+    'fields' => array(
+      'nid' => array(
+        'description' => t('Unused now.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'size' => 'normal',
+        'default' => 0,
+      ),
+      'user' => array(
+        'description' => t('User ID.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'size' => 'normal',
+        'default' => 0,
+      ),
+      'qid' => array(
+        'description' => t('Image.'),
+        'type' => 'text',
+        #'unsigned' => FALSE,
+        'not null' => TRUE,
+        'size' => 'normal',
+        #'default' => '',    # brilliant_gallery_checklist.qid is type text and may not have a default value
+      ),
+      'state' => array(
+        'description' => t('Visible or invisible.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'size' => 'normal',
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('nid','user',array('qid',255)),
+  );
+
+  db_create_table($ret, 'brilliant_gallery_checklist', $schema['brilliant_gallery_checklist']); 
+
   return $ret;
 } 
