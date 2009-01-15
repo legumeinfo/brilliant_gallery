@@ -1,7 +1,7 @@
 ; $Id$
 name = Brilliant Gallery
-description = Creates a fully customizable table gallery of quality-scaled images from a pre-defined folder.
+description = Creates a fully customizable table gallery of quality-scaled images from either a pre-defined local folder, or from any public Picasa gallery.
 dependencies[] = lightbox2
-dependencies[] = colorpicker
+;dependencies[] = colorpicker
 package = Media
 core = 6.x
