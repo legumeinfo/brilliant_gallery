@@ -50,7 +50,9 @@ function resizeimage_wrapper_filecache() {
   #echo $bgcacheid;
   #echo '. 0.... ';
   # Tested that both relative (eg sites/all/files/cache) and absolute (eg /home/data/tmp) tmp path settings work OK here.
-  $cachedfile = file_directory_temp() .'/'. $bgcacheid;
+  $cachetemp = variable_get('brilliant_gallery_pcache', file_directory_temp());
+  #$cachedfile = file_directory_temp() .'/'. $bgcacheid;
+  $cachedfile = $cachetemp .'/'. $bgcacheid;
   #$cachedfile = realpath(file_directory_temp() . '/' . $bgcacheid);
   #echo file_directory_temp()  . '/' . $bgcacheid;
   #echo " .... ";
