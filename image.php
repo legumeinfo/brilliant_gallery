@@ -104,7 +104,8 @@ function resizeimage_wrapper_dbcache($reset = FALSE) {
       $my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh']);
       #echo ' -2.... ' . $bgcachexpire . ' // ' . $my_data;
       # For some reason I could not use: mysql_escape_string($my_data)
-      cache_set($bgcacheid, 'cache', time() + $bgcachexpire, $my_data);
+      #cache_set($bgcacheid, 'cache', time() + $bgcachexpire, $my_data);
+      cache_set($bgcacheid, $my_data, 'cache', time() + $bgcachexpire);
       # FOR DRUPAL6 MUST USE:
       #cache_set($bgcacheid,  $my_data, time() + $bgcachexpire); # For some reason I could not use: mysql_escape_string($my_data)
       $my_data = unserialize($my_data);
