@@ -528,7 +528,8 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
   // Is this a Picasa gallery?
     $picasafolder = false;
     #echo '....'.substr($thisfolder,0,29);
-    if (substr($thisfolder,0,28) == 'http://picasaweb.google.com/') {
+    if (substr($thisfolder,0,24) == 'http://picasaweb.google.') {
+      // Must work for all variants - http://picasaweb.google.com, http://picasaweb.google.co.uk, etc.
       $picasafolder = true;
     }
   #drupal_add_css(drupal_get_path('module', 'brilliant_gallery') .'/brilliant_gallery.css');
@@ -812,6 +813,7 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
   $result .= "</ul>\n";
   #$result .= '<br style="clear: both;" />';
   #$result .= '<p>';
+
   return $result;
 }
 
@@ -845,10 +847,24 @@ function replace_brilliant_gallery_tags($str) {
   $orig_match = '';
   preg_match_all("/(\[)bg(\|).*(\])/", $str, $matches);
   foreach ($matches[0] as $match) {
-    $orig_match[] = $match;
+    $omatch = $match;
+    $orig_match[] = $omatch;
     $match        = substr($match, 1, (strlen($match) - 2));
     $match        = explode("|", $match);
-    $matchlink[]  = render_brilliant_gallery($match[1], $match[2], $match[3], $match[4], $match[5], $match[6], $match[7], $match[8]);
+
+    // Cache the result if it comes from a non-random tag
+      $mbgtag = md5($omatch);
+      if ($cache = cache_get('bg_gallery_table_'.$mbgtag) && !empty($cache->data) && $match[4] <> 'random') {
+        $galhere = $cache->data;
+      }
+      else {
+        // Do your expensive calculations here, and populate $cargo with the correct stuff..
+        $galhere = render_brilliant_gallery($match[1], $match[2], $match[3], $match[4], $match[5], $match[6], $match[7], $match[8]);
+        cache_set('bg_gallery_table_'.$mbgtag, $galhere, 'cache', CACHE_TEMPORARY);
+      }
+
+    $matchlink[] = $galhere;
+
   }
   $str = str_replace($orig_match, $matchlink, $str);
   return $str;
