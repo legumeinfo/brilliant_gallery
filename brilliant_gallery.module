@@ -1,7 +1,6 @@
 <?php
 /* $Id$ */
 
-
 #sess_write('vacilando', 'this is a test');
 
 if (module_exists('views')) {
