@@ -161,7 +161,7 @@ function brilliant_gallery_admin() {
     '#type' => 'textfield',
     '#title' => t('Path to the main gallery folder'),
     '#default_value' => variable_get('brilliant_gallery_folder', ''),
-    '#size' => 60,
+    '#size' => 77,
     '#maxlength' => 333,
     '#description' => t("Path to the main folder in which your individual gallery folders will be placed. Such folder must exist under your 'files' folder. Exclude trailing slashes. Example: <i>albums</i>. Leave empty if you wish your 'files' folder to be your album folder."),
   );
@@ -169,7 +169,7 @@ function brilliant_gallery_admin() {
     '#type' => 'textfield',
     '#title' => t('Path to an image cache folder'),
     '#default_value' => variable_get('brilliant_gallery_pcache', file_directory_temp()),
-    '#size' => 60,
+    '#size' => 77,
     '#maxlength' => 333,
     '#description' => t("Full server path to the a folder in which resized images and images fetched from Picasa will be temporarily stored. If you are on a dedicated server, this can be your usual temp folder, but if you are on a shared host, it is imperative this path is in your /files directory. Start with a slash but do NOT end with a slash. E.g. /var/www/vhosts/domain.tld/httpdocs/sites/mysite.tld/files/tmp"),
   );
