@@ -14,8 +14,8 @@ function drupalize() {
   }
   #module_load_include('/includes/bootstrap.inc', 'image', 'includes/bootstrap');
   require_once './includes/bootstrap.inc';
-  #drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-  drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
+  drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL); // See http://drupal.org/node/211378#comment-924059
+  #drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
   #drupal_cron_run();
 }
 # Crucial - to suppress Devel (if installed and enabled) output appearing in the generated XML!
