@@ -42,7 +42,7 @@ function brilliant_gallery_help($path, $arg) {
 function brilliant_gallery_perm() {
 
   #, 'administer brilliant_gallery'
-  return array('access brilliant_gallery');
+  return array('access brilliant_gallery', 'access administration pages');
 }
 // function brilliant_gallery_perm
 
