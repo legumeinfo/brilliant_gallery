@@ -671,8 +671,11 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
   }
   #print_r($excludedimgs);
 
-  # Total 'width' controls the number of thumbnails in each row. The number, in pixels, should be calculated thusly: [maximum width desired for thumbnails] + [padding - if any, x 2] + [margin - if any, x 2] + [border - if any, x 2] x [number of thumbnails desired in each row]
-  $style_ul = "font-size:0; margin:0px; padding:0px; width: ". (($imagewidth + 2 * $padding) * $columns) ."px;";
+  // If $columns is 0, columns will fill up the available space.
+  if ($columns <> 0){
+    // Total 'width' controls the number of thumbnails in each row. The number, in pixels, should be calculated thusly: [maximum width desired for thumbnails] + [padding - if any, x 2] + [margin - if any, x 2] + [border - if any, x 2] x [number of thumbnails desired in each row]
+    $style_ul = "font-size:0; margin:0px; dummy: 0; padding:0px; width: ". (($imagewidth + 2 * $padding) * $columns) ."px;";
+  }
   $column_count = 0;
   #$pocetobr = 0;
   $setname = mt_rand(1, 9999999);
