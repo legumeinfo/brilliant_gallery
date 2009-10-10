@@ -575,8 +575,8 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
 */
   if ( $thisfolder <> '') {
     if ($galleryfolder <> '') {
-      //$galleryfolder .= '/' . $thisfolder;
-      $galleryfolder .= (substr($addfolder, 0, 1) == '/' ? '' : '/') . $addfolder; // See http://drupal.org/node/176939#comment-1494648
+      #$galleryfolder .= '/' . $thisfolder;
+      $galleryfolder .= (substr($thisfolder, 0, 1) == '/' ? '' : '/') . $thisfolder; // See http://drupal.org/node/176939#comment-1494648
     }
     else{
     $galleryfolder = $thisfolder;
