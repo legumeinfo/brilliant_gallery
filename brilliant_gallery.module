@@ -163,7 +163,7 @@ OUTPUT;
 function brilliant_gallery_admin() {
   $form['brilliant_gallery_folder'] = array(
     '#type' => 'textfield',
-    '#title' => t('Path to the main gallery folder'),
+    '#title' => t('Path to the main gallery folder (for non-Picasa galleries)'),
     '#default_value' => variable_get('brilliant_gallery_folder', ''),
     '#size' => 77,
     '#maxlength' => 333,
@@ -175,7 +175,24 @@ function brilliant_gallery_admin() {
     '#default_value' => variable_get('brilliant_gallery_pcache', file_directory_temp()),
     '#size' => 77,
     '#maxlength' => 333,
-    '#description' => t("Full server path to the a folder in which resized images and images fetched from Picasa will be temporarily stored. If you are on a dedicated server, this can be your usual temp folder, but if you are on a shared host, it is imperative this path is in your /files directory. Remember: PHP has to have the permission to write into that directory! Start with a slash but do NOT end with a slash. E.g. /var/www/vhosts/domain.tld/httpdocs/sites/mysite.tld/files/tmp"),
+    '#description' => t("Full server path to the a folder in which resized images and images, including those fetched from Picasa, will be temporarily stored. If you are on a dedicated server, this can be your usual temp folder, but if you are on a shared host, it is imperative this path is in your /files directory. Remember: PHP has to have the permission to write into that directory! Start with a slash but do NOT end with a slash. E.g. /var/www/vhosts/domain.tld/httpdocs/sites/mysite.tld/files/tmp"),
+  );
+  $form['brilliant_gallery_cache'] = array(
+    '#type' => 'radios',
+    '#title' => t('Database or file system caching of images and other gallery structures'),
+    '#default_value' => variable_get('brilliant_gallery_cache', 'd'),
+    '#options' => array('d' => t('Use the database table of Drupal for non-Picasa images. (Images fetched from Picasa are always stored locally in the image cache folder set above.)'),
+      'f' => t('Use the above image cache folder for caching all (also non-Picasa) images. Faster than database caching.'),
+    ),
+    '#description' => t("Select database (default) or file system caching method."),
+  );
+  $form['brilliant_gallery_cache_duration'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Expiration time of the gallery cache (in days)'),
+    '#default_value' => variable_get('brilliant_gallery_cache_duration', '90'),
+    '#size' => 5,
+    '#maxlength' => 5,
+    '#description' => t("Images and other gallery structures are cached to improve speed of serving. Here you can set how long time they should be cached."),
   );
   $form['brilliant_gallery_maxcol'] = array(
     '#type' => 'textfield',
@@ -253,23 +270,6 @@ function brilliant_gallery_admin() {
       '' => t('The order of your gallery images will always be randomized (on each page load or cache refresh).'),
     ),
     #'#description' => t("")
-  );
-  $form['brilliant_gallery_cache'] = array(
-    '#type' => 'radios',
-    '#title' => t('Database or file system caching of images and other gallery structures'),
-    '#default_value' => variable_get('brilliant_gallery_cache', 'd'),
-    '#options' => array('d' => t('Use the <i>cache</i> table of Drupal.'),
-      'f' => t('Use the temporary directory you have set in <i>/admin/settings/file-system</i>. Faster than database caching!'),
-    ),
-    '#description' => t("Select database (default) or file system caching method."),
-  );
-  $form['brilliant_gallery_cache_duration'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Expiration time of the gallery cache (in days)'),
-    '#default_value' => variable_get('brilliant_gallery_cache_duration', '90'),
-    '#size' => 5,
-    '#maxlength' => 5,
-    '#description' => t("Images and other structures are cached to improve speed of serving."),
   );
   return system_settings_form($form);
 }
