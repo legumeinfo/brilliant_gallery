@@ -30,11 +30,15 @@ $GLOBALS['devel_shutdown'] = FALSE;
 #if ( $_SERVER['SERVER_ADDR'] == '64.13.192.90' ) {
 if (variable_get('brilliant_gallery_cache', 'd') == 'f') {
   #echo '.....................' . $_SERVER['SERVER_ADDR'];
+  #drupal_set_message('cachetype1 '.variable_get('brilliant_gallery_cache', 'd'));
+  #watchdog('Brilliant Gal', '1 '.variable_get('brilliant_gallery_cache'));
   $my_data = resizeimage_wrapper_filecache();
-  }
-  else {
-    $my_data = resizeimage_wrapper_dbcache();
-  }
+}
+else {
+  #drupal_set_message('cachetype2 '.variable_get('brilliant_gallery_cache', 'd'));
+  #watchdog('Brilliant Gal', '2 '.variable_get('brilliant_gallery_cache'));
+  $my_data = resizeimage_wrapper_dbcache();
+}
 
 #echo '....'. sess_read('vacilando');
 header($my_data[0]);
