@@ -21,55 +21,100 @@ if ($url_to_fetch == '') return;
 #$mgalleryurl = md5($url_to_fetch);
 #$mkdirek = '/tmp/bg_picasa_'. $mgalleryurl;
 //exec('mkdir '.$mkdirek);
-mkdir($mkdirek); // See http://drupal.org/node/368583#comment-1243641
+@mkdir($mkdirek); // See http://drupal.org/node/368583#comment-1243641
 
 #echo '-----'.$url_to_fetch;
 #$hc        = new bg_eHttpClient();
 #$hc->setReferer("http://www.yahoo.com/");
 #$html        = $hc->get($url_to_fetch);
-$html = drupal_http_request($url_to_fetch);
-$html = $html->data;
+// Get the Picasa gallery feed XML file.
+$cacheid_url_to_fetch = 'bg_gallery_picasa_xml_'.md5($url_to_fetch);
+if ($cache = cache_get($cacheid_url_to_fetch) && !empty($cache->data)) {
+  $html = $cache->data;
+  /*
+  global $user; $userId = $user->uid;
+  if ($userId == 1){
+    drupal_set_message('got it from cache '.$url_to_fetch);
+  }
+  */
+}
+else {
+  // Do your expensive calculations here...
+  $timenow = time();
+  $htmlobj = drupal_http_request($url_to_fetch);
+  $html = $htmlobj->data; // Get just the data from the returned object.
+  cache_set($cacheid_url_to_fetch, $html, 'cache', $timenow + $bgcachexpire);
+  watchdog('Brilliant Gal', 'Fetched XML from '.$url_to_fetch.'. Elapsed time: '.(time()-$timenow).' seconds.');
+  /*
+  global $user; $userId = $user->uid;
+  if ($userId == 1){
+    drupal_set_message('again fetched '.$url_to_fetch);
+  }
+  */
+}
+
 # if ($http_result->code == 200) {
 #$headers    = $hc->getHeaders();
 #$header        = $hc->getHeader();
 #$inf        = $hc->getInfo();
 // Links to full images are in this format: <enclosure type='image/jpeg' url='http://lh4.ggpht.com/_HkgjhlSfbZA/SWOgKhb6LyI/AAAAAAAABZ4/5AEu8AF01sw/DSC03173.JPG' length='0'/>
 $imgchunks = explode("' url='",$html);
+$fetchingnow = 0;
+$timenow = time();
 foreach($imgchunks as $imgchunk) {
 
   // Make sure the script execution does not expire in case many images need to be fetched from remote server.
-  set_time_limit(180);
+  set_time_limit(360);
 
+  // Get the file name
   $chunk2 = explode("' length='",$imgchunk);
-  $imgurl = $chunk2[0];
+  $imgurl = trim($chunk2[0]);
   if (substr($imgurl,0,4) <> 'http') {
     continue;
   }
-  #echo '<br>' . $imgurl . '<br>';
-  // Get the file name
   $imagename = substr($imgurl,strrpos($imgurl,'/')+1);
   #echo $imagename . '<br>';
-/*
-  // http://lh4.ggpht.com/_HkgjhlSfbZA/SWOgKhb6LyI/AAAAAAAABZ4/5AEu8AF01sw/s288/DSC03173.JPG --->>>> ORIGINAL: http://lh4.ggpht.com/_HkgjhlSfbZA/SWOgKhb6LyI/AAAAAAAABZ4/5AEu8AF01sw/DSC03173.JPG
-  $imgurlchunks = explode('/',$imgurl);
-  $sizespec = $imgurlchunks[sizeof($imgurlchunks)-2];
-  echo $sizespec . '<br>';
-  if (strlen($sizespec) == 4 and substr($sizespec,0,1) == 's' and is_numeric(substr($sizespec,1,3))) {
-    $imgurl_large = str_replace('/'.$sizespec,'',$imgurl);
-    echo $imgurl_large . '<br>';
-  }
-*/
-
-  #$hc = new bg_eHttpClient();
-  #$image = $hc->get($imgurl);
-  $image = drupal_http_request($imgurl);
-  $image = $image->data;
   $foqen = $mkdirek . '/' . $imagename;
-  $fp = fopen($foqen, 'w');
-  #echo $foqen.'<br>';
-  fwrite($fp, $image);
-  fclose($fp);
 
-  #echo '<img border="0" src="picasa.php?purl='. $imgurl .'"><br>';
+  $lastchanged = @filemtime($foqen); // Last file modification time, or FALSE on error.
+  /*
+  global $user; $userId = $user->uid;
+  if ($userId == 1){
+    drupal_set_message('pic '.($timenow - $lastchanged).' > '.$bgcachexpire.' ... '.$foqen);
+  }
+  */
+  #if ($_GET['fetchnow']==1){ $lastchanged = FALSE; } // Debugging!
+  if ( $lastchanged === FALSE OR ($timenow - $lastchanged > $bgcachexpire) ){
+    // If the image is expired, we need to actively delete it, for the case that it was removed / hidden by the owner.
+    @unlink($foqen);
+    /*
+    global $user; $userId = $user->uid;
+    if ($userId == 1){
+      drupal_set_message('in!');
+    }
+    */
+    /*
+    $hc = new bg_eHttpClient();
+    $image = $hc->get($imgurl);
+    */
+    ///*
+    $imager = drupal_http_request($imgurl);
+    $image = $imager->data;
+    //*/
+    #watchdog('bg', $imager->code.' ... '.$imgurl.' =imgurl');
+    // It happens that the file size is 0 (image not fetched). In such case, don't write it.
+    if (strlen($image)>0){
+      $fp = fopen($foqen, 'w');
+      #drupal_set_message($foqen.'<br>');
+      #watchdog('bg', $foqen.' ...ok<br>');
+      fwrite($fp, $image);
+      fclose($fp);
+      $fetchingnow ++;
+    }
+  }
 
+}
+
+if ($fetchingnow <> 0){
+  watchdog('Brilliant Gal', 'Fetched '.$fetchingnow.' images from '.$url_to_fetch.'. Elapsed time: '.(time()-$timenow).' seconds.');
 }

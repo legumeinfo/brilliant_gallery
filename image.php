@@ -18,11 +18,9 @@ function drupalize() {
   #drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
   #drupal_cron_run();
 }
-# Crucial - to suppress Devel (if installed and enabled) output appearing in the generated XML!
+
+// Crucial - to suppress Devel (if installed and enabled) output appearing in the generated XML!
 $GLOBALS['devel_shutdown'] = FALSE;
-# Cache expiration time.
-$bgcachexpire = 3600 * 24 * 3;
-#$bgcachexpire = 3; # Cache expiration time.
 
 #chdir ('../../../../');
 #module_load_include('/includes/bootstrap.inc', 'image', 'includes/bootstrap');
@@ -33,62 +31,62 @@ $bgcachexpire = 3600 * 24 * 3;
 if (variable_get('brilliant_gallery_cache', 'd') == 'f') {
   #echo '.....................' . $_SERVER['SERVER_ADDR'];
   $my_data = resizeimage_wrapper_filecache();
-}
-else {
-  $my_data = resizeimage_wrapper_dbcache();
-}
+  }
+  else {
+    $my_data = resizeimage_wrapper_dbcache();
+  }
 
 #echo '....'. sess_read('vacilando');
 header($my_data[0]);
-#echo $my_data[0] . '<br>';
 echo base64_decode($my_data[1]);
-# IMPORTANT - otherwise some process after BG adds strings and breaks the image!
+// IMPORTANT to exit() - otherwise some process after BG adds strings and breaks the image!
 exit();
+
 function resizeimage_wrapper_filecache() {
-  global $bgcachexpire;
   $bgcacheid = 'bg_'. md5($_GET['imgp'] . $_GET['imgw'] . $_GET['imgh']);
-  #echo $bgcacheid;
   #echo '. 0.... ';
-  # Tested that both relative (eg sites/all/files/cache) and absolute (eg /home/data/tmp) tmp path settings work OK here.
+  $bgcachexpire = variable_get('brilliant_gallery_cache_duration',90) * 24 * 3600; // Cache expiration time in days.
+  // Tested that both relative (eg sites/all/files/cache) and absolute (eg /home/data/tmp) tmp path settings work OK here.
   $cachetemp = variable_get('brilliant_gallery_pcache', file_directory_temp());
-  #$cachedfile = file_directory_temp() .'/'. $bgcacheid;
   $cachedfile = $cachetemp .'/'. $bgcacheid;
-  #$cachedfile = realpath(file_directory_temp() . '/' . $bgcacheid);
-  #echo file_directory_temp()  . '/' . $bgcacheid;
-  #echo " .... ";
-  #echo $cachedfile;
-  # See http://drupal.org/node/194923
-  $lastchanged = (file_exists($cachedfile) ? filemtime($cachedfile) : false);
-  if ($lastchanged === false or (time() - $lastchanged > ($bgcachexpire))) {
+  /*
+  // See http://drupal.org/node/194923
+  // The expression (expr1) ? (expr2) : (expr3) evaluates to expr2 if expr1 evaluates to TRUE, and expr3 if expr1 evaluates to FALSE. 
+  //$lastchanged = (file_exists($cachedfile) ? @filemtime($cachedfile) : false);
+  */
+  $fileexists = false;
+  $fileexists = file_exists($cachedfile);
+  $timenow = time();
+  $lastchanged = $timenow;
+  $lastchanged = @filemtime($cachedfile);
+  $fileexpired = false;
+  if ($timenow - $lastchanged > $bgcachexpire){
+    $fileexpired = true;
+    // If the image is expired, we need to actively delete it, for the case that it was removed / hidden by the owner.
+    @unlink($cachedfile);
+  }
+  if (!$fileexists or $fileexpired) {
     #echo '. 1.... ';
-    # Cache file does not exist or is too old.
+    // Cache file does not exist or is too old.
     $my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh']);
-    # Now put $my_data to cache!
+    // Now put $my_data to cache!
     $fh = fopen($cachedfile, "w+");
     fwrite($fh, $my_data);
     fclose($fh);
-    #test
-    /*
-       $my_data_t = unserialize( $my_data );
-       $fh = fopen( $cachedfile . '_2', "w+" );
-        fwrite( $fh, $my_data_t[1] );
-        fclose( $fh ); 
-       */
-
     $my_data = unserialize($my_data);
   }
   else {
     #echo '. 2.... ';
-    # Cache file exists.
+    // Cache file exists.
     $my_data = unserialize(file_get_contents($cachedfile));
   }
   return $my_data;
 }
 
 function resizeimage_wrapper_dbcache($reset = FALSE) {
-  global $bgcachexpire;
-  global $user;
+  #global $user;
   #$userId = $user->uid;
+  $bgcachexpire = variable_get('brilliant_gallery_cache_duration',90) * 24 * 3600; // Cache expiration time in days.
   $bgcacheid = 'bg_'. md5($_GET['imgp'] . $_GET['imgw'] . $_GET['imgh']);
   #echo $bgcacheid;
   static $my_data;
@@ -96,7 +94,7 @@ function resizeimage_wrapper_dbcache($reset = FALSE) {
   if (!isset($my_data) || $reset) {
     if (!$reset && ($cache = cache_get($bgcacheid)) && !empty($cache->data)) {
       #$my_data = $cache->data; echo '-1.... ' . $my_data;
-      $my_data = unserialize($cache->data);
+      $my_data = $cache->data;
     }
     else {
       // Do your expensive calculations here, and populate $my_data
@@ -108,7 +106,7 @@ function resizeimage_wrapper_dbcache($reset = FALSE) {
       cache_set($bgcacheid, $my_data, 'cache', time() + $bgcachexpire);
       # FOR DRUPAL6 MUST USE:
       #cache_set($bgcacheid,  $my_data, time() + $bgcachexpire); # For some reason I could not use: mysql_escape_string($my_data)
-      $my_data = unserialize($my_data);
+      #$my_data = unserialize($my_data);
     }
   }
   return $my_data;

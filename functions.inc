@@ -1,32 +1,5 @@
 <?php
 
-function cleantmpdir() {
-  # Delete "bg_*" files from the temp directory if they are expired.
-  # Cache expiration time. This is primarily set in image.php - use the same value here.
-  $bgcachexpire = 3600 * 24 * 3;
-  $cachetemp = variable_get('brilliant_gallery_pcache', file_directory_temp());
-  $directory = $cachetemp;
-  #$directory = file_directory_temp();
-
-  if (!$dirhandle = @opendir($directory)) {
-
-    return;
-
-  }
-
-  while (false !== ($filename = readdir($dirhandle))) {
-    if ($filename != "." && $filename != ".." &&
-      substr($filename, 0, 3) == 'bg_'
-    ) {
-      $filename = $directory ."/". $filename;
-      #echo $filename . ' ';
-      if (@filemtime($filename) < (time() - $bgcachexpire))
-      @unlink($filename);
-    }
-  }
-}
-
-
 function testext($filename) {
   if (substr(strtolower($filename), -4, 4) == ".jpg" or substr(strtolower($filename), -5, 5) == ".jpeg" or substr(strtolower($filename), -4, 4) == ".gif" or substr(strtolower($filename), -4, 4) == ".png") {
     return true;
@@ -105,6 +78,7 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
   */
   return array($retval_dimensions, $imagemaxh);
 }
+
 
 /*
   # Define the cURL class:
@@ -401,3 +375,33 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
     //-- For more info comment form is below. If you like it ... link back :)
   };
 */
+
+
+/** 
+ * Recursively delete a directory 
+ * 
+ * @param string $dir Directory name 
+ * @param boolean $deleteRootToo Delete specified top-level directory as well 
+ */ 
+function brilliant_gallery_unlinkRecursive($dir, $deleteRootToo) { 
+  if(!$dh = @opendir($dir)) { 
+      return; 
+  } 
+  while (false !== ($obj = readdir($dh))) { 
+      if($obj == '.' || $obj == '..') { 
+          continue; 
+      } 
+
+      if (!@unlink($dir . '/' . $obj)) { 
+          unlinkRecursive($dir.'/'.$obj, true); 
+      } 
+  } 
+
+  closedir($dh); 
+  
+  if ($deleteRootToo) { 
+      @rmdir($dir); 
+  } 
+  
+  return; 
+}
