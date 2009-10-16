@@ -21,6 +21,15 @@ if ($url_to_fetch == '') return;
 #$mgalleryurl = md5($url_to_fetch);
 #$mkdirek = '/tmp/bg_picasa_'. $mgalleryurl;
 //exec('mkdir '.$mkdirek);
+#watchdog('Brilliant Gal', mt_rand(1000,9999) . ' ' . arg(1).' pinc '.microtime());
+/*
+    ob_start();
+        debug_print_backtrace();
+    $btrace = ob_get_contents();
+    ob_end_clean();
+*/
+#watchdog('Brilliant Gal', mt_rand(1000,9999) . ' ' . arg(1).' pinc '.$btrace);
+
 @mkdir($mkdirek); // See http://drupal.org/node/368583#comment-1243641
 
 #echo '-----'.$url_to_fetch;

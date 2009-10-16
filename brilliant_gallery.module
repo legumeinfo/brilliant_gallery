@@ -661,7 +661,8 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
     }
     */
     // We go and look at the images every time we render BG, because it sometimes happens that Picasa does not provide them all at the time of the initial fetching. So we will fetch any missing ones, and also replace the expired ones.
-      include ('./'. drupal_get_path('module', 'brilliant_gallery') ."/picasa.inc");
+      // Vacilando 20091016: It is ABSOLUTELY CRUCIAL that this uses include_ONCE, otherwise picasa.inc was called twice in some cases.
+      include_once ('./'. drupal_get_path('module', 'brilliant_gallery') ."/picasa.inc");
     $absolpath = $mkdirek;
     #echo $absolpath;
     #drupal_set_message(t('absol: '.$absolpath));
