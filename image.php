@@ -98,7 +98,9 @@ function resizeimage_wrapper_dbcache($reset = FALSE) {
   if (!isset($my_data) || $reset) {
     if (!$reset and ($cache = cache_get($bgcacheid)) and !empty($cache->data)) {
       #$my_data = $cache->data; echo '-1.... ' . $my_data;
-      $my_data = $cache->data;
+      // Crucial to unserialize for the immediate use!
+        $my_data = unserialize($cache->data);
+      #echo $my_data;
     }
     else {
       // Do your expensive calculations here, and populate $my_data
@@ -110,7 +112,8 @@ function resizeimage_wrapper_dbcache($reset = FALSE) {
       cache_set($bgcacheid, $my_data, 'cache', time() + $bgcachexpire);
       # FOR DRUPAL6 MUST USE:
       #cache_set($bgcacheid,  $my_data, time() + $bgcachexpire); # For some reason I could not use: mysql_escape_string($my_data)
-      #$my_data = unserialize($my_data);
+      // Crucial to unserialize for the immediate use!
+        $my_data = unserialize($my_data);
     }
   }
   return $my_data;
