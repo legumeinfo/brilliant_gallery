@@ -891,7 +891,7 @@ function replace_brilliant_gallery_tags($str) {
 
     // Cache the result if it comes from a non-random tag
     $mbgtag = md5($omatch);
-    if ($cache = cache_get('bg_gallery_table_'.$mbgtag) && !empty($cache->data) && $match[4] <> 'random') {
+    if ($cache = cache_get('bg_gallery_table_'.$mbgtag) and !empty($cache->data) and $match[4] <> 'random') {
       $galhere = $cache->data;
     }
     else {

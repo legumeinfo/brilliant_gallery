@@ -96,7 +96,7 @@ function resizeimage_wrapper_dbcache($reset = FALSE) {
   static $my_data;
   #echo '0.... ';
   if (!isset($my_data) || $reset) {
-    if (!$reset && ($cache = cache_get($bgcacheid)) && !empty($cache->data)) {
+    if (!$reset and ($cache = cache_get($bgcacheid)) and !empty($cache->data)) {
       #$my_data = $cache->data; echo '-1.... ' . $my_data;
       $my_data = $cache->data;
     }

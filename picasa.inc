@@ -38,7 +38,7 @@ if ($url_to_fetch == '') return;
 #$html        = $hc->get($url_to_fetch);
 // Get the Picasa gallery feed XML file.
 $cacheid_url_to_fetch = 'bg_gallery_picasa_xml_'.md5($url_to_fetch);
-if ($cache = cache_get($cacheid_url_to_fetch) && !empty($cache->data)) {
+if ($cache = cache_get($cacheid_url_to_fetch) and !empty($cache->data)) {
   $html = $cache->data;
   /*
   global $user; $userId = $user->uid;
@@ -52,6 +52,7 @@ else {
   $timenow = time();
   $htmlobj = drupal_http_request($url_to_fetch);
   $html = $htmlobj->data; // Get just the data from the returned object.
+  #cache_set($cacheid_url_to_fetch, $html, 'cache', $timenow + $bgcachexpire);
   cache_set($cacheid_url_to_fetch, $html, 'cache', $timenow + $bgcachexpire);
   watchdog('Brilliant Gal', 'Fetched XML from '.$url_to_fetch.'. Elapsed time: '.(time()-$timenow).' seconds.');
   /*
