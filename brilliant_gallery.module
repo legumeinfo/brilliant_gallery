@@ -210,6 +210,12 @@ function brilliant_gallery_admin() {
     '#maxlength' => 4,
     '#description' => t("The maximum width of thumbnails in the table (height calculated automatically)."),
   );
+  $form['brilliant_gallery_crop'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Crop to square'),
+    '#default_value' => variable_get('brilliant_gallery_crop', FALSE),
+    '#description' => t("If selected, all image thumbnails will have the same square shape."),
+  );
   $form['brilliant_gallery_bcgcolour'] = array(
     '#type' => 'colorpicker',
     '#title' => t('Table background colour'),
@@ -618,6 +624,7 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
     #$showcaption = $captionyesornot;
     $showcaption = $captionyesnotext;
   }
+  $imagecrop=variable_get('brilliant_gallery_crop', FALSE);
   $padding = variable_get('brilliant_gallery_padding', 3);
   $overbrowser = variable_get('brilliant_gallery_overbrowser', 'lightbox');
   // Totally full resolution display would be impractical, so this is the maximum width of "full" resolution.
@@ -677,7 +684,8 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
   #$result .= $absolpath;
 
   # Make an array with images in this folder, and their properties.
-  $temp              = load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $brilliant_gallery_sort);
+  #$temp              = load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $brilliant_gallery_sort);
+  $temp              = load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $brilliant_gallery_sort, $imagecrop);
   $retval_dimensions = $temp[0];
   $imagemaxh         = $temp[1];
   $maxpoct           = count($retval_dimensions);
@@ -758,6 +766,7 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
       $imgh        = $retval_dimensions[$poct - 1]['imgh'];
       $imgwbig     = $retval_dimensions[$poct - 1]['imgwbig'];
       $imghbig     = $retval_dimensions[$poct - 1]['imghbig'];
+      $imgcrop     = $retval_dimensions[$poct - 1]['imgcrop'];
       #@$smallenough = $retval_dimensions[$poct - 1]['smallenough'];
       #$style_li = "float: left; list-style: none; background: #000; width: 44px; height: 33px; padding: 4px; text-align: center; margin: 0; border: none;";
       $style_li = "font-size:0; float: left; width: ". $imagewidth ."px; list-style: none; background: ". $bgcolour ."; height: ". $imagemaxh ."px; padding: ". $padding ."px; text-align: center; margin: 0px; border: none;";
@@ -822,7 +831,8 @@ function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $wid
       #$result .= '<img style="display: block;border:0" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
       #$result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&amp;imgw=' . $imgw . '&amp;imgh=' . $imgh . '" />'; # width="' . $imgw . '"
       # width="' . $imgw . '"
-      $result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'. $modulepath .'/image.php?imgp='. base64_encode($absolpath .'/'. $retval[$poct - 1]) .'&imgw='. $imgw .'&imgh='. $imgh .'" />';
+      #$result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'. $modulepath .'/image.php?imgp='. base64_encode($absolpath .'/'. $retval[$poct - 1]) .'&imgw='. $imgw .'&imgh='. $imgh .'" />';
+      $result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'. $modulepath .'/image.php?imgp='. base64_encode($absolpath .'/'. $retval[$poct - 1]) .'&imgw='. $imgw .'&imgh='. $imgh . '&imgcrop='. $imgcrop.'" />';
       #$result .= '</a>';
       $result .= '</a>' . "\n";
     }

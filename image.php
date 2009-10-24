@@ -72,7 +72,8 @@ function resizeimage_wrapper_filecache() {
   if (!$fileexists or $fileexpired) {
     #echo '. 1.... ';
     // Cache file does not exist or is too old.
-    $my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh']);
+    #$my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh']);
+    $my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh'], $_GET['imgcrop']);
     // Now put $my_data to cache!
     $fh = fopen($cachedfile, "w+");
     fwrite($fh, $my_data);
@@ -105,7 +106,8 @@ function resizeimage_wrapper_dbcache($reset = FALSE) {
     else {
       // Do your expensive calculations here, and populate $my_data
       // with the correct stuff..
-      $my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh']);
+      #$my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh']);
+      $my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh'], $_GET['imgcrop']);
       #echo ' -2.... ' . $bgcachexpire . ' // ' . $my_data;
       # For some reason I could not use: mysql_escape_string($my_data)
       #cache_set($bgcacheid, 'cache', time() + $bgcachexpire, $my_data);
@@ -119,7 +121,8 @@ function resizeimage_wrapper_dbcache($reset = FALSE) {
   return $my_data;
 }
 
-function resizeimage($imgp, $imgw, $imgh) {
+#function resizeimage($imgp, $imgw, $imgh) {
+function resizeimage($imgp, $imgw, $imgh, $imgcrop) {
   $imagepath = base64_decode($imgp);
   #echo '.... ' . base64_decode( $imgp );
   #flush();die(' stop!');
@@ -152,8 +155,25 @@ function resizeimage($imgp, $imgw, $imgh) {
   # Resize the image
   $src_h   = ImageSY($img);
   $src_w   = ImageSX($img);
-  $dst_img = imagecreatetruecolor($imgw, $imgh);
-  imagecopyresampled($dst_img, $img, 0, 0, 0, 0, $imgw, $imgh, $src_w, $src_h);
+  #$dst_img = imagecreatetruecolor($imgw, $imgh);
+  #imagecopyresampled($dst_img, $img, 0, 0, 0, 0, $imgw, $imgh, $src_w, $src_h);
+  $dst_img = 0;
+  if ($imgcrop) {
+    if ($src_h>$src_w) {
+      // portrait
+      $dst_img = imagecreatetruecolor($imgh, $imgh);
+      imagecopyresampled($dst_img, $img, 0, 0, 0, ($src_h-$src_w)/2 , $imgh, $imgh, $src_w, $src_w);
+    }
+    else {
+      // landscape
+      $dst_img = imagecreatetruecolor($imgw, $imgw);
+      imagecopyresampled($dst_img, $img, 0, 0, ($src_w-$src_h)/2, 0 , $imgw, $imgw, $src_h, $src_h);
+    }
+  }
+  else {
+    $dst_img = imagecreatetruecolor($imgw, $imgh);
+    imagecopyresampled($dst_img, $img, 0, 0, 0, 0, $imgw, $imgh, $src_w, $src_h);
+  }
   $img = $dst_img;
   imageinterlace($img, 1);
   imagecolortransparent($img);
