@@ -414,7 +414,7 @@ HEADER;
     if ($galleryfolder . $path_middle == $_GET['fld']) {
       # User has asked to manage images in this folder.
       $tablerows         = array();
-      $temp              = load_dir_to_array($key, variable_get('brilliant_gallery_maximagewidth', 150), variable_get('brilliant_gallery_maxwidth', '1000'), 1);
+      $temp              = load_dir_to_array($key, variable_get('brilliant_gallery_maximagewidth', 150), variable_get('brilliant_gallery_maxwidth', '1000'), 1, variable_get('brilliant_gallery_crop', FALSE));
       $retval_dimensions = $temp[0];
       $imagemaxh         = $temp[1];
       $maxpoct           = count($retval_dimensions);
