@@ -896,31 +896,54 @@ function brilliant_gallery_filter($op, $delta = 0, $format = -1, $text = '') {
 }
 
 function replace_brilliant_gallery_tags($str) {
-  # [bg|path/to/gallery_folder|colcountoverride|widthoverride|sortorrandomoverride|maximumnumbertoshow|colouroverride|beginfromoverride|caption-yes-no-text]
+  # Old format - still supported
+    # [bg|path/to/gallery_folder|colcountoverride|widthoverride|sortorrandomoverride|maximumnumbertoshow|colouroverride|beginfromoverride|caption-yes-no-text]
   # no slashes around this path!
-  $bgcachexpire = variable_get('brilliant_gallery_cache_duration',90) * 24 * 3600; // Cache expiration time in days.
   $matchlink = '';
   $orig_match = '';
   preg_match_all("/(\[)bg(\|).*(\])/", $str, $matches);
   foreach ($matches[0] as $match) {
     $omatch = $match;
     $orig_match[] = $omatch;
-    $match        = substr($match, 1, (strlen($match) - 2));
-    $match        = explode("|", $match);
+    $match = substr($match, 1, (strlen($match) - 2));
 
+    // Remove HTML tags
+      $match = strip_tags($match);
+
+    // Create an array of parameter attributions
+    $match = explode("|", $match);
+
+    // Remove enclosing spaces and get rid of empty parameter attributions.
+    $newmatch = array();
+    foreach($match as $val){
+      $tmp = trim($val);
+      if ($tmp <> ''){
+        $newmatch[] = $tmp;
+      }
+    }
+
+    
     // Cache the result if it comes from a non-random tag
+    $bgcachexpire = variable_get('brilliant_gallery_cache_duration',90) * 24 * 3600; // Cache expiration time in days.
     $mbgtag = md5($omatch);
-    if ($cache = cache_get('bg_gallery_table_'.$mbgtag) and !empty($cache->data) and $match[4] <> 'random') {
+    if ($cache = cache_get('bg_gallery_table_'.$mbgtag) and !empty($cache->data) and $bg_cachegal) {
       $galhere = $cache->data;
     }
     else {
-      // Do your expensive calculations here, and populate $cargo with the correct stuff..
+      # render_brilliant_gallery takes parameters in a fixed order: 
+        # 1 path/to/gallery_folder
+        # 2 colcountoverride
+        # 3 widthoverride
+        # 4 sortorrandomoverride
+        # 5 maximumnumbertoshow
+        # 6 colouroverride
+        # 7 beginfromoverride
+        # 8 caption-yes-no-text
       $galhere = render_brilliant_gallery($match[1], $match[2], $match[3], $match[4], $match[5], $match[6], $match[7], $match[8]);
       cache_set('bg_gallery_table_'.$mbgtag, $galhere, 'cache', time() + $bgcachexpire);
     }
 
     $matchlink[] = $galhere;
-
   }
   $str = str_replace($orig_match, $matchlink, $str);
   return $str;
