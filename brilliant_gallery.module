@@ -299,6 +299,15 @@ function brilliant_gallery_menu() {
     'access arguments' => array('access administration pages'),
     'type' => MENU_NORMAL_ITEM,
   );
+  // Same as 'admin/settings/brilliant_gallery' -- just for the convenience/clarity in a dropdown menu.
+  $items['admin/settings/brilliant_gallery/settings'] = array(
+    'title' => 'Brilliant gallery',
+    'description' => 'Brilliant gallery module settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('brilliant_gallery_admin'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
 
   # A shortcut to the permissions settings for this module.
   $items['admin/settings/brilliant_gallery/permissions'] = array(
