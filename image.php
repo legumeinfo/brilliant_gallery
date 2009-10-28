@@ -1,8 +1,14 @@
 <?php
 /* $Id$ */
 
-if (strpos(base64_decode($_GET['imgp']), "://") !== false) {
-  # Fixing a possible URL injection problem. Using ':' was not enough because Windows paths contain it as well.
+#if (strpos(base64_decode($_GET['imgp']), "://") !== false) {
+/* Check for bad URL inputs */
+$urlpath = base64_decode($_GET['imgp']);
+if (strpos($urlpath, "://") !== false ||
+    strpos($urlpath, "..") !== false ||
+    preg_match('/\D/', ($_GET['imgw'] . $_GET['imgh'])) > 0 ||
+    ($_GET['imgw'] + $_GET['imgh']) < 10 ||
+    ($_GET['imgw'] + $_GET['imgh']) > 20000 ) {
   header("HTTP/1.0 404 Not Found");
   exit();
 }
@@ -14,10 +20,14 @@ function drupalize() {
   }
   #module_load_include('/includes/bootstrap.inc', 'image', 'includes/bootstrap');
   require_once './includes/bootstrap.inc';
+  require_once './includes/file.inc';
   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL); // See http://drupal.org/node/211378#comment-924059
   #drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
   #drupal_cron_run();
 }
+
+$imagepath = realpath(file_directory_path() . $urlpath);
+#watchdog('Brilliant Gal','imgp: '.$imagepath);
 
 // Crucial - to suppress Devel (if installed and enabled) output appearing in the generated XML!
 $GLOBALS['devel_shutdown'] = FALSE;
@@ -123,10 +133,11 @@ function resizeimage_wrapper_dbcache($reset = FALSE) {
 
 #function resizeimage($imgp, $imgw, $imgh) {
 function resizeimage($imgp, $imgw, $imgh, $imgcrop) {
-  $imagepath = base64_decode($imgp);
+  #$imagepath = base64_decode($imgp);
   #echo '.... ' . base64_decode( $imgp );
   #flush();die(' stop!');
-  # Thanks to Michał Albrecht!
+  global $imagepath;
+  
   $suffix = strtolower(substr($imagepath, -4));
   $imgsize = @getimagesize($imagepath);
   # http://be.php.net/getimagesize

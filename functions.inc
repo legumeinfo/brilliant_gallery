@@ -10,10 +10,14 @@ function testext($filename) {
 
 
 function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $brilliant_gallery_sort, $imagecrop) {
+  #watchdog('Brilliant Gal','absol2: '.$absolpath);
   # Load Directory Into Array
   $poct              = -1;
   $retval_dimensions = array();
-  $handle            = @opendir($absolpath);
+  #$handle            = @opendir($absolpath);
+  $actualpath        = realpath(file_directory_path()) . $absolpath;
+  #watchdog('Brilliant Gal','absol3: '.$actualpath);
+  $handle            = opendir($actualpath);
   $imagemaxh         = 0;
   while ($file = @readdir($handle)) {
     $testending = strtolower(substr($file, -4, 4));
@@ -22,11 +26,12 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
     }
     # Index of a real image or something we are going to display.
     $poct += 1;
-    $retval_dimensions[$poct]['file'] = $file;
+    $retval_dimensions[$poct]['file'] = $file; 
     $retval_dimensions[$poct]['imgcrop'] = $imagecrop;
 
     # Is image horizontally or vertically oriented?
-    $temp = getimagesize($absolpath .'/'. $file);
+    #$temp = getimagesize($absolpath .'/'. $file);
+    $temp = getimagesize($actualpath .'/'. $file);
     if ($temp === false) {
       continue;
     }
