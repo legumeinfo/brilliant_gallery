@@ -133,21 +133,21 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop) {
   $head = "Content-type: {$imgsize['mime']}";
   if ($suffix == ".gif") {
     #$head = "Content-type: image/gif";
-    $img = imagecreatefromgif($imagepath);
+    $img = @imagecreatefromgif($imagepath);
     if (!$img) {
       brokenimage("Error loading GIF");
     }
   }
   else if ($suffix == ".jpg" or $suffix == "jpeg") {
     #$head = "Content-type: image/jpeg";
-    $img = imagecreatefromjpeg($imagepath);
+    $img = @imagecreatefromjpeg($imagepath);
     if (!$img) {
       brokenimage("Error loading JPG");
     }
   }
   else if ($suffix == ".png") {
     #$head = "Content-type: image/png";
-    $img = imagecreatefrompng($imagepath);
+    $img = @imagecreatefrompng($imagepath);
     if (!$img) {
       brokenimage("Error loading PNG");
     }

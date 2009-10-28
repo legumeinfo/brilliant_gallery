@@ -895,10 +895,74 @@ function brilliant_gallery_filter($op, $delta = 0, $format = -1, $text = '') {
   }
 }
 
+function brilliant_gallery_get_allowed_params(){
+
+    $allowed_params = array(
+
+      // path/to/your/gallery/folder/without/wrapping/slashes|
+      // or Picasa RSS URI
+      // If not set, the value set at /admin/settings/brilliant_gallery is used.
+      location,
+
+      // Columns to show. Zero (0) means there will be as many columns as the width of the page permits.
+      // If not set, the value set at /admin/settings/brilliant_gallery is used.
+      thumbcolumns,
+
+      // Width of individual thumbs. Height is calculated automatically, except in the case of square thumbs, where this will also be the height of the thumbs.
+      // If not set, the value set at /admin/settings/brilliant_gallery is used.
+      thumbwidth,
+
+      // 'sort' means images in the gallery will be sorted by their file names alphabetically, in ascending order. Set it to 'random' to shuffle the images in a gallery.
+      // If not set, the value set at /admin/settings/brilliant_gallery is used.
+      thumbsort,
+      
+      // Maximum number of images to show in a gallery.
+      thumbmaxshow,
+
+      // Background colour in format #000000.
+      // If not set, the value set at /admin/settings/brilliant_gallery is used.
+      thumbbackcolour,
+      
+      // Sequential number of the image in the gallery that should appear as the first one.
+      thumbstartfrom,
+      
+      // Show captions in the overlay browser (based on the image file name (based on the image file name; dots and underscores are automatically replaced by spaces).
+      // Can be 'yes', 'no', or you can specify text that will override the file name (useful when showing a single image).
+      // If not set, the value set at /admin/settings/brilliant_gallery is used.
+      fullcaption,
+      
+      // Maximum width of images in full view (in the overlay browser).
+      fullwidth,
+      
+      // Squared - thumbnails are squared (both portrait and landscape images are cropped around their geometric centers).
+      // If not set, the value set at /admin/settings/brilliant_gallery is used.
+      thumbsquared,
+
+      // Table cell padding, in pixels.
+      thumbpadding,
+      
+      // Don't show a grid of images, but a slide show.
+      // Currently only working for images fetched from Picasa.
+      thumbslideshow,
+      
+      // Show only one or several images specified by file name(s), separated by commas. E.g.: imageone.jpg, imagetwo.png, imagethree.gif
+      thumbshowbyname,
+      
+      // Cache the HTML code of the generated gallery.
+      thumbhtmlcache,
+    );
+    
+    return $allowed_params;
+}
+
 function replace_brilliant_gallery_tags($str) {
   # Old format - still supported
     # [bg|path/to/gallery_folder|colcountoverride|widthoverride|sortorrandomoverride|maximumnumbertoshow|colouroverride|beginfromoverride|caption-yes-no-text]
-  # no slashes around this path!
+  # New format - allows multiline tags (strips out HTML), works with parameter => value attribution (position independent!)
+    # 
+    # 
+    # 
+
   $matchlink = '';
   $orig_match = '';
   preg_match_all("/(\[)bg(\|).*(\])/", $str, $matches);
@@ -913,20 +977,56 @@ function replace_brilliant_gallery_tags($str) {
     // Create an array of parameter attributions
     $match = explode("|", $match);
 
+    $allowed_params = brilliant_gallery_get_allowed_params();
+    
     // Remove enclosing spaces and get rid of empty parameter attributions.
-    $newmatch = array();
+    $newmatch = array(); // Collect for the legacy style $match array.
+    $newgenmatch = array();
+    $isnewgettag = true;
     foreach($match as $val){
       $tmp = trim($val);
       if ($tmp <> ''){
-        $newmatch[] = $tmp;
+        $tmp2 = explode(' => ', $tmp);
+        if (sizeof($tmp2) == 2){
+          // It's possibly a new generation tag
+          $tmp2[0] = strtolower(trim($tmp2[0]));
+          $tmp2[1] = trim($tmp2[1]);
+          // Check if it uses a valid parameter namem.
+          // The value MAY be none here, to allow re-setting some parameters.
+          if (in_array($tmp2[0],$allowed_params)){
+            $newgenmatch[$tmp2[0]] = $tmp2[1];
+          }
+          else {
+            $msg = 'Parameter '.$tmp2[0].' is invalid!';
+            drupal_set_message($msg);
+            watchdog($msg);
+          }
+        }
+        else {
+          // If one or more of the parameters does not use attribution, the whole tag is treated as an old generation one.
+          $isnewgettag = false;
+          $newmatch[] = $tmp;
+        }
       }
     }
-
     
+    if (!$isnewgettag){
+      // Plain old tag
+      $match = $newmatch;
+    }
+    else {
+      // OK, we've got the new generation params in $newgenmatch
+      # $newgenmatch
+    }
+    #watchdog('Brilliant Gal', 'Got the array: '.vacilando_echo_array($match));
+    #watchdog('Brilliant Gal', 'Got the new array: '.vacilando_echo_array($newgenmatch));
+
     // Cache the result if it comes from a non-random tag
     $bgcachexpire = variable_get('brilliant_gallery_cache_duration',90) * 24 * 3600; // Cache expiration time in days.
     $mbgtag = md5($omatch);
-    if ($cache = cache_get('bg_gallery_table_'.$mbgtag) and !empty($cache->data) and $bg_cachegal) {
+#########x TEMPORARILY SET TO FALSE!!
+    #if ($cache = cache_get('bg_gallery_table_'.$mbgtag) and !empty($cache->data)) {
+    if (false) {
       $galhere = $cache->data;
     }
     else {
@@ -982,25 +1082,66 @@ function brilliant_gallery_cron() {
   brilliant_gallery_cleantmpdir();
 }
 function brilliant_gallery_cleantmpdir() {
-  // Delete "bg_*" files from the temp directory if they are expired.
-  // TODO: delete also unused directories - can use function brilliant_gallery_unlinkRecursive
+  // Delete files and directories from the file cache directory if their time is up!
   $timenow = time();
   $bgcachexpire = variable_get('brilliant_gallery_cache_duration',90) * 24 * 3600; // Cache expiration time in days.
-  $cachetemp = variable_get('brilliant_gallery_pcache', file_directory_temp());
-  $directory = $cachetemp;
-  #$directory = file_directory_temp();
-  if (!$dirhandle = @opendir($directory)) {
-    return;
-  }
-  while (false !== ($filename = readdir($dirhandle))) {
-    if ($filename != "." && $filename != ".." &&
-      substr($filename, 0, 3) == 'bg_'
-    ) {
-      $filename = $directory ."/". $filename;
-      #echo $filename . ' ';
-      if (@filemtime($filename) < (time() - $bgcachexpire))
-      @unlink($filename);
+  $timestampexpired = time()-$bgcachexpire;
+  $cachetempdirectory = trim(variable_get('brilliant_gallery_pcache', file_directory_temp())); // Must contain the FULL SYSTEM PATH to the cache directory.
+  if (strlen($cachetempdirectory) < 2) { return; }
+  
+  $GLOBALS['bg_removedcnt'] = 0;
+  brilliant_gallery_rmdir_recursive($cachetempdirectory,$timestampexpired);
+
+  // Also clear the Drupal cache - otherwise there might be some cached HTML pointing to files that are no longer in the file cache.
+    cache_clear_all();
+
+  watchdog('Brilliant Gal', 'Cleared '.$GLOBALS['bg_removedcnt'].' files from the temp directory '.$cachetempdirectory.' after '.variable_get('brilliant_gallery_cache_duration',90).' days. Elapsed time: '.(time()-$timenow).' seconds.');
+}
+
+/*
+ * http://nashruddin.com/Remove_Directories_Recursively_with_PHP
+ * This function removes a directory and its contents. Use with care; no undo!
+ * The function determines if argument is a regular file or a directory. If it is a regular file, it will remove the file. If it is a directory, it will remove its contents first by calling the function itself, and then removes the empty directory.
+ * This requires PHP 5 (because of 'scandir').
+ */
+function brilliant_gallery_rmdir_recursive($dir, $timestampexpired) {
+    // Remove '/' at the end, if any
+      $slash = '/';
+      if (substr($dir,-1) == '/') $slash = ''; 
+    $files = scandir($dir);
+    array_shift($files);    // remove '.' from array
+    array_shift($files);    // remove '..' from array
+    foreach ($files as $file) {
+        $filename = $file;
+        $file = $dir . $slash . $file;
+        if (is_dir($file)) {
+            if (substr(strtolower($filename), 0, strlen('bg_picasa_')) == 'bg_picasa_') {
+              // Only delete folders that start 'bg_picasa_'
+              brilliant_gallery_rmdir_recursive($file, $timestampexpired);
+              #drupal_set_message('dir: '.$file.' ('.$timestampexpired.')'); flush();
+              @rmdir($file);
+            }
+        } else {
+            #unlink($file);
+            $suffix = strtolower(substr($filename, -4));
+            if (
+              $suffix == '.jpg'
+              OR $suffix == 'jpeg'
+              OR $suffix == '.png'
+              OR $suffix == '.gif'
+              OR (strtolower(substr($filename, 0, 3)) == 'bg_' ) // Files like e.g. bg_ffbbaff39504d459ed277714786267b8
+            ) {
+              # It is a file in the specified BG cache directory
+              if (@filemtime($file) < $timestampexpired) { 
+                #drupal_set_message('file: '.$file . '('.filemtime($file).' = '.date('Y-m-d H:i:s',filemtime($file)).') (++'.$GLOBALS['bg_removedcnt'].')');
+                $unlinked = unlink($file); 
+                #drupal_set_message('file: '.$filepathname);
+                #watchdog('Brilliant Gal Cron','file: '.$filepathname);
+                if ($unlinked){
+                  $GLOBALS['bg_removedcnt'] ++;
+                }
+              }
+            }
+        }
     }
-  }
-  watchdog('Brilliant Gal', 'Clearing the temp directory '.$cachetemp.'. Elapsed time: '.(time()-$timenow).' seconds.');
 }

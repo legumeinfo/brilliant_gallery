@@ -13,7 +13,7 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
   # Load Directory Into Array
   $poct              = -1;
   $retval_dimensions = array();
-  $handle            = opendir($absolpath);
+  $handle            = @opendir($absolpath);
   $imagemaxh         = 0;
   while ($file = @readdir($handle)) {
     $testending = strtolower(substr($file, -4, 4));
@@ -62,34 +62,4 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
     shuffle($retval_dimensions);
   }
   return array($retval_dimensions, $imagemaxh);
-}
-
-
-/** 
- * Recursively delete a directory 
- * 
- * @param string $dir Directory name 
- * @param boolean $deleteRootToo Delete specified top-level directory as well 
- */ 
-function brilliant_gallery_unlinkRecursive($dir, $deleteRootToo) { 
-  if(!$dh = @opendir($dir)) { 
-      return; 
-  } 
-  while (false !== ($obj = readdir($dh))) { 
-      if($obj == '.' || $obj == '..') { 
-          continue; 
-      } 
-
-      if (!@unlink($dir . '/' . $obj)) { 
-          unlinkRecursive($dir.'/'.$obj, true); 
-      } 
-  } 
-
-  closedir($dh); 
-  
-  if ($deleteRootToo) { 
-      @rmdir($dir); 
-  } 
-  
-  return; 
 }
