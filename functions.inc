@@ -17,7 +17,7 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
   #$handle            = @opendir($absolpath);
   $actualpath        = realpath(file_directory_path()) . $absolpath;
   #watchdog('Brilliant Gal','absol3: '.$actualpath);
-  $handle            = opendir($actualpath);
+  $handle            = @opendir($actualpath);
   $imagemaxh         = 0;
   while ($file = @readdir($handle)) {
     $testending = strtolower(substr($file, -4, 4));

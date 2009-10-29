@@ -38,6 +38,7 @@ $GLOBALS['devel_shutdown'] = FALSE;
 #drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 
 #if ( $_SERVER['SERVER_ADDR'] == '64.13.192.90' ) {
+/*
 if (variable_get('brilliant_gallery_cache', 'd') == 'f') {
   #echo '.....................' . $_SERVER['SERVER_ADDR'];
   #drupal_set_message('cachetype1 '.variable_get('brilliant_gallery_cache', 'd'));
@@ -49,13 +50,15 @@ else {
   #watchdog('Brilliant Gal', '2 '.variable_get('brilliant_gallery_cache'));
   $my_data = resizeimage_wrapper_dbcache();
 }
+*/
+$my_data = resizeimage_wrapper_dbcache();
 
 #echo '....'. sess_read('vacilando');
 header($my_data[0]);
 echo base64_decode($my_data[1]);
 // IMPORTANT to exit() - otherwise some process after BG adds strings and breaks the image!
 exit();
-
+/*
 function resizeimage_wrapper_filecache() {
   $bgcacheid = 'bg_'. md5($_GET['imgp'] . $_GET['imgw'] . $_GET['imgh']);
   #echo '. 0.... ';
@@ -63,11 +66,6 @@ function resizeimage_wrapper_filecache() {
   // Tested that both relative (eg sites/all/files/cache) and absolute (eg /home/data/tmp) tmp path settings work OK here.
   $cachetemp = variable_get('brilliant_gallery_pcache', file_directory_temp());
   $cachedfile = $cachetemp .'/'. $bgcacheid;
-  /*
-  // See http://drupal.org/node/194923
-  // The expression (expr1) ? (expr2) : (expr3) evaluates to expr2 if expr1 evaluates to TRUE, and expr3 if expr1 evaluates to FALSE. 
-  //$lastchanged = (file_exists($cachedfile) ? @filemtime($cachedfile) : false);
-  */
   $fileexists = false;
   $fileexists = file_exists($cachedfile);
   $timenow = time();
@@ -97,6 +95,7 @@ function resizeimage_wrapper_filecache() {
   }
   return $my_data;
 }
+*/
 
 function resizeimage_wrapper_dbcache($reset = FALSE) {
   #global $user;
