@@ -1167,7 +1167,6 @@ function brilliant_gallery_rmdir_recursive($dir, $timestampexpired) {
         if (@filemtime($file) < $timestampexpired) { 
           #drupal_set_message('file: '.$file . '('.filemtime($file).' = '.date('Y-m-d H:i:s',filemtime($file)).') (++'.$GLOBALS['bg_removedcnt'].')');
           $unlinked = unlink($file); 
-          #drupal_set_message('file: '.$filepathname);
           if ($unlinked){
             $GLOBALS['bg_removedcnt'] ++;
           }
