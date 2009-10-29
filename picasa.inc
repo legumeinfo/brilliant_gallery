@@ -1,19 +1,5 @@
 <?php
 
-/*
-$purl = $_GET['purl'];
-if ($purl <> '') {
-  $hc = new bg_eHttpClient();
-  $image = $hc->get($purl);
-  #echo $image;
-  $im = imagecreatefromstring($image);
-  if ($im !== false) {
-    header('Content-Type: image/jpg');
-    imagejpeg($im);
-    imagedestroy($im);
-  }
-}
-*/
 #$url_to_fetch = "http://picasaweb.google.com/data/feed/base/user/tjfulopp/albumid/5288246472868572145?alt=rss&kind=photo&hl=en_US";
 if ($url_to_fetch == '') return;
 
@@ -32,10 +18,6 @@ if ($url_to_fetch == '') return;
 
 @mkdir($mkdirek); // See http://drupal.org/node/368583#comment-1243641
 
-#echo '-----'.$url_to_fetch;
-#$hc        = new bg_eHttpClient();
-#$hc->setReferer("http://www.yahoo.com/");
-#$html        = $hc->get($url_to_fetch);
 // Get the Picasa gallery feed XML file.
 $cacheid_url_to_fetch = 'bg_gallery_picasa_xml_'.md5($url_to_fetch);
 if ($cache = cache_get($cacheid_url_to_fetch) and !empty($cache->data)) {
@@ -102,10 +84,6 @@ foreach($imgchunks as $imgchunk) {
     if ($userId == 1){
       drupal_set_message('in!');
     }
-    */
-    /*
-    $hc = new bg_eHttpClient();
-    $image = $hc->get($imgurl);
     */
     ///*
     $imager = drupal_http_request($imgurl);

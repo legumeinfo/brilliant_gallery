@@ -125,7 +125,7 @@ function brilliant_gallery_views_handler_image_img($fieldinfo, $fielddata, $valu
   # Load Directory Into Array
   $poct   = -1;
   $retval = array();
-  $handle = opendir($absolpath);
+  $handle = @opendir($absolpath);
   while ($file = readdir($handle)) {
     $poct += 1;
     $testending = strtolower(substr($file, -4, 4));
@@ -190,16 +190,3 @@ function brilliant_gallery_views_handler_image_img($fieldinfo, $fielddata, $valu
   $result .= '</a>';
   return $result;
 }
-
-/**
- * Views - Generate a list of all the valid sizes that are available
- */
-/*
-function brilliant_gallery_views_handler_filter_image_size($op) {
-  foreach (_image_get_sizes() as $key => $size) {
-    $a[$key] = $size['label'];
-  }
-  return $a;
-}
-*/
-

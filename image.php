@@ -1,8 +1,14 @@
 <?php
 /* $Id$ */
 
-if (strpos(base64_decode($_GET['imgp']), "://") !== false) {
-  # Fixing a possible URL injection problem. Using ':' was not enough because Windows paths contain it as well.
+#if (strpos(base64_decode($_GET['imgp']), "://") !== false) {
+/* Check for bad URL inputs */
+$urlpath = base64_decode($_GET['imgp']);
+if (strpos($urlpath, "://") !== false ||
+    strpos($urlpath, "..") !== false ||
+    preg_match('/\D/', ($_GET['imgw'] . $_GET['imgh'])) > 0 ||
+    ($_GET['imgw'] + $_GET['imgh']) < 10 ||
+    ($_GET['imgw'] + $_GET['imgh']) > 20000 ) {
   header("HTTP/1.0 404 Not Found");
   exit();
 }
@@ -14,10 +20,14 @@ function drupalize() {
   }
   #module_load_include('/includes/bootstrap.inc', 'image', 'includes/bootstrap');
   require_once './includes/bootstrap.inc';
+  require_once './includes/file.inc';
   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL); // See http://drupal.org/node/211378#comment-924059
   #drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
   #drupal_cron_run();
 }
+
+$imagepath = realpath(file_directory_path() . $urlpath);
+#watchdog('Brilliant Gal','imgp: '.$imagepath);
 
 // Crucial - to suppress Devel (if installed and enabled) output appearing in the generated XML!
 $GLOBALS['devel_shutdown'] = FALSE;
@@ -28,6 +38,7 @@ $GLOBALS['devel_shutdown'] = FALSE;
 #drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 
 #if ( $_SERVER['SERVER_ADDR'] == '64.13.192.90' ) {
+/*
 if (variable_get('brilliant_gallery_cache', 'd') == 'f') {
   #echo '.....................' . $_SERVER['SERVER_ADDR'];
   #drupal_set_message('cachetype1 '.variable_get('brilliant_gallery_cache', 'd'));
@@ -39,13 +50,15 @@ else {
   #watchdog('Brilliant Gal', '2 '.variable_get('brilliant_gallery_cache'));
   $my_data = resizeimage_wrapper_dbcache();
 }
+*/
+$my_data = resizeimage_wrapper_dbcache();
 
 #echo '....'. sess_read('vacilando');
 header($my_data[0]);
 echo base64_decode($my_data[1]);
 // IMPORTANT to exit() - otherwise some process after BG adds strings and breaks the image!
 exit();
-
+/*
 function resizeimage_wrapper_filecache() {
   $bgcacheid = 'bg_'. md5($_GET['imgp'] . $_GET['imgw'] . $_GET['imgh']);
   #echo '. 0.... ';
@@ -53,11 +66,6 @@ function resizeimage_wrapper_filecache() {
   // Tested that both relative (eg sites/all/files/cache) and absolute (eg /home/data/tmp) tmp path settings work OK here.
   $cachetemp = variable_get('brilliant_gallery_pcache', file_directory_temp());
   $cachedfile = $cachetemp .'/'. $bgcacheid;
-  /*
-  // See http://drupal.org/node/194923
-  // The expression (expr1) ? (expr2) : (expr3) evaluates to expr2 if expr1 evaluates to TRUE, and expr3 if expr1 evaluates to FALSE. 
-  //$lastchanged = (file_exists($cachedfile) ? @filemtime($cachedfile) : false);
-  */
   $fileexists = false;
   $fileexists = file_exists($cachedfile);
   $timenow = time();
@@ -87,6 +95,7 @@ function resizeimage_wrapper_filecache() {
   }
   return $my_data;
 }
+*/
 
 function resizeimage_wrapper_dbcache($reset = FALSE) {
   #global $user;
@@ -123,31 +132,32 @@ function resizeimage_wrapper_dbcache($reset = FALSE) {
 
 #function resizeimage($imgp, $imgw, $imgh) {
 function resizeimage($imgp, $imgw, $imgh, $imgcrop) {
-  $imagepath = base64_decode($imgp);
+  #$imagepath = base64_decode($imgp);
   #echo '.... ' . base64_decode( $imgp );
   #flush();die(' stop!');
-  # Thanks to Michał Albrecht!
+  global $imagepath;
+  
   $suffix = strtolower(substr($imagepath, -4));
   $imgsize = @getimagesize($imagepath);
   # http://be.php.net/getimagesize
   $head = "Content-type: {$imgsize['mime']}";
   if ($suffix == ".gif") {
     #$head = "Content-type: image/gif";
-    $img = imagecreatefromgif($imagepath);
+    $img = @imagecreatefromgif($imagepath);
     if (!$img) {
       brokenimage("Error loading GIF");
     }
   }
   else if ($suffix == ".jpg" or $suffix == "jpeg") {
     #$head = "Content-type: image/jpeg";
-    $img = imagecreatefromjpeg($imagepath);
+    $img = @imagecreatefromjpeg($imagepath);
     if (!$img) {
       brokenimage("Error loading JPG");
     }
   }
   else if ($suffix == ".png") {
     #$head = "Content-type: image/png";
-    $img = imagecreatefrompng($imagepath);
+    $img = @imagecreatefrompng($imagepath);
     if (!$img) {
       brokenimage("Error loading PNG");
     }
