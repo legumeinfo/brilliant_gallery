@@ -565,7 +565,7 @@ function bg_iterative_recurse_dir($from = '.') {
 }
 
 #function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $widthoverride = '', $sortoverride = '', $maximumnumbertoshow = '', $colouroverride = '', $beginfromoverride = 1, $captionyesnotext = '') {
-function render_brilliant_gallery($paramarray) {
+function render_brilliant_gallery($paramarray = array()) {
   #watchdog('Brilliant Gal', 'after: '.vacilando_echo_array($paramarray));
   $thisfolder = $paramarray[1];
   $colcountoverride = $paramarray[2];
@@ -671,7 +671,7 @@ function render_brilliant_gallery($paramarray) {
   if ($paramarray[12] == 'yes' and $picasafolder){
      // Display a Picasa slide show - but only if this is Picasa data and not a local gallery.
      $slideshowurl = str_replace('/base/','/api/',$thisfolder); // The only difference between RSS and slideshow feeds, apparently.
-     $result .= '<embed width="'.$widthoverride.'" height="'.($widthoverride*0.75).'" type="application/x-shockwave-flash" src="http://picasaweb.google.com/s/c/bin/slideshow.swf" flashvars="host=picasaweb.google.com&captions=1&hl=en_US&feat=flashalbum&interval=13;RGB=0x000000&feed='.urlencode($slideshowurl).'" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>';
+     $result .= '<embed width="'.$widthoverride.'" height="'.($widthoverride*0.75).'" type="application/x-shockwave-flash" src="http://picasaweb.google.com/s/c/bin/slideshow.swf" flashvars="host=picasaweb.google.com&captions=0&hl=en_US&feat=flashalbum&interval=13;RGB=0x000000&feed='.urlencode($slideshowurl).'" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>';
   } else 
   { // If this is a gallery and not a slideshow.
     // Get absolute path
