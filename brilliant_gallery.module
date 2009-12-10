@@ -689,7 +689,7 @@ function render_brilliant_gallery($paramarray = array()) {
   if ($paramarray[12] == 'yes' and $picasafolder){
     // Display a Picasa slide show - but only if this is Picasa data and not a local gallery.
     $slideshowurl = str_replace('/base/','/api/',$thisfolder); // The only difference between RSS and slideshow feeds, apparently.
-    $result .= '<embed width="'.$widthoverride.'" height="'.($widthoverride*0.75).'" type="application/x-shockwave-flash" src="http://picasaweb.google.com/s/c/bin/slideshow.swf" flashvars="host=picasaweb.google.com&captions=0&hl=en_US&feat=flashalbum&interval=13;RGB=0x000000&feed='.urlencode($slideshowurl).'" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>';
+    $result .= '<embed width="'.$widthoverride.'" height="'.($widthoverride*0.75).'" type="application/x-shockwave-flash" src="http://picasaweb.google.com/s/c/bin/slideshow.swf" flashvars="host=picasaweb.google.com&captions=0&hl=en_US&feat=flashalbum&interval=20;RGB=0x000000&feed='.urlencode($slideshowurl).'" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>';
   } else 
   { // If this is a gallery and not a slideshow.
     // Get absolute path
@@ -758,6 +758,8 @@ function render_brilliant_gallery($paramarray = array()) {
     if ($columns <> 0){
       // Total 'width' controls the number of thumbnails in each row. The number, in pixels, should be calculated thusly: [maximum width desired for thumbnails] + [padding - if any, x 2] + [margin - if any, x 2] + [border - if any, x 2] x [number of thumbnails desired in each row]
       $style_ul = "font-size:0; margin:0px; dummy: 0; padding:0px; width: ". (($imagewidth + 2 * $padding) * $columns) ."px;";
+    } else {
+      $style_ul = "font-size:0; margin:0px; dummy: 0; padding:0px;";
     }
     $column_count = 0;
     #$pocetobr = 0;

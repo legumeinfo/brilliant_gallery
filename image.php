@@ -145,21 +145,21 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop) {
     #$head = "Content-type: image/gif";
     $img = @imagecreatefromgif($imagepath);
     if (!$img) {
-      brokenimage("Error loading GIF");
+      brokenimage("Error loading GIF",$imgw,$imgh);
     }
   }
   else if ($suffix == ".jpg" or $suffix == "jpeg") {
     #$head = "Content-type: image/jpeg";
     $img = @imagecreatefromjpeg($imagepath);
     if (!$img) {
-      brokenimage("Error loading JPG");
+      brokenimage("Error loading JPG",$imgw,$imgh);
     }
   }
   else if ($suffix == ".png") {
     #$head = "Content-type: image/png";
     $img = @imagecreatefrompng($imagepath);
     if (!$img) {
-      brokenimage("Error loading PNG");
+      brokenimage("Error loading PNG",$imgw,$imgh);
     }
   }
   # Resize the image
@@ -203,8 +203,8 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop) {
   return $result;
 }
 
-function brokenimage($msg) {
-  $im  = imagecreatetruecolor(150, 30);
+function brokenimage($msg,$width = 150,$height = 30) {
+  $im  = imagecreatetruecolor($width, $height);
   $bgc = imagecolorallocate($im, 0, 0, 0);
   $tc  = imagecolorallocate($im, 255, 255, 255);
   imagefilledrectangle($im, 0, 0, 150, 30, $bgc);

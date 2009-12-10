@@ -37,8 +37,14 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
     }
     if (($temp[0] - $temp[1]) >= 0) {
       // This is a horizontal image
-      $retval_dimensions[$poct]['imgw'] = $imagewidth;
-      $retval_dimensions[$poct]['imgh'] = round(($temp[1] / $temp[0]) * $imagewidth);
+      if ($imagecrop){
+        $retval_dimensions[$poct]['imgw'] = $imagewidth;
+        $retval_dimensions[$poct]['imgh'] = $imagewidth;
+      }
+      else {
+        $retval_dimensions[$poct]['imgw'] = $imagewidth;
+        $retval_dimensions[$poct]['imgh'] = round(($temp[1] / $temp[0]) * $imagewidth);
+      }
       $retval_dimensions[$poct]['imgwbig'] = $fullresolutionmaxwidth;
       $retval_dimensions[$poct]['imghbig'] = round(($temp[1] / $temp[0]) * $fullresolutionmaxwidth);
     }
@@ -55,6 +61,7 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
       $retval_dimensions[$poct]['imgwbig'] = round(($temp[0] / $temp[1]) * ($temp[0] / $temp[1]) * $fullresolutionmaxwidth);
       $retval_dimensions[$poct]['imghbig'] = round(($temp[0] / $temp[1]) * $fullresolutionmaxwidth);
     }
+    // In $imagemaxh collect the maximum vertical size of the gallery.
     if ($imagemaxh < $retval_dimensions[$poct]['imgh']) {
       $imagemaxh = $retval_dimensions[$poct]['imgh'];
     }
