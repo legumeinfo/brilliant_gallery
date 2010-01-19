@@ -214,9 +214,14 @@ function brilliant_gallery_admin() {
   '#description' => t("The maximum width of thumbnails in the table (height calculated automatically)."),
   );
   $form['brilliant_gallery_crop'] = array(
-  '#type' => 'checkbox',
-  '#title' => t('Crop to square'),
-  '#default_value' => variable_get('brilliant_gallery_crop', FALSE),
+  '#type' => 'select',
+  '#title' => t('Crop thumbnails to square shape'),
+  '#required' => FALSE,
+  '#options' => array(
+  'yes' => t('yes'),
+  'no' => t('no'),
+  ),
+  '#default_value' => variable_get('brilliant_gallery_crop', 'no'),
   '#description' => t("If selected, all image thumbnails will have the same square shape."),
   );
   $form['brilliant_gallery_bcgcolour'] = array(
@@ -431,7 +436,7 @@ HEADER;
       # User has asked to manage images in this folder.
       $tablerows         = array();
       #$temp              = load_dir_to_array($key, variable_get('brilliant_gallery_maximagewidth', 150), variable_get('brilliant_gallery_maxwidth', '1000'), 1, variable_get('brilliant_gallery_crop', FALSE));
-      $temp = load_dir_to_array($gallerypath, variable_get('brilliant_gallery_maximagewidth', 150), variable_get('brilliant_gallery_maxwidth', '1000'), 1, variable_get('brilliant_gallery_crop', FALSE));
+      $temp = load_dir_to_array($gallerypath, variable_get('brilliant_gallery_maximagewidth', 150), variable_get('brilliant_gallery_maxwidth', '1000'), 1, variable_get('brilliant_gallery_crop', 'no'));
       $retval_dimensions = $temp[0];
       $imagemaxh         = $temp[1];
       $maxpoct           = count($retval_dimensions);
@@ -567,26 +572,50 @@ function bg_iterative_recurse_dir($from = '.') {
 #function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $widthoverride = '', $sortoverride = '', $maximumnumbertoshow = '', $colouroverride = '', $beginfromoverride = 1, $captionyesnotext = '') {
 function render_brilliant_gallery($paramarray = array()) {
   $thisfolder = $paramarray[1];
+
   $colcountoverride = $paramarray[2];
+
   $widthoverride = $paramarray[3];
+  #drupal_set_message('was set '.$widthoverride);
+
   $sortoverride = $paramarray[4];
+
   $maximumnumbertoshow = $paramarray[5];
   #if (arg(1)==264544){
   #watchdog('Brilliant Gal', 'aftera: '.vacilando_echo_array($paramarray));
   #watchdog('Brilliant Gal', 'afterb: '.$maximumnumbertoshow);
   #}
+
   $colouroverride = $paramarray[6];
+
   $beginfromoverride = $paramarray[7];
   if ($beginfromoverride == '') $beginfromoverride = 1;
+
   $captionyesnotext = $paramarray[8];
+
+  // Test whether 'thumbsquared' is set.
+  $paramarray[10] = strtolower($paramarray[10]);
+  if ($paramarray[10] == 'yes' or $paramarray[10] == 'no'){
+    $imagecrop = $paramarray[10];
+    #drupal_set_message('was set '.$imagecrop);
+  } else {
+    $imagecrop = variable_get('brilliant_gallery_crop', 'no');
+    #drupal_set_message('was NOT set '.$imagecrop);
+  }
+  
   if ($paramarray[12] == ''){ $paramarray[12] = 'no'; }
   $bgcachexpire = variable_get('brilliant_gallery_cache_duration',90) * 24 * 3600; // Cache expiration time in days.
 
+  $thumbalignincell = strtolower($paramarray[15]);
+  if ($thumbalignincell <> 'center' and $thumbalignincell <> 'left' and $thumbalignincell <> 'right'){ $thumbalignincell = 'center'; }
+  
   // Is this a Picasa gallery?
   $picasafolder = false;
   $picasawebsignature = 'http://picasaweb.google.';
   if (substr($thisfolder,0,strlen($picasawebsignature)) == $picasawebsignature) {
     // Must work for all variants - http://picasaweb.google.com, http://picasaweb.google.co.uk, etc.
+    // Replace '&amp;' (happens if tags are edited in rich text editors) by '&'.
+    $thisfolder = str_replace("&amp;","&",$thisfolder);
     $picasafolder = true;
   }
 
@@ -598,7 +627,7 @@ function render_brilliant_gallery($paramarray = array()) {
       $val = trim($val);
       if ($val == '') continue;
       $thumbshowbyname[] = $val;
-     // Had an idea to update the column count to match the number of accepted images - but that does not work in case some images don't have a match anyway. So did not do it and users have to set the column override to whatever number they want. Too much intelligence in the gadget is bad anyways :-)
+      // Had an idea to update the column count to match the number of accepted images - but that does not work in case some images don't have a match anyway. So did not do it and users have to set the column override to whatever number they want. Too much intelligence in the gadget is bad anyways :-)
     }
   }
   #watchdog('Brilliant Gal', 's1: '.implode(' ... ',$thumbshowbyname));
@@ -672,7 +701,6 @@ function render_brilliant_gallery($paramarray = array()) {
       #$showcaption = $captionyesornot;
       $showcaption = $captionyesnotext;
   }
-  $imagecrop=variable_get('brilliant_gallery_crop', FALSE);
   $padding = variable_get('brilliant_gallery_padding', 3);
   $overbrowser = variable_get('brilliant_gallery_overbrowser', 'lightbox');
   // Totally full resolution display would be impractical, so this is the maximum width of "full" resolution.
@@ -822,7 +850,7 @@ function render_brilliant_gallery($paramarray = array()) {
         $imgcrop     = $retval_dimensions[$poct - 1]['imgcrop'];
         #@$smallenough = $retval_dimensions[$poct - 1]['smallenough'];
         #$style_li = "float: left; list-style: none; background: #000; width: 44px; height: 33px; padding: 4px; text-align: center; margin: 0; border: none;";
-        $style_li = "font-size:0; float: left; width: ". $imagewidth ."px; list-style: none; background: ". $bgcolour ."; height: ". $imagemaxh ."px; padding: ". $padding ."px; text-align: center; margin: 0px; border: none;";
+        $style_li = "font-size:0; float: left; width: ". $imagewidth ."px; list-style: none; background: ". $bgcolour ."; height: ". $imagemaxh ."px; padding: ". $padding ."px; text-align: ".$thumbalignincell."; margin: 0px; border: none;";
         $result .= ('<li style="'. $style_li .'">' . "\n");
         # Get this module's path:
         $modulepath = url(drupal_get_path('module', 'brilliant_gallery'), array('absolute' => TRUE));
@@ -891,7 +919,7 @@ function render_brilliant_gallery($paramarray = array()) {
       }
       else {
         $fosiz = ceil($imagewidth/13);
-        $style_li = "font-size:". $fosiz ."px; float: left; width: ". $imagewidth ."px; list-style: none; background: ". $bgcolour ."; height: ". $imagemaxh ."px; padding: ". $padding ."px; text-align: center; margin: 0px; border: none;";
+        $style_li = "font-size:". $fosiz ."px; float: left; width: ". $imagewidth ."px; list-style: none; background: ". $bgcolour ."; height: ". $imagemaxh ."px; padding: ". $padding ."px; text-align: ".$thumbalignincell."; margin: 0px; border: none;";
         $result .= ('<li style="'. $style_li .'">' . "\n");
         $result .= '<a href="'. $fullimgpath .'">';
         #$result .= '<center>' . $retval[$poct-1] . '</center>';
@@ -981,6 +1009,7 @@ function brilliant_gallery_get_allowed_params(){
 
   // Squared - thumbnails are squared (both portrait and landscape images are cropped around their geometric centers).
   // If not set, the value set at /admin/settings/brilliant_gallery is used.
+  // Either 'yes' or 'no'.
   10 => 'thumbsquared',
 
   // Table cell padding, in pixels.
@@ -996,6 +1025,9 @@ function brilliant_gallery_get_allowed_params(){
 
   // Cache the HTML code of the generated gallery.
   14 => 'thumbhtmlcache',
+
+  // Align images within cells of the galleries. Defaults to 'center'.
+  15 => 'thumbalignincell',
   );
 
   return $allowed_params;

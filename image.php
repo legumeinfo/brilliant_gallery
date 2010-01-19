@@ -168,7 +168,7 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop) {
   #$dst_img = imagecreatetruecolor($imgw, $imgh);
   #imagecopyresampled($dst_img, $img, 0, 0, 0, 0, $imgw, $imgh, $src_w, $src_h);
   $dst_img = 0;
-  if ($imgcrop) {
+  if ($imgcrop == 'yes') {
     if ($src_h>$src_w) {
       // portrait
       $dst_img = imagecreatetruecolor($imgh, $imgh);

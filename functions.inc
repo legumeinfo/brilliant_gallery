@@ -10,7 +10,7 @@ function testext($filename) {
 
 
 function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $brilliant_gallery_sort, $imagecrop) {
-  #watchdog('Brilliant Gal','absol2: '.$absolpath);
+  #watchdog('Brilliant Gal','imgw: '.$imagewidth.'/'.$imagecrop);
   # Load Directory Into Array
   $poct              = -1;
   $retval_dimensions = array();
@@ -37,26 +37,29 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
     }
     if (($temp[0] - $temp[1]) >= 0) {
       // This is a horizontal image
-      if ($imagecrop){
+      if ($imagecrop == 'yes'){
         $retval_dimensions[$poct]['imgw'] = $imagewidth;
         $retval_dimensions[$poct]['imgh'] = $imagewidth;
       }
       else {
         $retval_dimensions[$poct]['imgw'] = $imagewidth;
         $retval_dimensions[$poct]['imgh'] = round(($temp[1] / $temp[0]) * $imagewidth);
+        #watchdog('Brilliant Gal','1imgw: '.$imagewidth.'/'.$imagecrop);
       }
       $retval_dimensions[$poct]['imgwbig'] = $fullresolutionmaxwidth;
       $retval_dimensions[$poct]['imghbig'] = round(($temp[1] / $temp[0]) * $fullresolutionmaxwidth);
     }
     else {
       // This is a vertical image
-      if ($imagecrop){
+      if ($imagecrop == 'yes'){
         $retval_dimensions[$poct]['imgw'] = round(($temp[0] / $temp[1]) * $imagewidth);
         $retval_dimensions[$poct]['imgh'] = $imagewidth;
       }
       else {
         $retval_dimensions[$poct]['imgw'] = round(($temp[0] / $temp[1]) * ($temp[0] / $temp[1]) * $imagewidth);
         $retval_dimensions[$poct]['imgh'] = round(($temp[0] / $temp[1]) * $imagewidth);
+        #watchdog('Brilliant Gal','2imgw: '.$imagewidth.'/'.$imagecrop);
+        #watchdog('Brilliant Gal','2imgw: '.$temp[0].'-'.$temp[1]);
       }
       $retval_dimensions[$poct]['imgwbig'] = round(($temp[0] / $temp[1]) * ($temp[0] / $temp[1]) * $fullresolutionmaxwidth);
       $retval_dimensions[$poct]['imghbig'] = round(($temp[0] / $temp[1]) * $fullresolutionmaxwidth);
