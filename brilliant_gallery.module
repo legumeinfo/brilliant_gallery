@@ -602,13 +602,13 @@ function render_brilliant_gallery($paramarray = array()) {
     $imagecrop = variable_get('brilliant_gallery_crop', 'no');
     #drupal_set_message('was NOT set '.$imagecrop);
   }
-  
+
   if ($paramarray[12] == ''){ $paramarray[12] = 'no'; }
   $bgcachexpire = variable_get('brilliant_gallery_cache_duration',90) * 24 * 3600; // Cache expiration time in days.
 
   $thumbalignincell = strtolower($paramarray[15]);
   if ($thumbalignincell <> 'center' and $thumbalignincell <> 'left' and $thumbalignincell <> 'right'){ $thumbalignincell = 'center'; }
-  
+
   // Is this a Picasa gallery?
   $picasafolder = false;
   $picasawebsignature = 'http://picasaweb.google.';
@@ -753,7 +753,7 @@ function render_brilliant_gallery($paramarray = array()) {
 
     # Make an array with images in this folder, and their properties.
     #$temp              = load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $brilliant_gallery_sort);
-    $temp              = load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $brilliant_gallery_sort, $imagecrop);
+    $temp              = load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $brilliant_gallery_sort, $imagecrop, $maximumnumbertoshow);
     $retval_dimensions = $temp[0];
     $imagemaxh         = $temp[1];
     $maxpoct           = count($retval_dimensions);
@@ -781,6 +781,9 @@ function render_brilliant_gallery($paramarray = array()) {
       }
       #print_r($excludedimgs);
     }
+
+    // If we need to show just 1 image, then it is useless to calculate the UL width. Use width of the image.
+    if ($maximumnumbertoshow == 1){ $columns = 0; }
 
     // If $columns is 0, columns will fill up the available space.
     if ($columns <> 0){
@@ -850,7 +853,17 @@ function render_brilliant_gallery($paramarray = array()) {
         $imgcrop     = $retval_dimensions[$poct - 1]['imgcrop'];
         #@$smallenough = $retval_dimensions[$poct - 1]['smallenough'];
         #$style_li = "float: left; list-style: none; background: #000; width: 44px; height: 33px; padding: 4px; text-align: center; margin: 0; border: none;";
-        $style_li = "font-size:0; float: left; width: ". $imagewidth ."px; list-style: none; background: ". $bgcolour ."; height: ". $imagemaxh ."px; padding: ". $padding ."px; text-align: ".$thumbalignincell."; margin: 0px; border: none;";
+
+        // If we need to show just 1 image, then it is useless to use the maximum image height for the LI. Use height of the image. Analogous for the width.
+        // Cropping has no influence on single images.
+        $imagemaxh_here = $imagemaxh;
+        $imagewidth_here = $imagewidth;
+        if ($maximumnumbertoshow == 1){
+          $imagemaxh_here = $imgh;
+          $imagewidth_here = $imgw;
+        }
+
+        $style_li = "font-size:0; float: left; width: ". $imagewidth_here ."px; list-style: none; background: ". $bgcolour ."; height: ". $imagemaxh_here ."px; padding: ". $padding ."px; text-align: ".$thumbalignincell."; margin: 0px; border: none;";
         $result .= ('<li style="'. $style_li .'">' . "\n");
         # Get this module's path:
         $modulepath = url(drupal_get_path('module', 'brilliant_gallery'), array('absolute' => TRUE));
