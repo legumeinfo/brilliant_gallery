@@ -49,7 +49,7 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
       if ((($temp[0] - $temp[1]) >= 0) OR $maximumnumbertoshow == 1) {
         // This is a horizontal image.
         // Treat single images just as horizontal images (no need to fit their height to the height of horizontals)! The specified width of an image is authoritative for both horizontal images and also vertical if they show alone.
-        if ($imagecrop == 'yes'){
+        if ($imagecrop == 'yes' and $maximumnumbertoshow <> 1){
           $retval_dimensions[$poct]['imgw'] = $imagewidth;
           $retval_dimensions[$poct]['imgh'] = $imagewidth;
         }
