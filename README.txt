@@ -11,4 +11,4 @@ If you use this module, find it useful, send me a message via http://vacilando.n
 
 The author can also be contacted for paid customizations of this and other modules.
 
-Development of this module is sponsored by Vacilando.org ( http://www.vacilando.org/ )
+Development of this module is sponsored by Vacilando.org ( http://vacilando.org/ )
