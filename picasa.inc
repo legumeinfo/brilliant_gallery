@@ -8,7 +8,7 @@ if ($url_to_fetch == '') return;
 #$mkdirek = '/tmp/bg_picasa_'. $mgalleryurl;
 //exec('mkdir '.$mkdirek);
 #watchdog('Brilliant Gal', mt_rand(1000,9999) . ' ' . arg(1).' pinc '.microtime());
-/*
+/**
     ob_start();
         debug_print_backtrace();
     $btrace = ob_get_contents();

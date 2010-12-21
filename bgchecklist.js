@@ -2,7 +2,7 @@
 
 $(document).ready(
 function () {
-    // get the node id from where we left it in the header
+    //get the node id from where we left it in the header
     //var nodeid=$("div#nodeid/").val();
     //var nodeid=$("input#edit-nid").val(); # WORKED but we actually don't need node ID - so let's use some static number:
     var nodeid=9999999;
