@@ -497,7 +497,7 @@ function replace_brilliant_gallery_tags($str) {
                     // It's possibly a new generation tag
                     $tmp2[0] = strtolower(trim($tmp2[0]));
                     $tmp2[1] = trim($tmp2[1]);
-                    // Check if it uses a valid parameter namem.
+                    // Check if it uses a valid parameter name.
                     // The value MAY be none here, to allow re-setting some parameters.
                     if (in_array($tmp2[0],$allowed_params)){
                         $newgenmatch[$tmp2[0]] = $tmp2[1];

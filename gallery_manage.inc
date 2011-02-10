@@ -179,6 +179,10 @@ HEADER;
                     //drupal_set_message(file_create_url('brilliant_gallery/image/').$bgimgproperties_hash);
                     //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_hash.'.bgimg';
                     $imgsrc = file_create_url(file_directory_path() .'/'. variable_get('brilliant_gallery_pcache', '') .'/bg_cached_resized_'.$bgimgproperties_array_token.'.'.brilliant_gallery_get_extension($retval[$poct - 1]));
+          $secur = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+          if ($secur == 's'){
+            $imgsrc = str_replace('http://','https://',$imgsrc);
+          }
                     $displayimage .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'.$imgsrc.'" />';
                     //$displayimage .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'.$modulepath .'/image.php?imgp='. base64_encode($gallerypath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgw .'&amp;imgh='. $imgh.'" />';
                     $displayimage .= '</a>';

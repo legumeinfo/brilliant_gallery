@@ -433,7 +433,7 @@ function render_brilliant_gallery($paramarray = array()) {
                 //'imgp' => $retval[$poct - 1],
                 'imgw' => $imgwbig,
                 'imgh' => $imghbig,
-                'imgcrop' => $imgcrop
+                'imgcrop' => 'no', # Not $imgcrop because zoomed images do never need to be cropped (only thumbnails)!
                 );
                 //$bgimgproperties_base64 = base64_encode(serialize($bgimgproperties_array));
                 $bgimgproperties_array_token = brilliant_gallery_image_properties_set($bgimgproperties_array);
@@ -511,6 +511,10 @@ function render_brilliant_gallery($paramarray = array()) {
                 //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_hash.'.bgimg';
                 //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_base64.'.'.brilliant_gallery_get_extension($retval[$poct - 1]);
                 $imgsrc = file_create_url(file_directory_path() .'/'. variable_get('brilliant_gallery_pcache', '') .'/bg_cached_resized_'.$bgimgproperties_array_token.'.'.brilliant_gallery_get_extension($retval[$poct - 1]));
+          $secur = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+          if ($secur == 's'){
+            $imgsrc = str_replace('http://','https://',$imgsrc);
+          }
                 $result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'.$imgsrc.'" />';
                 #$result .= '<br>.................................'.$imgsrc;
                 #$result .= '</a>';
