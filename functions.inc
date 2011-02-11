@@ -539,6 +539,10 @@ function replace_brilliant_gallery_tags($str) {
                 */
             }
         }
+        
+        // If we are using thumbshowbyname and there is just 1 image, force thumbmaxshow to 1 (prevents BG from adjusting the height as it does for a set of images).
+        if ($match[13] <> '' AND strpos($match[13],',') === FALSE) $match[5] = 1;
+        
         #watchdog('Brilliant Gal', 'Got the array: '.vacilando_echo_array($match));
         #watchdog('Brilliant Gal', 'Got the new array: '.vacilando_echo_array($newgenmatch));
         // Cache the result if it comes from a non-random tag
