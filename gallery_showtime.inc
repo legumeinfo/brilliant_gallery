@@ -50,7 +50,8 @@ function render_brilliant_gallery($paramarray = array()) {
   // Is this a Picasa gallery?
   $picasafolder = false;
   $picasawebsignature = 'http://picasaweb.google.';
-  if (substr($thisfolder, 0, strlen($picasawebsignature)) == $picasawebsignature) {
+  $picasawebsignaturesecure = 'https://picasaweb.google.';
+  if (substr($thisfolder, 0, strlen($picasawebsignature)) == $picasawebsignature OR substr($thisfolder, 0, strlen($picasawebsignaturesecure)) == $picasawebsignaturesecure) {
     // Must work for all variants - http://picasaweb.google.com, http://picasaweb.google.co.uk, etc.
     // Replace '&amp;' (happens if tags are edited in rich text editors) by '&'.
     $thisfolder = str_replace("&amp;", "&", $thisfolder);
@@ -92,10 +93,10 @@ function render_brilliant_gallery($paramarray = array()) {
     return;
   }
   /*
-   if ($thisfolder <> '') {
-   $galleryfolder .= '/'. $thisfolder;
-   }
-   */
+  if ($thisfolder <> '') {
+  $galleryfolder .= '/'. $thisfolder;
+  }
+  */
   if ( $thisfolder <> '') {
     if ($galleryfolder <> '') {
       #$galleryfolder .= '/' . $thisfolder;
@@ -136,11 +137,11 @@ function render_brilliant_gallery($paramarray = array()) {
   }
   #else if ($captionyesornot == 'no') {
   else if ($captionyesnotext == 'no' or (variable_get('brilliant_gallery_caption', '') == '' and ($captionyesnotext == 'yes' or $captionyesnotext == 'no'))) {
-    $showcaption = '';
-  }
-  else {
-    #$showcaption = $captionyesornot;
-    $showcaption = $captionyesnotext;
+      $showcaption = '';
+    }
+    else {
+      #$showcaption = $captionyesornot;
+      $showcaption = $captionyesnotext;
   }
   $padding = variable_get('brilliant_gallery_padding', 3);
   $overbrowser = variable_get('brilliant_gallery_overbrowser', 'lightbox');
@@ -158,7 +159,7 @@ function render_brilliant_gallery($paramarray = array()) {
   if ($paramarray[12] == 'yes' and $picasafolder) {
     // Display a Picasa slide show - but only if this is Picasa data and not a local gallery.
     $slideshowurl = str_replace('/base/', '/api/', $thisfolder); // The only difference between RSS and slideshow feeds, apparently.
-    $result .= '<embed width="' . $widthoverride . '" height="' . ($widthoverride * 0.75) . '" type="application/x-shockwave-flash" src="http://picasaweb.google.com/s/c/bin/slideshow.swf" flashvars="host=picasaweb.google.com&captions=0&hl=en_US&feat=flashalbum&interval=20;RGB=0x000000&feed=' . urlencode($slideshowurl) . '" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>';
+    $result .= '<embed type="application/x-shockwave-flash" src="https://picasaweb.google.com/s/c/bin/slideshow.swf" width="'.$widthoverride.'" height="'.($widthoverride*0.75).'" flashvars="host=picasaweb.google.com&hl=en_US&feat=flashalbum&interval=20&RGB=0x000000&feed='.urlencode($slideshowurl).'" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>';
   }
   else { // If this is a gallery and not a slideshow.
     // Get absolute path
@@ -196,25 +197,28 @@ function render_brilliant_gallery($paramarray = array()) {
       //exec('mkdir '.$mkdirek);
       #watchdog('Brilliant Gal', mt_rand(1000,9999) . ' ' . arg(1).' pinc '.microtime());
       /*
-       ob_start();
-       debug_print_backtrace();
-       $btrace = ob_get_contents();
-       ob_end_clean();
-       */
+      ob_start();
+      debug_print_backtrace();
+      $btrace = ob_get_contents();
+      ob_end_clean();
+      */
       #watchdog('Brilliant Gal', mt_rand(1000,9999) . ' ' . arg(1).' pinc '.$btrace);
 
       @mkdir($mkdirek); // See http://drupal.org/node/368583#comment-1243641
+
+            // Get it over http, not https
+            $url_to_fetch = str_replace('https://','http://',$url_to_fetch);
 
       // Get the Picasa gallery feed XML file.
       $cacheid_url_to_fetch = 'bg_gallery_picasa_xml_' . md5($url_to_fetch);
       if ($cache = cache_get($cacheid_url_to_fetch) and !empty($cache->data)) {
         $html = $cache->data;
         /*
-         global $user; $userId = $user->uid;
-         if ($userId == 1){
-         drupal_set_message('got it from cache '.$url_to_fetch);
-         }
-         */
+        global $user; $userId = $user->uid;
+        if ($userId == 1){
+        drupal_set_message('got it from cache '.$url_to_fetch);
+        }
+        */
       }
       else {
         // Do your expensive calculations here...
@@ -225,11 +229,11 @@ function render_brilliant_gallery($paramarray = array()) {
         #drupal_set_message('...2'.$html);
         watchdog('Brilliant Gal', 'Fetched XML from ' . $url_to_fetch . ' (' . strlen($html) . ' bytes). Elapsed time: ' . (REQUEST_TIME -$timenow) . ' seconds.');
         /*
-         global $user; $userId = $user->uid;
-         if ($userId == 1){
-         drupal_set_message('again fetched '.$url_to_fetch);
-         }
-         */
+        global $user; $userId = $user->uid;
+        if ($userId == 1){
+        drupal_set_message('again fetched '.$url_to_fetch);
+        }
+        */
       }
 
       # if ($http_result->code == 200) {
@@ -257,21 +261,21 @@ function render_brilliant_gallery($paramarray = array()) {
 
         $lastchanged = @filemtime($foqen); // Last file modification time, or FALSE on error.
         /*
-         global $user; $userId = $user->uid;
-         if ($userId == 1){
-         drupal_set_message('pic '.($timenow - $lastchanged).' > '.$bgcachexpire.' ... '.$foqen);
-         }
-         */
+        global $user; $userId = $user->uid;
+        if ($userId == 1){
+        drupal_set_message('pic '.($timenow - $lastchanged).' > '.$bgcachexpire.' ... '.$foqen);
+        }
+        */
         #if ($_GET['fetchnow']==1){ $lastchanged = FALSE; } // Debugging!
         if ( $lastchanged === FALSE OR ($timenow - $lastchanged > $bgcachexpire) ) {
           // If the image is expired, we need to actively delete it, for the case that it was removed / hidden by the owner.
           @unlink($foqen);
           /*
-           global $user; $userId = $user->uid;
-           if ($userId == 1){
-           drupal_set_message('in!');
-           }
-           */
+          global $user; $userId = $user->uid;
+          if ($userId == 1){
+          drupal_set_message('in!');
+          }
+          */
           ///*
           $imager = drupal_http_request($imgurl);
           $image = $imager->data;
@@ -322,12 +326,12 @@ function render_brilliant_gallery($paramarray = array()) {
       // any checkbox id that starts with user- we remember the current user's settings
       // any other id is global and we use user=0
       /*
-       $result=db_query("select qid,state from {brilliant_gallery_checklist} ".
-       " where nid='$nid' and qid not like 'user-%' and user=0 ".
-       " union ".
-       "select qid,state from {brilliant_gallery_checklist} ".
-       "where nid='$nid' and qid like 'user-%' and user='$uid' ");
-       */
+      $result=db_query("select qid,state from {brilliant_gallery_checklist} ".
+      " where nid='$nid' and qid not like 'user-%' and user=0 ".
+      " union ".
+      "select qid,state from {brilliant_gallery_checklist} ".
+      "where nid='$nid' and qid like 'user-%' and user='$uid' ");
+      */
       $dbresult = db_query("select qid from {brilliant_gallery_checklist} where qid like 'user-%' and state='1' ");
       while ($data = db_fetch_object($dbresult)) {
         $excludedimgs[] = $data->qid;
@@ -445,12 +449,12 @@ function render_brilliant_gallery($paramarray = array()) {
         //drupal_set_message('imgsrc: '.$imgsrc);
         //echo $imgw; flush();exit();
         $bgimgproperties_array = array(
-          // This array contains everything that makes the image unique.
-          'imgp' => $absolpath . '/' . $retval[$poct - 1],
-          //'imgp' => $retval[$poct - 1],
-          'imgw' => $imgwbig,
-          'imgh' => $imghbig,
-          'imgcrop' => $imgcrop,
+        // This array contains everything that makes the image unique.
+        'imgp' => $absolpath . '/' . $retval[$poct - 1],
+        //'imgp' => $retval[$poct - 1],
+        'imgw' => $imgwbig,
+        'imgh' => $imghbig,
+        'imgcrop' => 'no', # Not $imgcrop because zoomed images do never need to be cropped (only thumbnails)!
         );
         //$bgimgproperties_base64 = base64_encode(serialize($bgimgproperties_array));
         $bgimgproperties_array_token = brilliant_gallery_image_properties_set($bgimgproperties_array);
@@ -495,30 +499,30 @@ function render_brilliant_gallery($paramarray = array()) {
         $result .= '>';
         # Important to begin with the "/" otherwise thumbnails in non-root folders fail. See http://drupal.org/node/175292
         /*
-         $modulepath = url(drupal_get_path('module', 'brilliant_gallery'), array('absolute' => TRUE));
-         # url() ads i18n codes to the URL ... we need to remove them here...
-         if ( $langcode <> '' ) {
-         $modulepath = str_replace( '/' . $langcode . '/', '/', $modulepath );
-         }
-         # Non-clean URLs need removing ?q=
-         $modulepath = str_replace( "?q=", "",  $modulepath );
-         */
+        $modulepath = url(drupal_get_path('module', 'brilliant_gallery'), array('absolute' => TRUE));
+        # url() ads i18n codes to the URL ... we need to remove them here...
+        if ( $langcode <> '' ) {
+        $modulepath = str_replace( '/' . $langcode . '/', '/', $modulepath );
+        }
+        # Non-clean URLs need removing ?q=
+        $modulepath = str_replace( "?q=", "",  $modulepath );
+        */
 
         #$result .= '<img style="display: block;border:0" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
         #$result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&amp;imgw=' . $imgw . '&amp;imgh=' . $imgh . '" />'; # width="' . $imgw . '"
         # width="' . $imgw . '"
         #$result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'. $modulepath .'/image.php?imgp='. base64_encode($absolpath .'/'. $retval[$poct - 1]) .'&imgw='. $imgw .'&imgh='. $imgh .'" />';
         /*
-         $imgsrc = file_create_url($modulepath .'/image.php?imgp='. base64_encode($absolpath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgw .'&amp;tst=3&amp;imgh='. $imgh . '&amp;imgcrop='. $imgcrop);
-         $result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'.$imgsrc.'" />';
-         */
+        $imgsrc = file_create_url($modulepath .'/image.php?imgp='. base64_encode($absolpath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgw .'&amp;tst=3&amp;imgh='. $imgh . '&amp;imgcrop='. $imgcrop);
+        $result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'.$imgsrc.'" />';
+        */
         $bgimgproperties_array = array(
-          // This array contains everything that makes the image unique.
-          'imgp' => $absolpath . '/' . $retval[$poct - 1],
-          //'imgp' => $retval[$poct - 1],
-          'imgw' => $imgw,
-          'imgh' => $imgh,
-          'imgcrop' => $imgcrop,
+        // This array contains everything that makes the image unique.
+        'imgp' => $absolpath . '/' . $retval[$poct - 1],
+        //'imgp' => $retval[$poct - 1],
+        'imgw' => $imgw,
+        'imgh' => $imgh,
+        'imgcrop' => $imgcrop,
         );
         //$bgimgproperties_base64 = base64_encode(serialize($bgimgproperties_array));
         $bgimgproperties_array_token = brilliant_gallery_image_properties_set($bgimgproperties_array);
@@ -528,6 +532,10 @@ function render_brilliant_gallery($paramarray = array()) {
         //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_hash.'.bgimg';
         //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_base64.'.'.brilliant_gallery_get_extension($retval[$poct - 1]);
         $imgsrc = file_create_url(file_directory_path() . '/' . variable_get('brilliant_gallery_pcache', '') . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
+        $secur = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+        if ($secur == 's'){
+          $imgsrc = str_replace('http://','https://',$imgsrc);
+        }
         $result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="' . $imgsrc . '" />';
         #$result .= '<br>.................................'.$imgsrc;
         #$result .= '</a>';
