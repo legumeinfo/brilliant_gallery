@@ -43,7 +43,8 @@ function render_brilliant_gallery($paramarray = array()) {
     // Is this a Picasa gallery?
     $picasafolder = false;
     $picasawebsignature = 'http://picasaweb.google.';
-    if (substr($thisfolder,0,strlen($picasawebsignature)) == $picasawebsignature) {
+    $picasawebsignaturesecure = 'https://picasaweb.google.';
+    if (substr($thisfolder,0,strlen($picasawebsignature)) == $picasawebsignature OR substr($thisfolder,0,strlen($picasawebsignaturesecure)) == $picasawebsignaturesecure) {
         // Must work for all variants - http://picasaweb.google.com, http://picasaweb.google.co.uk, etc.
         // Replace '&amp;' (happens if tags are edited in rich text editors) by '&'.
         $thisfolder = str_replace("&amp;","&",$thisfolder);
@@ -149,7 +150,7 @@ function render_brilliant_gallery($paramarray = array()) {
     if ($paramarray[12] == 'yes' and $picasafolder){
         // Display a Picasa slide show - but only if this is Picasa data and not a local gallery.
         $slideshowurl = str_replace('/base/','/api/',$thisfolder); // The only difference between RSS and slideshow feeds, apparently.
-        $result .= '<embed width="'.$widthoverride.'" height="'.($widthoverride*0.75).'" type="application/x-shockwave-flash" src="http://picasaweb.google.com/s/c/bin/slideshow.swf" flashvars="host=picasaweb.google.com&captions=0&hl=en_US&feat=flashalbum&interval=20;RGB=0x000000&feed='.urlencode($slideshowurl).'" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>';
+        $result .= '<embed type="application/x-shockwave-flash" src="https://picasaweb.google.com/s/c/bin/slideshow.swf" width="'.$widthoverride.'" height="'.($widthoverride*0.75).'" flashvars="host=picasaweb.google.com&hl=en_US&feat=flashalbum&interval=20&RGB=0x000000&feed='.urlencode($slideshowurl).'" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>';
     } else 
     { // If this is a gallery and not a slideshow.
         // Get absolute path
@@ -193,6 +194,9 @@ function render_brilliant_gallery($paramarray = array()) {
 
             @mkdir($mkdirek); // See http://drupal.org/node/368583#comment-1243641
 
+            // Get it over http, not https
+            $url_to_fetch = str_replace('https://','http://',$url_to_fetch);
+            
             // Get the Picasa gallery feed XML file.
             $cacheid_url_to_fetch = 'bg_gallery_picasa_xml_'.md5($url_to_fetch);
             if ($cache = cache_get($cacheid_url_to_fetch) and !empty($cache->data)) {
