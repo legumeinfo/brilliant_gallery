@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 function brilliant_gallery_cron() {
     // Delete all expired images from the file cache folder brilliant_gallery_pcache

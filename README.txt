@@ -1,4 +1,3 @@
-/* $Id$ */
 
 Highly customizable table gallery of quality-scaled images from multiple defined folders, or from a Picasa gallery.
 

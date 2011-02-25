@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 function brilliant_gallery_menu() {
 

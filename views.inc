@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 
 /* TODO FormAPI image buttons are now supported.
