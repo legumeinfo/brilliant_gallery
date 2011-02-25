@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 function render_brilliant_gallery($paramarray = array()) {
   $thisfolder = $paramarray[1];

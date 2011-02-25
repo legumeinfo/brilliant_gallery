@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @todo Please document this function.

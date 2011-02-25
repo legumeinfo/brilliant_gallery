@@ -1,4 +1,3 @@
-; $Id$
 name = Brilliant Gallery
 description = Highly customizable Drupal module producing multiple table galleries of quality-scaled images from either a pre-defined local folder, or from any public Picasa gallery.
 ;dependencies[] = lightbox2
