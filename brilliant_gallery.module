@@ -292,6 +292,18 @@ function brilliant_gallery_admin() {
     return system_settings_form($form);
 }
 
+function brilliant_gallery_admin_validate($form, &$form_state) {
+    $brilliant_gallery_folder = $form_state['values']['brilliant_gallery_folder'];
+    if (substr($brilliant_gallery_folder,0,1) == "/" OR substr($brilliant_gallery_folder,-1,1) == "/"){
+        form_set_error('brilliant_gallery_folder', 'The path should not start or end with a slash.');
+    }
+    $dir = realpath(file_directory_path()).'/'. $brilliant_gallery_folder;
+    if(!file_exists($dir) OR !is_dir($dir)){
+        form_set_error('brilliant_gallery_folder', 'Directory '. $brilliant_gallery_folder.' does not exist in '.file_directory_path().'/');
+    }
+}
+
+
 # Probably not the right way of doing it but it works...
 function brilliant_gallery_perms() {
     header("HTTP/1.1 301 Moved Permanently");

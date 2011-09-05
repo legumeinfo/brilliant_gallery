@@ -60,11 +60,8 @@ function brilliant_gallery_menu() {
     drupal_set_message('............'.file_directory_path() .'/'. variable_get('brilliant_gallery_pcache', '').'....g....'.$_SERVER['REQUEST_URI']);
     */
     $items[file_directory_path() .'/'. variable_get('brilliant_gallery_pcache', '')] = array(
-    //file_directory_path() .'/'. variable_get('brilliant_gallery_folder', '') .'/'
     'title' => 'render image',
     'page callback' => 'brilliant_gallery_deliver_image',
-    //'page callback' => 'brilliant_gallery_brokenimage',
-    //'page arguments' => array($bgimgproperties_hash_position), // http://api.drupal.org/api/function/page_example_menu/6
     'access arguments' => array('access brilliant_gallery'),
     'type' => MENU_CALLBACK,
     );
