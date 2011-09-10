@@ -19,8 +19,9 @@ function render_brilliant_gallery($paramarray = array()) {
   $colouroverride = $paramarray[6];
 
   $beginfromoverride = $paramarray[7];
-  if ($beginfromoverride == '')
+  if ($beginfromoverride == '') {
     $beginfromoverride = 1;
+  }
 
   $captionyesnotext = $paramarray[8];
 
@@ -156,7 +157,8 @@ function render_brilliant_gallery($paramarray = array()) {
       $url_to_fetch = $thisfolder;
       #echo '.--..'.$url_to_fetch;
       $mgalleryurl = md5($url_to_fetch);
-      $pcachetemp = trim(variable_get('brilliant_gallery_pcache', file_directory_temp()));
+      $pcachetemp = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
+  //brilliant_gallery_check_or_create_dir($pcachetemp);
       if ($pcachetemp == '' or $pcachetemp == file_directory_temp()) {
         // If there is no cache directory in the files folder, then we need to use the default temp dir
         $pcachetemp = file_directory_temp();
@@ -441,8 +443,10 @@ function render_brilliant_gallery($paramarray = array()) {
         //drupal_set_message(file_create_url('brilliant_gallery/image/').$bgimgproperties_hash);
         //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_hash.'.bgimg';
         //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_base64.'.'.brilliant_gallery_get_extension($retval[$poct - 1]);
-        $imgsrc = file_create_url(file_directory_path() . '/' . variable_get('brilliant_gallery_pcache', '') . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
-        //$imgsrc = file_create_url(substr(file_directory_path(),1) .'/'. variable_get('brilliant_gallery_pcache', '') .'/bg_cached_resized_'.$bgimgproperties_base64.'.'.brilliant_gallery_get_extension($retval[$poct - 1]));
+  $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
+  //brilliant_gallery_check_or_create_dir($pcache);
+        $imgsrc = file_create_url(file_directory_path() . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
+        //$imgsrc = file_create_url(substr(file_directory_path(),1) .'/'. variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR) .'/bg_cached_resized_'.$bgimgproperties_base64.'.'.brilliant_gallery_get_extension($retval[$poct - 1]));
         $result .= '<a href="' . $imgsrc . '"';
         //$result .= '<a href="'.$modulepath .'/image.php?imgp='. base64_encode($absolpath .'/'. $retval[$poct - 1]) .'&imgw='. $imgwbig .'&imgh='. $imghbig.'"';
         #}
@@ -509,7 +513,9 @@ function render_brilliant_gallery($paramarray = array()) {
         //drupal_set_message(file_create_url('brilliant_gallery/image/').$bgimgproperties_hash);
         //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_hash.'.bgimg';
         //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_base64.'.'.brilliant_gallery_get_extension($retval[$poct - 1]);
-        $imgsrc = file_create_url(file_directory_path() . '/' . variable_get('brilliant_gallery_pcache', '') . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
+  $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
+  //brilliant_gallery_check_or_create_dir($pcache);
+        $imgsrc = file_create_url(file_directory_path() . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
         $secur = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
         if ($secur == 's') {
           $imgsrc = str_replace('http://', 'https://', $imgsrc);

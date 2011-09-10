@@ -8,7 +8,7 @@ function brilliant_gallery_cron() {
         variable_set('brilliant_gallery_last_cron',time());
         brilliant_gallery_cleantmpdir();
         brilliant_gallery_clean_table_image_arrays();
-    }         
+    }
 }
 
 function brilliant_gallery_clean_table_image_arrays(){
@@ -26,13 +26,17 @@ function brilliant_gallery_cleantmpdir() {
     $timenow = time();
     $bgcachexpire = brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration',90));
     $timestampexpired = time()-$bgcachexpire;
-    $cachetempdirectory = trim(variable_get('brilliant_gallery_pcache', file_directory_temp())); 
+    $cachetempdirectory = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
+    //brilliant_gallery_check_or_create_dir($cachetempdirectory);
+    /*
     if ($cachetempdirectory == ''){
         // If there is no cache directory in the files folder, then we need to use the default temp dir
         $cachetempdirectory = file_directory_temp();
     } else {
         $cachetempdirectory = realpath(file_directory_path()) . '/' . $cachetempdirectory;
     }
+    */
+        $cachetempdirectory = realpath(file_directory_path()) . '/' . $cachetempdirectory;
 
     $GLOBALS['bg_removedcnt'] = 0;
     #watchdog('Brilliant Gal','sakr2: '.$cachetempdirectory);
@@ -55,7 +59,7 @@ function brilliant_gallery_rmdir_recursive($dir, $timestampexpired) {
     #return; // TEMP SAFETY - TO BE CORRECTED LATER!
     // Remove '/' at the end, if any
     $slash = '/';
-    if (substr($dir,-1) == '/') $slash = ''; 
+    if (substr($dir,-1) == '/') $slash = '';
     $files = scandir($dir);
     array_shift($files);    // remove '.' from array
     array_shift($files);    // remove '..' from array
@@ -90,9 +94,9 @@ function brilliant_gallery_rmdir_recursive($dir, $timestampexpired) {
                 //drupal_set_message('3: '.$file.'...'.$suffix);
                 //watchdog('Brilliant Gal Cron','3: '.$file.'...'.$suffix);
                 #watchdog('Brilliant Gal Cron','file: '.$file . '('.@filemtime($file));
-                if (@filemtime($file) < $timestampexpired) { 
+                if (@filemtime($file) < $timestampexpired) {
                     #drupal_set_message('file: '.$file . '('.filemtime($file).' = '.date('Y-m-d H:i:s',filemtime($file)).') (++'.$GLOBALS['bg_removedcnt'].')');
-                    $unlinked = unlink($file); 
+                    $unlinked = unlink($file);
                     if ($unlinked){
                         $GLOBALS['bg_removedcnt'] ++;
                     }

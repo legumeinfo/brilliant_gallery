@@ -1,11 +1,15 @@
 <?php
 
+/**
+ * Default directory (path) within the /files dir for temp (cache) files.
+ */
+define('BRILLIANT_GALLERY_DEFAULT_CACHE_DIR', 'brilliant_gallery_temp');
 
 #sess_write('vacilando', 'this is a test');
 
 if (module_exists('views')) {
-    module_load_include('inc', 'brilliant_gallery', 'views');
-    #require(drupal_get_path('module', 'brilliant_gallery') .'/views.inc');
+  module_load_include('inc', 'brilliant_gallery', 'views');
+  #require(drupal_get_path('module', 'brilliant_gallery') .'/views.inc');
 }
 
 module_load_include('inc', 'brilliant_gallery', 'menu');
@@ -15,174 +19,178 @@ module_load_include('inc', 'brilliant_gallery', 'gallery_showtime');
 module_load_include('inc', 'brilliant_gallery', 'cron');
 
 #drupal_set_message('bgc '.$bgcachexpire . ' / '.$GLOBALS['bgcachexpire']);
-
 #$bgcachexpire = 3600 * 24 * 3;
-
 // include the brilliant_gallery_checklist .js file in nodes
 #drupal_add_js(drupal_get_path('module', 'brilliant_gallery') .'/bgchecklist.js');
 
 /**
-* Display help and module information
-*
-* @param section which section of the site we're displaying help
-*
-* @return help text for section
-*/
+ * Display help and module information
+ *
+ * @param section which section of the site we're displaying help
+ *
+ * @return help text for section
+ */
 function brilliant_gallery_help($path, $arg) {
 
-    $output = '';
+  $output = '';
 
-    switch ($section) {
-        case "admin/help#brilliant_gallery":
-            $output = '<p>'. t("Highly customizable Drupal module creating a table gallery of quality-scaled images from any number of folders.") .'</p>';
-            break;
-    }
+  switch ($section) {
+    case "admin/help#brilliant_gallery":
+      $output = '<p>' . t("Highly customizable Drupal module creating a table gallery of quality-scaled images from any number of folders.") . '</p>';
+      break;
+  }
 
-    return $output;
+  return $output;
 }
+
 // function brilliant_gallery_help
 
 /**
-* Valid permissions for this module
-*
-* @return array An array of valid permissions for the onthisdate module
-*/
+ * Valid permissions for this module
+ *
+ * @return array An array of valid permissions for the onthisdate module
+ */
 function brilliant_gallery_perm() {
 
-    #, 'administer brilliant_gallery'
-    return array('access brilliant_gallery', 'access administration pages');
+  #, 'administer brilliant_gallery'
+  return array('access brilliant_gallery', 'access administration pages');
 }
+
 // function brilliant_gallery_perm
 
 /**
-* Generate HTML for the Brilliant gallery block
-*
-* @param op the operation from the URL
-* @param delta offset
-*
-* @returns block HTML
-*/
+ * Generate HTML for the Brilliant gallery block
+ *
+ * @param op the operation from the URL
+ * @param delta offset
+ *
+ * @returns block HTML
+ */
 function brilliant_gallery_block($op = 'list', $delta = 0) {
-    // listing of blocks, such as on the admin/block page
-    if ($op == "list") {
-        $block[0]["info"] = t("Brilliant gallery");
-        return $block;
-    }
-    else if ($op == 'view') {
-            // our block content
-            // content variable that will be returned for display
-            $block_content = '';
+  // listing of blocks, such as on the admin/block page
+  if ($op == "list") {
+    $block[0]["info"] = t("Brilliant gallery");
+    return $block;
+  } else if ($op == 'view') {
+    // our block content
+    // content variable that will be returned for display
+    $block_content = '';
 
-            #$block_content .= l($links->title, 'node/'.$links->nid) . '<br />';
-            #$block_content .= l('vacilando', 'http://www.vacilando.org') . '<br />';
+    #$block_content .= l($links->title, 'node/'.$links->nid) . '<br />';
+    #$block_content .= l('vacilando', 'http://www.vacilando.org') . '<br />';
 
-            $block_content .= render_brilliant_gallery();
+    $block_content .= render_brilliant_gallery();
 
-            // set up the block
-            $block['subject'] = 'Brilliant gallery';
-            $block['content'] = $block_content;
-            return $block;
-        }
+    // set up the block
+    $block['subject'] = 'Brilliant gallery';
+    $block['content'] = $block_content;
+    return $block;
+  }
 }
+
 // end brilliant_gallery_block
 function brilliant_gallery_all($switch = '') {
-    // content variable that will be returned for display
-    $page_content = '';
+  // content variable that will be returned for display
+  $page_content = '';
 
-    if ($switch == '') {
-        $page_content .= render_brilliant_gallery();
-    }
-    else if ($switch == 'edit') {
-            $page_content .= render_brilliant_gallery_edit();
-        }
+  if ($switch == '') {
+    $page_content .= render_brilliant_gallery();
+  } else if ($switch == 'edit') {
+    $page_content .= render_brilliant_gallery_edit();
+  }
 
-        return $page_content;
+  return $page_content;
 }
-
 
 // function to load the settings of all the checkboxes on this node
 // note that checkboxes that has never been checked will not have an entry in the database
 function brilliant_gallery_checklist_loadall($nid = '') {
-    global $user;
-    $GLOBALS['devel_shutdown'] = FALSE;
-    $uid = $user->uid;
-    $dcvals = array();
-    // any checkbox id that starts with user- we remember the current user's settings
-    // any other id is global and we use user=0
-    $result = db_query("select qid,state from {brilliant_gallery_checklist} ".
-    " where nid=%d and qid not like 'user-%' and user=0 ".
-    " union ".
-    "select qid,state from {brilliant_gallery_checklist} ".
-    "where nid=%d and qid like 'user-%' and user=%d ", $nid, $nid, $uid
-    );
-    $count = 0;
-    while ($data = db_fetch_object($result)) {
-        $dcvals[$count] = array(qid => $data->qid, state => $data->state);
-        $count++;
-    }
-    print drupal_to_js($dcvals);
-    exit();
+  global $user;
+  $GLOBALS['devel_shutdown'] = FALSE;
+  $uid = $user->uid;
+  $dcvals = array();
+  // any checkbox id that starts with user- we remember the current user's settings
+  // any other id is global and we use user=0
+  $result = db_query("select qid,state from {brilliant_gallery_checklist} " .
+          " where nid=%d and qid not like 'user-%' and user=0 " .
+          " union " .
+          "select qid,state from {brilliant_gallery_checklist} " .
+          "where nid=%d and qid like 'user-%' and user=%d ", $nid, $nid, $uid
+  );
+  $count = 0;
+  while ($data = db_fetch_object($result)) {
+    $dcvals[$count] = array(qid => $data->qid, state => $data->state);
+    $count++;
+  }
+  print drupal_to_js($dcvals);
+  exit();
 }
+
 // function to save/update the state of a checkbox when toggled
 function brilliant_gallery_checklist_save($nid, $qid, $state) {
-    global $user;
-    $GLOBALS['devel_shutdown'] = FALSE;
-    if (preg_match("/^user-/", $qid) == 1) {
-        $uid = $user->uid;
-    }
-    else {
-        $uid = 0;
-    }
+  global $user;
+  $GLOBALS['devel_shutdown'] = FALSE;
+  if (preg_match("/^user-/", $qid) == 1) {
+    $uid = $user->uid;
+  } else {
+    $uid = 0;
+  }
 
-    $existing = db_result(db_query("select count(state) from {brilliant_gallery_checklist} ".
-    "where nid=%d and user=%d and qid='%s'", $nid, $uid, $qid
-    ));
-    if ($existing == 0) {
-        db_query("insert into {brilliant_gallery_checklist} (nid,user,qid,state) " . "values (%d,%d,'%s',%d)", $nid, $uid, $qid, $state);
-    }
-    elseif ($current != $state) {
-        $current = db_result(db_query("select state from {brilliant_gallery_checklist} " . " where nid=%d and user=%d and qid='%s'", $nid, $uid, $qid));
+  $existing = db_result(db_query("select count(state) from {brilliant_gallery_checklist} " .
+                  "where nid=%d and user=%d and qid='%s'", $nid, $uid, $qid
+          ));
+  if ($existing == 0) {
+    db_query("insert into {brilliant_gallery_checklist} (nid,user,qid,state) " . "values (%d,%d,'%s',%d)", $nid, $uid, $qid, $state);
+  } elseif ($current != $state) {
+    $current = db_result(db_query("select state from {brilliant_gallery_checklist} " . " where nid=%d and user=%d and qid='%s'", $nid, $uid, $qid));
 
-        if ($current != $state) {
-            db_query("update {brilliant_gallery_checklist} " . "set state=%d where nid=%d and user=%d and qid='%s'", $state, $nid, $uid, $qid);
-        }
+    if ($current != $state) {
+      db_query("update {brilliant_gallery_checklist} " . "set state=%d where nid=%d and user=%d and qid='%s'", $state, $nid, $uid, $qid);
     }
-    print drupal_to_js("1");
-    exit();
+  }
+  print drupal_to_js("1");
+  exit();
 }
 
 // helper function for preg_replace_callback to generate the html for each checkbox
 // Form API not used as that would float all the checkboxes to the top/bottom of the page.
 function brilliant_gallery_checklist_docheckbox($matches) {
-    global $brilliant_gallery_checklist_matchcount;
-    $brilliant_gallery_checklist_matchcount++;
-    $name   = check_plain($matches[1]);
-    $label  = filter_xss($matches[2]);
-    $output = <<<OUTPUT
+  global $brilliant_gallery_checklist_matchcount;
+  $brilliant_gallery_checklist_matchcount++;
+  $name = check_plain($matches[1]);
+  $label = filter_xss($matches[2]);
+  $output = <<<OUTPUT
     <div class="bgchecklist"> <div class="form-item"> <input name="$name" id="$name" value="1" class="form-brilliant_gallery_checklist-checkbox" type="checkbox"> <label class="option"> $label </label> </div></div>
 OUTPUT;
-    return $output;
+  return $output;
 }
 
 function brilliant_gallery_admin() {
-    $form['brilliant_gallery_folder'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Main gallery folder used for local galleries (not for Picasa)'),
-    '#default_value' => variable_get('brilliant_gallery_folder', ''),
-    '#size' => 77,
-    '#maxlength' => 333,
-    '#description' => t("Enter the name of the main folder in which you plan to store all your future gallery folders. This base folder must be located under your default file system folder (see your file system path in /admin/settings/file-system/settings). If this main folder does not exist under the file system folder, create it first. Do not use trailing slashes. Enter, for example, <i>albums</i> or <i>myimages/albums</i>. If you leave this field empty your gallery will show only images that reside directly in the root of your file system folder."),
-    );
-    $form['brilliant_gallery_pcache'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Path to Picasa image CACHE folder'),
-    '#default_value' => variable_get('brilliant_gallery_pcache', file_directory_temp()),
-    '#size' => 77,
-    '#maxlength' => 333,
-    #'#description' => t("Full server path to the a folder in which resized images and images, including those fetched from Picasa, will be temporarily stored. If you are on a dedicated server, this can be your usual temp folder, but if you are on a shared host, it is imperative this path is in your /files directory. Remember: PHP has to have the permission to write into that directory! Start with a slash but do NOT end with a slash. E.g. /var/www/vhosts/domain.tld/httpdocs/sites/mysite.tld/files/tmp"),
-    '#description' => t("Path to a folder in which images fetched from Picasa will be temporarily stored. Such folder must exist under your /files folder. Exclude trailing slashes. Example: <i>bgcache</i>. Remember: PHP has to have the permission to write into that directory! <br>Leave empty if you wish your usual Drupal temp directory (see /admin/settings/file-system) be used for this cache. (If you are on a dedicated server, this can be your server's /tmp folder, but if you are on a shared host, it is important this path is somewhere inside your /files directory, esp. if you are fetching a large number of images from Picasa.)"),
-    );
-    /*
+  $form['brilliant_gallery_folder'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Main gallery folder used for local galleries (not for Picasa)'),
+      '#default_value' => variable_get('brilliant_gallery_folder', ''),
+      '#size' => 77,
+      '#maxlength' => 333,
+      '#description' => t("Enter the name of the main folder in which you plan to store all your future gallery folders.
+        This base folder must be located under your default file system folder (see your file system path in /admin/settings/file-system/settings).
+        If this main folder does not exist under the file system folder, create it first. Do not use trailing slashes.
+        Enter, for example, <i>albums</i> or <i>myimages/albums</i>. If you leave this field empty your gallery will show only images that reside
+        directly in the root of your file system folder."),
+  );
+  $form['brilliant_gallery_pcache'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Custom path for a cache folder'),
+      '#default_value' => variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR),
+      '#size' => 77,
+      '#maxlength' => 333,
+      '#description' => t("It is OK to leave this field empty. If such case, a directory called 'brilliant_gallery_temp' will
+        automatically be created in your /files directory. Images fetched from Picasa will be temporarily stored there.
+        <br />Otherwise, you can set here a custom path to a caching directory in your /files directory.. Such directory must exist
+        under your /files directory. (FYI: your /files directory is defined at /admin/settings/file-system.)
+        Exclude trailing slashes. Example: <i>brilliant_gallery_temp</i>. PHP must have the permission to write into that directory."),
+  );
+  /*
     $form['brilliant_gallery_cache'] = array(
     '#type' => 'radios',
     '#title' => t('Database or file system caching of images and other gallery structures'),
@@ -192,241 +200,255 @@ function brilliant_gallery_admin() {
     ),
     '#description' => t("Select database (default) or file system caching method."),
     );
-    */
-    $form['brilliant_gallery_cache_duration'] = array( // Cache expiration - both DB cache and the Picasa file cache.
-    '#type' => 'textfield',
-    '#title' => t('Expiration time of the gallery cache (in days)'),
-    '#default_value' => variable_get('brilliant_gallery_cache_duration', '90'),
-    '#size' => 5,
-    '#maxlength' => 5,
-    '#description' => t("Images and other gallery structures are cached to improve speed of serving. Here you can set how long time they should be cached."),
-    );
-    $form['brilliant_gallery_maxcol'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Maximum number of table columns'),
-    '#default_value' => variable_get('brilliant_gallery_maxcol', 5),
-    '#size' => 2,
-    '#maxlength' => 2,
-    '#description' => t("The maximum number of columns displayed in the table."),
-    );
-    $form['brilliant_gallery_maximagewidth'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Maximum width of table images'),
-    '#default_value' => variable_get('brilliant_gallery_maximagewidth', 150),
-    '#size' => 3,
-    '#maxlength' => 4,
-    '#description' => t("The maximum width of thumbnails in the table (height calculated automatically)."),
-    );
-    $form['brilliant_gallery_crop'] = array(
-    '#type' => 'select',
-    '#title' => t('Crop thumbnails to square shape'),
-    '#required' => FALSE,
-    '#options' => array(
-    'yes' => t('yes'),
-    'no' => t('no'),
-    ),
-    '#default_value' => variable_get('brilliant_gallery_crop', 'no'),
-    '#description' => t("If selected, all image thumbnails will have the same square shape."),
-    );
-    $form['brilliant_gallery_bcgcolour'] = array(
-    '#type' => 'colorpicker',
-    '#title' => t('Table background colour'),
-    '#default_value' => variable_get('brilliant_gallery_bcgcolour', '#000000'),
-    '#size' => 8,
-    '#maxlength' => 7,
-    '#description' => t("Pick colour of the background of the table that holds the images."),
-    );
-    $form['brilliant_gallery_bcgcolour_textfield'] = array(
-    '#type' => 'colorpicker_textfield',
-    '#title' => t('Current background color'),
-    '#description' => t(''),
-    '#default_value' => variable_get('brilliant_gallery_bcgcolour_textfield', '#000000'),
-    '#colorpicker' => 'brilliant_gallery_bcgcolour',
-    );
-    $form['brilliant_gallery_padding'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Table cell padding'),
-    '#default_value' => variable_get('brilliant_gallery_padding', 3),
-    '#size' => 3,
-    '#maxlength' => 3,
-    '#description' => t("Cell padding (around each image) in pixels."),
-    );
-    $form['brilliant_gallery_overbrowser'] = array(
-    '#type' => 'select',
-    '#title' => t('Overlay browser'),
-    '#required' => FALSE,
-    '#options' => array(
-    'lightbox' => t('Lightbox'),
-    'thickbox' => t('Thickbox'),
-    'greybox' => t('Greybox'),
-    'none' => t('None'),
-    ),
-    '#default_value' => variable_get('brilliant_gallery_overbrowser', 'lightbox'),
-    '#description' => t('Select the overlay image browser (must be installed, of course).'),
-    );
-    $form['brilliant_gallery_maxwidth'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Maximum width of full image'),
-    '#default_value' => variable_get('brilliant_gallery_maxwidth', '1000'),
-    '#size' => 5,
-    '#maxlength' => 5,
-    '#description' => t("Very large images will be scaled down to this width (in pixels) for display before they get displayed by the overlay browser."),
-    );
-    $form['brilliant_gallery_caption'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display file name as caption'),
-    '#default_value' => variable_get('brilliant_gallery_caption', ''),
-    #'#size' => 5,
-    #'#maxlength' => 5,
-    '#description' => t("Check this if you want the overlay browser to display a caption based on the image file name (dots and underscores are automatically replaced by spaces)."),
-    );
-    $form['brilliant_gallery_sort'] = array(
-    '#type' => 'radios',
-    '#title' => t('Sort or randomize image order'),
-    '#default_value' => variable_get('brilliant_gallery_sort', '1'),
-    '#options' => array('1' => t('Sort images by their file names alphabetically.'),
-    '' => t('The order of your gallery images will always be randomized (on each page load or cache refresh).'),
-    ),
-    #'#description' => t("")
-    );
-    return system_settings_form($form);
+   */
+  $form['brilliant_gallery_cache_duration'] = array(// Cache expiration - both DB cache and the Picasa file cache.
+      '#type' => 'textfield',
+      '#title' => t('Expiration time of the gallery cache (in days)'),
+      '#default_value' => variable_get('brilliant_gallery_cache_duration', '90'),
+      '#size' => 5,
+      '#maxlength' => 5,
+      '#description' => t("Images and other gallery structures are cached to improve speed of serving. Here you can set how long time they should be cached."),
+  );
+  $form['brilliant_gallery_maxcol'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Maximum number of table columns'),
+      '#default_value' => variable_get('brilliant_gallery_maxcol', 5),
+      '#size' => 2,
+      '#maxlength' => 2,
+      '#description' => t("The maximum number of columns displayed in the table."),
+  );
+  $form['brilliant_gallery_maximagewidth'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Maximum width of table images'),
+      '#default_value' => variable_get('brilliant_gallery_maximagewidth', 150),
+      '#size' => 3,
+      '#maxlength' => 4,
+      '#description' => t("The maximum width of thumbnails in the table (height calculated automatically)."),
+  );
+  $form['brilliant_gallery_crop'] = array(
+      '#type' => 'select',
+      '#title' => t('Crop thumbnails to square shape'),
+      '#required' => FALSE,
+      '#options' => array(
+          'yes' => t('yes'),
+          'no' => t('no'),
+      ),
+      '#default_value' => variable_get('brilliant_gallery_crop', 'no'),
+      '#description' => t("If selected, all image thumbnails will have the same square shape."),
+  );
+  $form['brilliant_gallery_bcgcolour'] = array(
+      '#type' => 'colorpicker',
+      '#title' => t('Table background colour'),
+      '#default_value' => variable_get('brilliant_gallery_bcgcolour', '#000000'),
+      '#size' => 8,
+      '#maxlength' => 7,
+      '#description' => t("Pick colour of the background of the table that holds the images."),
+  );
+  $form['brilliant_gallery_bcgcolour_textfield'] = array(
+      '#type' => 'colorpicker_textfield',
+      '#title' => t('Current background color'),
+      '#description' => t(''),
+      '#default_value' => variable_get('brilliant_gallery_bcgcolour_textfield', '#000000'),
+      '#colorpicker' => 'brilliant_gallery_bcgcolour',
+  );
+  $form['brilliant_gallery_padding'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Table cell padding'),
+      '#default_value' => variable_get('brilliant_gallery_padding', 3),
+      '#size' => 3,
+      '#maxlength' => 3,
+      '#description' => t("Cell padding (around each image) in pixels."),
+  );
+  $form['brilliant_gallery_overbrowser'] = array(
+      '#type' => 'select',
+      '#title' => t('Overlay browser'),
+      '#required' => FALSE,
+      '#options' => array(
+          'lightbox' => t('Lightbox'),
+          'thickbox' => t('Thickbox'),
+          'greybox' => t('Greybox'),
+          'none' => t('None'),
+      ),
+      '#default_value' => variable_get('brilliant_gallery_overbrowser', 'lightbox'),
+      '#description' => t('Select the overlay image browser (must be installed, of course).'),
+  );
+  $form['brilliant_gallery_maxwidth'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Maximum width of full image'),
+      '#default_value' => variable_get('brilliant_gallery_maxwidth', '1000'),
+      '#size' => 5,
+      '#maxlength' => 5,
+      '#description' => t("Very large images will be scaled down to this width (in pixels) for display before they get displayed by the overlay browser."),
+  );
+  $form['brilliant_gallery_caption'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Display file name as caption'),
+      '#default_value' => variable_get('brilliant_gallery_caption', ''),
+      #'#size' => 5,
+      #'#maxlength' => 5,
+      '#description' => t("Check this if you want the overlay browser to display a caption based on the image file name (dots and underscores are automatically replaced by spaces)."),
+  );
+  $form['brilliant_gallery_sort'] = array(
+      '#type' => 'radios',
+      '#title' => t('Sort or randomize image order'),
+      '#default_value' => variable_get('brilliant_gallery_sort', '1'),
+      '#options' => array('1' => t('Sort images by their file names alphabetically.'),
+          '' => t('The order of your gallery images will always be randomized (on each page load or cache refresh).'),
+      ),
+          #'#description' => t("")
+  );
+  return system_settings_form($form);
 }
 
 function brilliant_gallery_admin_validate($form, &$form_state) {
-    $brilliant_gallery_folder = $form_state['values']['brilliant_gallery_folder'];
-    if (substr($brilliant_gallery_folder,0,1) == "/" OR substr($brilliant_gallery_folder,-1,1) == "/"){
-        form_set_error('brilliant_gallery_folder', 'The path should not start or end with a slash.');
+
+  $brilliant_gallery_folder = $form_state['values']['brilliant_gallery_folder'];
+  if (substr($brilliant_gallery_folder, 0, 1) == "/" OR substr($brilliant_gallery_folder, -1, 1) == "/") {
+    form_set_error('brilliant_gallery_folder', 'The path should not start or end with a slash.');
+  }
+  $dir = realpath(file_directory_path()) . '/' . $brilliant_gallery_folder;
+  if (!file_exists($dir) OR !is_dir($dir)) {
+    form_set_error('brilliant_gallery_folder', 'Directory ' . $brilliant_gallery_folder . ' does not exist in ' . file_directory_path() . '/');
+  }
+
+  $brilliant_gallery_pcache = $form_state['values']['brilliant_gallery_pcache'];
+  if (trim($brilliant_gallery_pcache) == '') {
+    $brilliant_gallery_pcache = BRILLIANT_GALLERY_DEFAULT_CACHE_DIR;
+  }
+  if (substr($brilliant_gallery_pcache, 0, 1) == "/" OR substr($brilliant_gallery_pcache, -1, 1) == "/") {
+    form_set_error('brilliant_gallery_pcache', 'The path should not start or end with a slash.');
+  } else {
+    // The directory either exists or we attempt to create it now.
+    $path = file_create_path($brilliant_gallery_pcache);
+    if (file_check_directory($path, FILE_CREATE_DIRECTORY)) {
+      // All OK, the directory exists or was just created.
+      //variable_set('brilliant_gallery_pcache', $brilliant_gallery_pcache);
+      $form_state['values']['brilliant_gallery_pcache'] = $brilliant_gallery_pcache; // Why not set it as well.
+      //$tst = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
+      //return $default_dir;
+    } else {
+      form_set_error('brilliant_gallery_pcache', "Directory " . $brilliant_gallery_pcache . " in your /files folder either could not be created or is not writable.");
     }
-    $dir = realpath(file_directory_path()).'/'. $brilliant_gallery_folder;
-    if(!file_exists($dir) OR !is_dir($dir)){
-        form_set_error('brilliant_gallery_folder', 'Directory '. $brilliant_gallery_folder.' does not exist in '.file_directory_path().'/');
+  }
+  /*
+    function brilliant_gallery_check_or_create_dir($default_dir) {
+    $path = file_create_path($default_dir);
+    if (file_check_directory($path, FILE_CREATE_DIRECTORY)) {
+    return $default_dir;
+    } else {
+    $errmsg = "Directory ".$default_dir." in your /files folder either could not be created or is not writable.";
+    drupal_set_message($errmsg);
+    watchdog('Brilliant Gal',$errmsg);
     }
+    }
+   */
+
+
 }
 
-
-# Probably not the right way of doing it but it works...
 function brilliant_gallery_perms() {
-    header("HTTP/1.1 301 Moved Permanently");
-    header("Location: /?q=admin/user/permissions#module-brilliant_gallery");
-    exit();
+  drupal_goto('admin/user/permissions', NULL, 'module-brilliant_gallery');
 }
 
 function bg_iterative_recurse_dir($from = '.') {
-    if (!is_dir($from)) {
-        return false;
-    }
-    $files = array();
-    $dirs = array($from);
-    while (NULL !== ($dir = array_pop($dirs))) {
-        if ($dh = opendir($dir)) {
-            while (false !== ($file = readdir($dh))) {
-                if ($file == '.' || $file == '..') {
-                    continue;
-                }
-                $path = $dir .'/'. $file;
-                if (is_dir($path)) {
-                    $dirs[] = $path;
-                }
-                else $files[] = $path;
-            }
-            closedir($dh);
+  if (!is_dir($from)) {
+    return false;
+  }
+  $files = array();
+  $dirs = array($from);
+  while (NULL !== ($dir = array_pop($dirs))) {
+    if ($dh = opendir($dir)) {
+      while (false !== ($file = readdir($dh))) {
+        if ($file == '.' || $file == '..') {
+          continue;
         }
+        $path = $dir . '/' . $file;
+        if (is_dir($path)) {
+          $dirs[] = $path;
+        }
+        else
+          $files[] = $path;
+      }
+      closedir($dh);
     }
-    return $files;
+  }
+  return $files;
 }
 
 #function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $widthoverride = '', $sortoverride = '', $maximumnumbertoshow = '', $colouroverride = '', $beginfromoverride = 1, $captionyesnotext = '') {
-
-
 # Implementation of hook_filter().
+
 function brilliant_gallery_filter($op, $delta = 0, $format = -1, $text = '') {
-    switch ($op) {
-        case 'no cache':
-            return FALSE; // FALSE means cache is used. See http://api.drupal.org/api/function/hook_filter/6
+  switch ($op) {
+    case 'no cache':
+      return FALSE; // FALSE means cache is used. See http://api.drupal.org/api/function/hook_filter/6
 
-        case 'list':
-            return array(0 => t('Brilliant Gallery Tag'));
+    case 'list':
+      return array(0 => t('Brilliant Gallery Tag'));
 
-        case 'description':
-            return t('Substitutes a special Brilliant Gallery Tag with the actual gallery table.');
+    case 'description':
+      return t('Substitutes a special Brilliant Gallery Tag with the actual gallery table.');
 
-        case 'prepare':
-            return $text;
+    case 'prepare':
+      return $text;
 
-        case 'process':
-            # process it here........
-            $text = replace_brilliant_gallery_tags($text);
-            #drupal_set_message('here '.microtime());
-            return $text;
-    }
+    case 'process':
+      # process it here........
+      $text = replace_brilliant_gallery_tags($text);
+      #drupal_set_message('here '.microtime());
+      return $text;
+  }
 }
 
-function brilliant_gallery_get_allowed_params(){
+function brilliant_gallery_get_allowed_params() {
 
-    $allowed_params = array(
+  $allowed_params = array(
+      // path/to/your/gallery/folder/without/wrapping/slashes|
+      // or Picasa RSS URI
+      // If not set, the value set at /admin/settings/brilliant_gallery is used.
+      1 => 'location',
+      // Columns to show. Zero (0) means there will be as many columns as the width of the page permits.
+      // If not set, the value set at /admin/settings/brilliant_gallery is used.
+      2 => 'thumbcolumns',
+      // Width of individual thumbs. Height is calculated automatically, except in the case of square thumbs, where this will also be the height of the thumbs.
+      // If not set, the value set at /admin/settings/brilliant_gallery is used.
+      3 => 'thumbwidth',
+      // 'sort' means images in the gallery will be sorted by their file names alphabetically, in ascending order. Set it to 'random' to shuffle the images in a gallery.
+      // If not set, the value set at /admin/settings/brilliant_gallery is used.
+      4 => 'thumbsort',
+      // Maximum number of images to show in a gallery.
+      5 => 'thumbmaxshow',
+      // Background colour in format #000000.
+      // If not set, the value set at /admin/settings/brilliant_gallery is used.
+      6 => 'thumbbackcolour',
+      // Sequential number of the image in the gallery that should appear as the first one.
+      7 => 'thumbstartfrom',
+      // Show captions in the overlay browser (based on the image file name (based on the image file name; dots and underscores are automatically replaced by spaces).
+      // Can be 'yes', 'no', or you can specify text that will override the file name (useful when showing a single image).
+      // If not set, the value set at /admin/settings/brilliant_gallery is used.
+      8 => 'fullcaption',
+      // Maximum width of images in full view (in the overlay browser).
+      9 => 'fullwidth',
+      // Squared - thumbnails are squared (both portrait and landscape images are cropped around their geometric centers).
+      // If not set, the value set at /admin/settings/brilliant_gallery is used.
+      // Either 'yes' or 'no'.
+      10 => 'thumbsquared',
+      // Table cell padding, in pixels.
+      11 => 'thumbpadding',
+      // Don't show a grid of images, but a slide show.
+      // Currently only working for images fetched from Picasa.
+      // 'yes' or 'no'. Default is on 'no'.
+      12 => 'thumbslideshow',
+      // Show only one or several images specified by file name(s), separated by commas. E.g.: imageone.jpg, imagetwo.png, imagethree.gif
+      13 => 'thumbshowbyname',
+      // Cache the HTML code of the generated gallery.
+      14 => 'thumbhtmlcache',
+      // Align images within cells of the galleries. Defaults to 'center'.
+      15 => 'thumbalignincell',
+  );
 
-    // path/to/your/gallery/folder/without/wrapping/slashes|
-    // or Picasa RSS URI
-    // If not set, the value set at /admin/settings/brilliant_gallery is used.
-    1 => 'location',
-
-    // Columns to show. Zero (0) means there will be as many columns as the width of the page permits.
-    // If not set, the value set at /admin/settings/brilliant_gallery is used.
-    2 => 'thumbcolumns',
-
-    // Width of individual thumbs. Height is calculated automatically, except in the case of square thumbs, where this will also be the height of the thumbs.
-    // If not set, the value set at /admin/settings/brilliant_gallery is used.
-    3 => 'thumbwidth',
-
-    // 'sort' means images in the gallery will be sorted by their file names alphabetically, in ascending order. Set it to 'random' to shuffle the images in a gallery.
-    // If not set, the value set at /admin/settings/brilliant_gallery is used.
-    4 => 'thumbsort',
-
-    // Maximum number of images to show in a gallery.
-    5 => 'thumbmaxshow',
-
-    // Background colour in format #000000.
-    // If not set, the value set at /admin/settings/brilliant_gallery is used.
-    6 => 'thumbbackcolour',
-
-    // Sequential number of the image in the gallery that should appear as the first one.
-    7 => 'thumbstartfrom',
-
-    // Show captions in the overlay browser (based on the image file name (based on the image file name; dots and underscores are automatically replaced by spaces).
-    // Can be 'yes', 'no', or you can specify text that will override the file name (useful when showing a single image).
-    // If not set, the value set at /admin/settings/brilliant_gallery is used.
-    8 => 'fullcaption',
-
-    // Maximum width of images in full view (in the overlay browser).
-    9 => 'fullwidth',
-
-    // Squared - thumbnails are squared (both portrait and landscape images are cropped around their geometric centers).
-    // If not set, the value set at /admin/settings/brilliant_gallery is used.
-    // Either 'yes' or 'no'.
-    10 => 'thumbsquared',
-
-    // Table cell padding, in pixels.
-    11 => 'thumbpadding',
-
-    // Don't show a grid of images, but a slide show.
-    // Currently only working for images fetched from Picasa.
-    // 'yes' or 'no'. Default is on 'no'.
-    12 => 'thumbslideshow',
-
-    // Show only one or several images specified by file name(s), separated by commas. E.g.: imageone.jpg, imagetwo.png, imagethree.gif
-    13 => 'thumbshowbyname',
-
-    // Cache the HTML code of the generated gallery.
-    14 => 'thumbhtmlcache',
-
-    // Align images within cells of the galleries. Defaults to 'center'.
-    15 => 'thumbalignincell',
-    );
-
-    return $allowed_params;
+  return $allowed_params;
 }
-
-
 
 /**
 * Implementation of hook_filter_tips().
