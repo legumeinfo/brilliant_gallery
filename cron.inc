@@ -39,14 +39,17 @@ function brilliant_gallery_cleantmpdir() {
   $timenow = REQUEST_TIME;
   $bgcachexpire = brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration', 90));
   $timestampexpired = REQUEST_TIME -$bgcachexpire;
-  $cachetempdirectory = trim(variable_get('brilliant_gallery_pcache', file_directory_temp()));
-  if ($cachetempdirectory == '') {
-    // If there is no cache directory in the files folder, then we need to use the default temp dir
-    $cachetempdirectory = file_directory_temp();
-  }
-  else {
-    $cachetempdirectory = realpath(file_directory_path()) . '/' . $cachetempdirectory;
-  }
+  $cachetempdirectory = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
+  //brilliant_gallery_check_or_create_dir($cachetempdirectory);
+  /*
+   if ($cachetempdirectory == ''){
+   // If there is no cache directory in the files folder, then we need to use the default temp dir
+   $cachetempdirectory = file_directory_temp();
+   } else {
+   $cachetempdirectory = realpath(file_directory_path()) . '/' . $cachetempdirectory;
+   }
+   */
+  $cachetempdirectory = realpath(file_directory_path()) . '/' . $cachetempdirectory;
 
   $GLOBALS['bg_removedcnt'] = 0;
   #watchdog('Brilliant Gal','sakr2: '.$cachetempdirectory);
@@ -102,9 +105,9 @@ function brilliant_gallery_rmdir_recursive($dir, $timestampexpired) {
       //drupal_set_message('2: '.$filename.'...'.$suffix);
       if (
             $suffix == 'jpg'
-              OR $suffix == 'jpeg'
-              OR $suffix == 'png'
-              OR $suffix == 'gif'
+             OR $suffix == 'jpeg'
+             OR $suffix == 'png'
+             OR $suffix == 'gif'
             //OR (strtolower(substr($filename, 0, 3)) == 'bg_cached_resized_' ) // Files like e.g. bg_ffbbaff39504d459ed277714786267b8
             ) {
         # It is a file in the specified BG cache directory

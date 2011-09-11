@@ -71,9 +71,7 @@ function render_brilliant_gallery($paramarray = array()) {
     }
   }
   #watchdog('Brilliant Gal', 's1: '.implode(' ... ',$thumbshowbyname));
-
   #drupal_add_css(drupal_get_path('module', 'brilliant_gallery') .'/brilliant_gallery.css');
-
   # Patching a possible problem with i18n
   $langcode = '';
   if (function_exists('i18n_get_lang')) {
@@ -83,23 +81,25 @@ function render_brilliant_gallery($paramarray = array()) {
   #$result = '</p>';
   $result = '';
   $galleryfolder = variable_get('brilliant_gallery_folder', '');
-  if (substr($galleryfolder, strlen($galleryfolder) - 1, 1) == '/' or substr($galleryfolder, 0, 1) == '/') {
-    #watchdog('error', 'failed to notify "weblogs.com" (site)');
-    #form_set_error('yemail', t('Header injection attempt detected.  Do not enter line feed characters into the from field!'));
-    $bgmsg = 'Main gallery folder path must not begin or end with a slash; please fix it at /admin/settings/brilliant_gallery';
-    drupal_set_message($bgmsg);
-    watchdog('Brilliant Gal', $bgmsg);
-    return;
-  }
   /*
+   if (substr($galleryfolder, strlen($galleryfolder) - 1, 1) == '/' or substr($galleryfolder, 0, 1) == '/') {
+   #watchdog('error', 'failed to notify "weblogs.com" (site)');
+   #form_set_error('yemail', t('Header injection attempt detected.  Do not enter line feed characters into the from field!'));
+   $bgmsg = 'Main gallery folder path must not begin or end with a slash; please fix it at /admin/settings/brilliant_gallery';
+   drupal_set_message($bgmsg);
+   watchdog('Brilliant Gal',$bgmsg);
+   return;
+   }
+   */
+  /*
+   if ($thisfolder <> '') {
+   $galleryfolder .= '/'. $thisfolder;
+   }
+   */
   if ($thisfolder <> '') {
-  $galleryfolder .= '/'. $thisfolder;
-  }
-  */
-  if ( $thisfolder <> '') {
     if ($galleryfolder <> '') {
       #$galleryfolder .= '/' . $thisfolder;
-      $galleryfolder .= (substr($thisfolder, 0, 1) == '/' ? '' : '/') . $thisfolder; // See http://drupal.org/node/176939#comment-1494648
+      $galleryfolder .= ( substr($thisfolder, 0, 1) == '/' ? '' : '/') . $thisfolder; // See http://drupal.org/node/176939#comment-1494648
     }
     else {
       $galleryfolder = $thisfolder;
@@ -131,16 +131,16 @@ function render_brilliant_gallery($paramarray = array()) {
     $bgcolour = $colouroverride;
   }
   #if ($captionyesornot == 'yes' or $captionyesornot == '' or (variable_get('brilliant_gallery_caption', '') <> '' and $captionyesornot <> 'no')) {
-  if (($captionyesnotext == 'yes' or $captionyesnotext == '') and variable_get('brilliant_gallery_caption', '') <> '' ) {
+  if (($captionyesnotext == 'yes' or $captionyesnotext == '') and variable_get('brilliant_gallery_caption', '') <> '') {
     $showcaption = 'filename';
   }
   #else if ($captionyesornot == 'no') {
   else if ($captionyesnotext == 'no' or (variable_get('brilliant_gallery_caption', '') == '' and ($captionyesnotext == 'yes' or $captionyesnotext == 'no'))) {
-      $showcaption = '';
-    }
-    else {
-      #$showcaption = $captionyesornot;
-      $showcaption = $captionyesnotext;
+    $showcaption = '';
+  }
+  else {
+    #$showcaption = $captionyesornot;
+    $showcaption = $captionyesnotext;
   }
   $padding = variable_get('brilliant_gallery_padding', 3);
   $overbrowser = variable_get('brilliant_gallery_overbrowser', 'lightbox');
@@ -158,7 +158,7 @@ function render_brilliant_gallery($paramarray = array()) {
   if ($paramarray[12] == 'yes' and $picasafolder) {
     // Display a Picasa slide show - but only if this is Picasa data and not a local gallery.
     $slideshowurl = str_replace('/base/', '/api/', $thisfolder); // The only difference between RSS and slideshow feeds, apparently.
-    $result .= '<embed type="application/x-shockwave-flash" src="https://picasaweb.google.com/s/c/bin/slideshow.swf" width="'.$widthoverride.'" height="'.($widthoverride*0.75).'" flashvars="host=picasaweb.google.com&hl=en_US&feat=flashalbum&interval=20&RGB=0x000000&feed='.urlencode($slideshowurl).'" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>';
+    $result .= '<embed type="application/x-shockwave-flash" src="https://picasaweb.google.com/s/c/bin/slideshow.swf" width="' . $widthoverride . '" height="' . ($widthoverride * 0.75) . '" flashvars="host=picasaweb.google.com&hl=en_US&feat=flashalbum&interval=20&RGB=0x000000&feed=' . urlencode($slideshowurl) . '" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>';
   }
   else { // If this is a gallery and not a slideshow.
     // Get absolute path
@@ -166,7 +166,8 @@ function render_brilliant_gallery($paramarray = array()) {
       $url_to_fetch = $thisfolder;
       #echo '.--..'.$url_to_fetch;
       $mgalleryurl = md5($url_to_fetch);
-      $pcachetemp = trim(variable_get('brilliant_gallery_pcache', file_directory_temp()));
+      $pcachetemp = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
+      //brilliant_gallery_check_or_create_dir($pcachetemp);
       if ($pcachetemp == '' or $pcachetemp == file_directory_temp()) {
         // If there is no cache directory in the files folder, then we need to use the default temp dir
         $pcachetemp = file_directory_temp();
@@ -183,8 +184,6 @@ function render_brilliant_gallery($paramarray = array()) {
       // We go and look at the images every time we render BG, because it sometimes happens that Picasa does not provide them all at the time of the initial fetching. So we will fetch any missing ones, and also replace the expired ones.
       // Vacilando 20091016: It is ABSOLUTELY CRUCIAL that this uses include_ONCE, otherwise picasa.inc was called twice in some cases.
       //include_once ('./'. drupal_get_path('module', 'brilliant_gallery') ."/picasa.inc");
-
-
       #$url_to_fetch = "http://picasaweb.google.com/data/feed/base/user/tjfulopp/albumid/5288246472868572145?alt=rss&kind=photo&hl=en_US";
       if ($url_to_fetch == '') {
         return;
@@ -196,28 +195,27 @@ function render_brilliant_gallery($paramarray = array()) {
       //exec('mkdir '.$mkdirek);
       #watchdog('Brilliant Gal', mt_rand(1000,9999) . ' ' . arg(1).' pinc '.microtime());
       /*
-      ob_start();
-      debug_print_backtrace();
-      $btrace = ob_get_contents();
-      ob_end_clean();
-      */
+       ob_start();
+       debug_print_backtrace();
+       $btrace = ob_get_contents();
+       ob_end_clean();
+       */
       #watchdog('Brilliant Gal', mt_rand(1000,9999) . ' ' . arg(1).' pinc '.$btrace);
 
       @mkdir($mkdirek); // See http://drupal.org/node/368583#comment-1243641
-
-            // Get it over http, not https
-            $url_to_fetch = str_replace('https://','http://',$url_to_fetch);
+      // Get it over http, not https
+      $url_to_fetch = str_replace('https://', 'http://', $url_to_fetch);
 
       // Get the Picasa gallery feed XML file.
       $cacheid_url_to_fetch = 'bg_gallery_picasa_xml_' . md5($url_to_fetch);
       if ($cache = cache_get($cacheid_url_to_fetch) and !empty($cache->data)) {
         $html = $cache->data;
         /*
-        global $user; $userId = $user->uid;
-        if ($userId == 1){
-        drupal_set_message('got it from cache '.$url_to_fetch);
-        }
-        */
+         global $user; $userId = $user->uid;
+         if ($userId == 1){
+         drupal_set_message('got it from cache '.$url_to_fetch);
+         }
+         */
       }
       else {
         // Do your expensive calculations here...
@@ -226,13 +224,13 @@ function render_brilliant_gallery($paramarray = array()) {
         $html = $htmlobj->data; // Get just the data from the returned object.
         cache_set($cacheid_url_to_fetch, $html, 'cache', brilliant_gallery_get_time_this_many_seconds_from_now($bgcachexpire));
         #drupal_set_message('...2'.$html);
-        watchdog('Brilliant Gal', 'Fetched XML from ' . $url_to_fetch . ' (' . strlen($html) . ' bytes). Elapsed time: ' . (REQUEST_TIME -$timenow) . ' seconds.');
+        watchdog('Brilliant Gal', 'Fetched XML from ' . $url_to_fetch . ' (' . strlen($html) . ' bytes). Elapsed time: ' . (REQUEST_TIME - $timenow) . ' seconds.');
         /*
-        global $user; $userId = $user->uid;
-        if ($userId == 1){
-        drupal_set_message('again fetched '.$url_to_fetch);
-        }
-        */
+         global $user; $userId = $user->uid;
+         if ($userId == 1){
+         drupal_set_message('again fetched '.$url_to_fetch);
+         }
+         */
       }
 
       # if ($http_result->code == 200) {
@@ -260,21 +258,21 @@ function render_brilliant_gallery($paramarray = array()) {
 
         $lastchanged = @filemtime($foqen); // Last file modification time, or FALSE on error.
         /*
-        global $user; $userId = $user->uid;
-        if ($userId == 1){
-        drupal_set_message('pic '.($timenow - $lastchanged).' > '.$bgcachexpire.' ... '.$foqen);
-        }
-        */
+         global $user; $userId = $user->uid;
+         if ($userId == 1){
+         drupal_set_message('pic '.($timenow - $lastchanged).' > '.$bgcachexpire.' ... '.$foqen);
+         }
+         */
         #if ($_GET['fetchnow']==1){ $lastchanged = FALSE; } // Debugging!
-        if ( $lastchanged === FALSE OR ($timenow - $lastchanged > $bgcachexpire) ) {
+        if ($lastchanged === FALSE OR ($timenow - $lastchanged > $bgcachexpire)) {
           // If the image is expired, we need to actively delete it, for the case that it was removed / hidden by the owner.
           @unlink($foqen);
           /*
-          global $user; $userId = $user->uid;
-          if ($userId == 1){
-          drupal_set_message('in!');
-          }
-          */
+           global $user; $userId = $user->uid;
+           if ($userId == 1){
+           drupal_set_message('in!');
+           }
+           */
           ///*
           $imager = drupal_http_request($imgurl);
           $image = $imager->data;
@@ -290,11 +288,10 @@ function render_brilliant_gallery($paramarray = array()) {
             $fetchingnow++;
           }
         }
-
       }
 
       if ($fetchingnow <> 0) {
-        watchdog('Brilliant Gal', 'Fetched ' . $fetchingnow . ' images from ' . $url_to_fetch . '. Elapsed time: ' . (REQUEST_TIME -$timenow) . ' seconds.');
+        watchdog('Brilliant Gal', 'Fetched ' . $fetchingnow . ' images from ' . $url_to_fetch . '. Elapsed time: ' . (REQUEST_TIME - $timenow) . ' seconds.');
       }
 
       $absolpath = $slashpcachetemp . '/bg_picasa_orig_' . $mgalleryurl;
@@ -306,13 +303,12 @@ function render_brilliant_gallery($paramarray = array()) {
     }
     #$result .= $absolpath;
     #watchdog('Brilliant Gal','absol: '.$absolpath);
-
     # Make an array with images in this folder, and their properties.
     #$temp              = load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $brilliant_gallery_sort);
-    $temp              = load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $brilliant_gallery_sort, $imagecrop, $maximumnumbertoshow);
+    $temp = load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $brilliant_gallery_sort, $imagecrop, $maximumnumbertoshow);
     $retval_dimensions = $temp[0];
-    $imagemaxh         = $temp[1];
-    $maxpoct           = count($retval_dimensions);
+    $imagemaxh = $temp[1];
+    $maxpoct = count($retval_dimensions);
     #if (arg(2) == 'edit') {
     #print_r( $retval_dimensions );
     #}
@@ -325,12 +321,12 @@ function render_brilliant_gallery($paramarray = array()) {
       // any checkbox id that starts with user- we remember the current user's settings
       // any other id is global and we use user=0
       /*
-      $result=db_query("select qid,state from {brilliant_gallery_checklist} ".
-      " where nid='$nid' and qid not like 'user-%' and user=0 ".
-      " union ".
-      "select qid,state from {brilliant_gallery_checklist} ".
-      "where nid='$nid' and qid like 'user-%' and user='$uid' ");
-      */
+       $result=db_query("select qid,state from {brilliant_gallery_checklist} ".
+       " where nid='$nid' and qid not like 'user-%' and user=0 ".
+       " union ".
+       "select qid,state from {brilliant_gallery_checklist} ".
+       "where nid='$nid' and qid like 'user-%' and user='$uid' ");
+       */
       $dbresult = db_query("select qid from {brilliant_gallery_checklist} where qid like 'user-%' and state='1' ");
       while ($data = db_fetch_object($dbresult)) {
         $excludedimgs[] = $data->qid;
@@ -383,7 +379,7 @@ function render_brilliant_gallery($paramarray = array()) {
       // If we are to display only images specified in $thumbshowbyname, skip the others here:
       if (!empty($thumbshowbyname)) {
         #watchdog('Brilliant Gal', 's2: '.$retval_dimensions[$poct-1]['file'].' // '.implode('---',$thumbshowbyname));
-        if (array_search($retval_dimensions[$poct -1]['file'], $thumbshowbyname) === FALSE) {
+        if (array_search($retval_dimensions[$poct - 1]['file'], $thumbshowbyname) === FALSE) {
           continue;
         }
         #watchdog('Brilliant Gal', '->sb: '.$retval_dimensions[$poct-1]['file'].' // '.implode('---',$thumbshowbyname));
@@ -408,14 +404,13 @@ function render_brilliant_gallery($paramarray = array()) {
       if (testext($retval[$poct - 1])) {
         $caption = str_replace(array('.', '_'), ' ', basename($retval[$poct - 1], strrchr($retval[$poct - 1], '.')));
         #$smallenough = false;
-        $imgw        = $retval_dimensions[$poct - 1]['imgw'];
-        $imgh        = $retval_dimensions[$poct - 1]['imgh'];
-        $imgwbig     = $retval_dimensions[$poct - 1]['imgwbig'];
-        $imghbig     = $retval_dimensions[$poct - 1]['imghbig'];
-        $imgcrop     = $retval_dimensions[$poct - 1]['imgcrop'];
+        $imgw = $retval_dimensions[$poct - 1]['imgw'];
+        $imgh = $retval_dimensions[$poct - 1]['imgh'];
+        $imgwbig = $retval_dimensions[$poct - 1]['imgwbig'];
+        $imghbig = $retval_dimensions[$poct - 1]['imghbig'];
+        $imgcrop = $retval_dimensions[$poct - 1]['imgcrop'];
         #@$smallenough = $retval_dimensions[$poct - 1]['smallenough'];
         #$style_li = "float: left; list-style: none; background: #000; width: 44px; height: 33px; padding: 4px; text-align: center; margin: 0; border: none;";
-
         // If we need to show just 1 image, then it is useless to use the maximum image height for the LI. Use height of the image. Analogous for the width.
         // Cropping has no influence on single images.
         $imagemaxh_here = $imagemaxh;
@@ -426,7 +421,7 @@ function render_brilliant_gallery($paramarray = array()) {
         }
 
         $style_li = "font-size:0; float: left; width: " . $imagewidth_here . "px; list-style: none; background: " . $bgcolour . "; height: " . $imagemaxh_here . "px; padding: " . $padding . "px; text-align: " . $thumbalignincell . "; margin: 0px; border: none;";
-        $result .= ('<li style="' . $style_li . '">' . "\n");
+        $result .= ( '<li style="' . $style_li . '">' . "\n");
         # Get this module's path:
         //$modulepath = url(drupal_get_path('module', 'brilliant_gallery'), array('absolute' => TRUE));
         $modulepath = drupal_get_path('module', 'brilliant_gallery');
@@ -448,12 +443,12 @@ function render_brilliant_gallery($paramarray = array()) {
         //drupal_set_message('imgsrc: '.$imgsrc);
         //echo $imgw; flush();exit();
         $bgimgproperties_array = array(
-        // This array contains everything that makes the image unique.
-        'imgp' => $absolpath . '/' . $retval[$poct - 1],
-        //'imgp' => $retval[$poct - 1],
-        'imgw' => $imgwbig,
-        'imgh' => $imghbig,
-        'imgcrop' => 'no', # Not $imgcrop because zoomed images do never need to be cropped (only thumbnails)!
+          // This array contains everything that makes the image unique.
+          'imgp' => $absolpath . '/' . $retval[$poct - 1],
+          //'imgp' => $retval[$poct - 1],
+          'imgw' => $imgwbig,
+          'imgh' => $imghbig,
+          'imgcrop' => 'no', # Not $imgcrop because zoomed images do never need to be cropped (only thumbnails)!
         );
         //$bgimgproperties_base64 = base64_encode(serialize($bgimgproperties_array));
         $bgimgproperties_array_token = brilliant_gallery_image_properties_set($bgimgproperties_array);
@@ -462,8 +457,10 @@ function render_brilliant_gallery($paramarray = array()) {
         //drupal_set_message(file_create_url('brilliant_gallery/image/').$bgimgproperties_hash);
         //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_hash.'.bgimg';
         //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_base64.'.'.brilliant_gallery_get_extension($retval[$poct - 1]);
-        $imgsrc = file_create_url(file_directory_path() . '/' . variable_get('brilliant_gallery_pcache', '') . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
-        //$imgsrc = file_create_url(substr(file_directory_path(),1) .'/'. variable_get('brilliant_gallery_pcache', '') .'/bg_cached_resized_'.$bgimgproperties_base64.'.'.brilliant_gallery_get_extension($retval[$poct - 1]));
+        $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
+        //brilliant_gallery_check_or_create_dir($pcache);
+        $imgsrc = file_create_url(file_directory_path() . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
+        //$imgsrc = file_create_url(substr(file_directory_path(),1) .'/'. variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR) .'/bg_cached_resized_'.$bgimgproperties_base64.'.'.brilliant_gallery_get_extension($retval[$poct - 1]));
         $result .= '<a href="' . $imgsrc . '"';
         //$result .= '<a href="'.$modulepath .'/image.php?imgp='. base64_encode($absolpath .'/'. $retval[$poct - 1]) .'&imgw='. $imgwbig .'&imgh='. $imghbig.'"';
         #}
@@ -498,30 +495,30 @@ function render_brilliant_gallery($paramarray = array()) {
         $result .= '>';
         # Important to begin with the "/" otherwise thumbnails in non-root folders fail. See http://drupal.org/node/175292
         /*
-        $modulepath = url(drupal_get_path('module', 'brilliant_gallery'), array('absolute' => TRUE));
-        # url() ads i18n codes to the URL ... we need to remove them here...
-        if ( $langcode <> '' ) {
-        $modulepath = str_replace( '/' . $langcode . '/', '/', $modulepath );
-        }
-        # Non-clean URLs need removing ?q=
-        $modulepath = str_replace( "?q=", "",  $modulepath );
-        */
+         $modulepath = url(drupal_get_path('module', 'brilliant_gallery'), array('absolute' => TRUE));
+         # url() ads i18n codes to the URL ... we need to remove them here...
+         if ( $langcode <> '' ) {
+         $modulepath = str_replace( '/' . $langcode . '/', '/', $modulepath );
+         }
+         # Non-clean URLs need removing ?q=
+         $modulepath = str_replace( "?q=", "",  $modulepath );
+         */
 
         #$result .= '<img style="display: block;border:0" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
         #$result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&amp;imgw=' . $imgw . '&amp;imgh=' . $imgh . '" />'; # width="' . $imgw . '"
         # width="' . $imgw . '"
         #$result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'. $modulepath .'/image.php?imgp='. base64_encode($absolpath .'/'. $retval[$poct - 1]) .'&imgw='. $imgw .'&imgh='. $imgh .'" />';
         /*
-        $imgsrc = file_create_url($modulepath .'/image.php?imgp='. base64_encode($absolpath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgw .'&amp;tst=3&amp;imgh='. $imgh . '&amp;imgcrop='. $imgcrop);
-        $result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'.$imgsrc.'" />';
-        */
+         $imgsrc = file_create_url($modulepath .'/image.php?imgp='. base64_encode($absolpath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgw .'&amp;tst=3&amp;imgh='. $imgh . '&amp;imgcrop='. $imgcrop);
+         $result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'.$imgsrc.'" />';
+         */
         $bgimgproperties_array = array(
-        // This array contains everything that makes the image unique.
-        'imgp' => $absolpath . '/' . $retval[$poct - 1],
-        //'imgp' => $retval[$poct - 1],
-        'imgw' => $imgw,
-        'imgh' => $imgh,
-        'imgcrop' => $imgcrop,
+          // This array contains everything that makes the image unique.
+          'imgp' => $absolpath . '/' . $retval[$poct - 1],
+          //'imgp' => $retval[$poct - 1],
+          'imgw' => $imgw,
+          'imgh' => $imgh,
+          'imgcrop' => $imgcrop,
         );
         //$bgimgproperties_base64 = base64_encode(serialize($bgimgproperties_array));
         $bgimgproperties_array_token = brilliant_gallery_image_properties_set($bgimgproperties_array);
@@ -530,10 +527,12 @@ function render_brilliant_gallery($paramarray = array()) {
         //drupal_set_message(file_create_url('brilliant_gallery/image/').$bgimgproperties_hash);
         //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_hash.'.bgimg';
         //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_base64.'.'.brilliant_gallery_get_extension($retval[$poct - 1]);
-        $imgsrc = file_create_url(file_directory_path() . '/' . variable_get('brilliant_gallery_pcache', '') . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
+        $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
+        //brilliant_gallery_check_or_create_dir($pcache);
+        $imgsrc = file_create_url(file_directory_path() . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
         $secur = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
-        if ($secur == 's'){
-          $imgsrc = str_replace('http://','https://',$imgsrc);
+        if ($secur == 's') {
+          $imgsrc = str_replace('http://', 'https://', $imgsrc);
         }
         $result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="' . $imgsrc . '" />';
         #$result .= '<br>.................................'.$imgsrc;
@@ -543,7 +542,7 @@ function render_brilliant_gallery($paramarray = array()) {
       else {
         $fosiz = ceil($imagewidth / 13);
         $style_li = "font-size:" . $fosiz . "px; float: left; width: " . $imagewidth . "px; list-style: none; background: " . $bgcolour . "; height: " . $imagemaxh . "px; padding: " . $padding . "px; text-align: " . $thumbalignincell . "; margin: 0px; border: none;";
-        $result .= ('<li style="' . $style_li . '">' . "\n");
+        $result .= ( '<li style="' . $style_li . '">' . "\n");
         $result .= '<a href="' . $fullimgpath . '">';
         #$result .= '<center>' . $retval[$poct-1] . '</center>';
         $result .= $retval[$poct - 1];

@@ -17,10 +17,10 @@ function render_brilliant_gallery_manage() {
       </div>
 HEADER;
   $result .= $ac_header;
-  $overbrowser   = variable_get('brilliant_gallery_overbrowser', 'lightbox');
-  $setname       = mt_rand(1, 9999999);
+  $overbrowser = variable_get('brilliant_gallery_overbrowser', 'lightbox');
+  $setname = mt_rand(1, 9999999);
   $galleryfolder = variable_get('brilliant_gallery_folder', '');
-  $path          = url(file_directory_path() . '/' . $galleryfolder, array('absolute' => TRUE));
+  $path = url(file_directory_path() . '/' . $galleryfolder, array('absolute' => TRUE));
 
   # url() ads i18n codes to the URL ... we need to remove them here...
   if ($langcode <> '') {
@@ -34,7 +34,6 @@ HEADER;
     $rp .= '/' . $galleryfolder;
   }
 
-  #$absolpath = realpath($rp);
   $absolpath = $rp;
   $result .= '<p>';
   $result .= '<p>This page allows you to set or unset visibility of each image (data item) in all Brilliant galleries there are on this website.';
@@ -69,15 +68,15 @@ HEADER;
     $result .= '<li><a href="?fld=' . $galleryfolder . $path_middle . '">' . $galleryfolder . $path_middle . $rootfolder . '</a></li>';
     if ($galleryfolder . $path_middle == $_GET['fld']) {
       # User has asked to manage images in this folder.
-      $tablerows         = array();
+      $tablerows = array();
       #$temp              = load_dir_to_array($key, variable_get('brilliant_gallery_maximagewidth', 150), variable_get('brilliant_gallery_maxwidth', '1000'), 1, variable_get('brilliant_gallery_crop', FALSE));
       $temp = load_dir_to_array($gallerypath, variable_get('brilliant_gallery_maximagewidth', 150), variable_get('brilliant_gallery_maxwidth', '1000'), 1, variable_get('brilliant_gallery_crop', 'no'));
       $retval_dimensions = $temp[0];
-      $imagemaxh         = $temp[1];
-      $maxpoct           = count($retval_dimensions);
+      $imagemaxh = $temp[1];
+      $maxpoct = count($retval_dimensions);
       #echo '<p>max: ' . $maxpoct;
       #ob_start(); echo '<pre>'; print_r( $retval_dimensions ); echo '</pre>'; $result .= ob_get_contents();
-      # Thanks to Micha³ Albrecht!
+      # Thanks to Michaï¿½ Albrecht!
       $retval = array();
       $cnt = 0;
       #$path = url($key, array('absolute' => TRUE));
@@ -88,10 +87,10 @@ HEADER;
         if (testext($retval[$poct - 1])) {
           $caption = str_replace(array('.', '_'), ' ', basename($retval[$poct - 1], strrchr($retval[$poct - 1], '.')));
           #$smallenough = false;
-          $imgw        = $retval_dimensions[$poct - 1]['imgw'];
-          $imgh        = $retval_dimensions[$poct - 1]['imgh'];
-          $imgwbig     = $retval_dimensions[$poct - 1]['imgwbig'];
-          $imghbig     = $retval_dimensions[$poct - 1]['imghbig'];
+          $imgw = $retval_dimensions[$poct - 1]['imgw'];
+          $imgh = $retval_dimensions[$poct - 1]['imgh'];
+          $imgwbig = $retval_dimensions[$poct - 1]['imgwbig'];
+          $imghbig = $retval_dimensions[$poct - 1]['imghbig'];
           #@$smallenough = $retval_dimensions[$poct - 1]['smallenough'];
           #$style_li = "float: left; width: " . $imagewidth . "px; list-style: none; background: " . $bgcolour . "; height: " . $imagemaxh . "px; padding: " . $padding . "px; text-align: center; margin: 0; border: none;"; #$style_li = "float: left; list-style: none; background: #000; width: 44px; height: 33px; padding: 4px; text-align: center; margin: 0; border: none;";
           #$result .= ('<li style="' . $style_li . '">' . "\n");
@@ -127,7 +126,9 @@ HEADER;
           //drupal_set_message(file_create_url('brilliant_gallery/image/').$bgimgproperties_hash);
           //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_hash.'.bgimg';
           //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_base64.'.'.brilliant_gallery_get_extension($retval[$poct - 1]);
-          $imgsrc = file_create_url(file_directory_path() . '/' . variable_get('brilliant_gallery_pcache', '') . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
+          $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
+          //brilliant_gallery_check_or_create_dir($pcache);
+          $imgsrc = file_create_url(file_directory_path() . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
           $displayimage .= '<a href="' . $imgsrc . '"';
           //$displayimage .= '<a href="'.$modulepath .'/image.php?imgp='. base64_encode($gallerypath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgwbig .'&amp;imgh='. $imghbig.'"';
           #}
@@ -177,10 +178,13 @@ HEADER;
           //drupal_set_message('bgimgproperties_hash: '.$bgimgproperties_hash);
           //drupal_set_message(file_create_url('brilliant_gallery/image/').$bgimgproperties_hash);
           //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_hash.'.bgimg';
-          $imgsrc = file_create_url(file_directory_path() . '/' . variable_get('brilliant_gallery_pcache', '') . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
+          $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
+          // $tst = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
+          //brilliant_gallery_check_or_create_dir($pcache);
+          $imgsrc = file_create_url(file_directory_path() . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
           $secur = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
-          if ($secur == 's'){
-            $imgsrc = str_replace('http://','https://',$imgsrc);
+          if ($secur == 's') {
+            $imgsrc = str_replace('http://', 'https://', $imgsrc);
           }
           $displayimage .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="' . $imgsrc . '" />';
           //$displayimage .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'.$modulepath .'/image.php?imgp='. base64_encode($gallerypath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgw .'&amp;imgh='. $imgh.'" />';

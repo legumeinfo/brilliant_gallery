@@ -63,12 +63,11 @@ function brilliant_gallery_menu() {
    $bgimgproperties_hash = $bgimgproperties_hash[1];
    drupal_set_message('............'.file_directory_path() .'/'. variable_get('brilliant_gallery_pcache', '').'....g....'.$_SERVER['REQUEST_URI']);
    */
-  $items[file_directory_path() . '/' . variable_get('brilliant_gallery_pcache', '')] = array(
-    //file_directory_path() .'/'. variable_get('brilliant_gallery_folder', '') .'/'
+  $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
+  //brilliant_gallery_check_or_create_dir($pcache);
+  $items[file_directory_path() . '/' . $pcache] = array(
     'title' => 'render image',
     'page callback' => 'brilliant_gallery_deliver_image',
-    //'page callback' => 'brilliant_gallery_brokenimage',
-    //'page arguments' => array($bgimgproperties_hash_position), // http://api.drupal.org/api/function/page_example_menu/6
     'access arguments' => array('access brilliant_gallery'),
     'type' => MENU_CALLBACK,
   );
