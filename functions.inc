@@ -14,7 +14,7 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
   $poct = -1;
   $retval_dimensions = array();
   #$handle            = @opendir($absolpath);
-  $actualpath = realpath(file_directory_path()) . $absolpath;
+  $actualpath = realpath(FILE_DIRECTORY_PATH) . $absolpath;
   #watchdog('Brilliant Gal','absol3: '.$actualpath);
   $handle = @opendir($actualpath);
   $imagemaxh = 0;
@@ -231,7 +231,7 @@ function brilliant_gallery_deliver_image() {
    #drupal_cron_run();
    }
    */
-  $imagepath = realpath(file_directory_path() . $urlpath);
+  $imagepath = realpath(FILE_DIRECTORY_PATH . $urlpath);
   #watchdog('Brilliant Gal','imgp: '.$imagepath);
   // Crucial - to suppress Devel (if installed and enabled) output appearing in the generated XML!
   $GLOBALS['devel_shutdown'] = FALSE;
@@ -365,13 +365,9 @@ function resizeimage_wrapper_dbcache($reset = FALSE, $imagepath, $bgimgpropertie
    */
 
 
-  //echo '<br> ... '.$imagepath;
-  //echo '<br> --- '.$bgimgproperties_hash;
-  //echo '<br> +++ '.file_create_url(file_directory_path() .'/'. variable_get('brilliant_gallery_pcache', '') .'/bg_cached_resized_'.$bgimgproperties_hash);
-  //exit();
   $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
   //brilliant_gallery_check_or_create_dir($pcache);
-  $foqen = file_directory_path() . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_hash;
+  $foqen = FILE_DIRECTORY_PATH . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_hash;
   $lastchanged = @filemtime($foqen); // Last file modification time, or FALSE on error.
   /*
    global $user; $userId = $user->uid;

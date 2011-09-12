@@ -49,7 +49,7 @@ function brilliant_gallery_cleantmpdir() {
    $cachetempdirectory = realpath(file_directory_path()) . '/' . $cachetempdirectory;
    }
    */
-  $cachetempdirectory = realpath(file_directory_path()) . '/' . $cachetempdirectory;
+  $cachetempdirectory = realpath(FILE_DIRECTORY_PATH) . '/' . $cachetempdirectory;
 
   $GLOBALS['bg_removedcnt'] = 0;
   #watchdog('Brilliant Gal','sakr2: '.$cachetempdirectory);

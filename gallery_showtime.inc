@@ -72,11 +72,6 @@ function render_brilliant_gallery($paramarray = array()) {
   }
   #watchdog('Brilliant Gal', 's1: '.implode(' ... ',$thumbshowbyname));
   #drupal_add_css(drupal_get_path('module', 'brilliant_gallery') .'/brilliant_gallery.css');
-  # Patching a possible problem with i18n
-  $langcode = '';
-  if (function_exists('i18n_get_lang')) {
-    $langcode = i18n_get_lang();
-  }
 
   #$result = '</p>';
   $result = '';
@@ -146,10 +141,10 @@ function render_brilliant_gallery($paramarray = array()) {
   $overbrowser = variable_get('brilliant_gallery_overbrowser', 'lightbox');
   // Totally full resolution display would be impractical, so this is the maximum width of "full" resolution.
   $fullresolutionmaxwidth = variable_get('brilliant_gallery_maxwidth', '1000');
-  $path = url(file_directory_path() . '/' . $galleryfolder, array('absolute' => TRUE));
+  $path = url(FILE_DIRECTORY_PATH . '/' . $galleryfolder, array('absolute' => TRUE));
   // url() ads i18n codes to the URL ... we need to remove them here...
-  if ($langcode <> '') {
-    $path = str_replace('/' . $langcode . '/', '/', $path);
+  if (BG_LANGCODE <> '') {
+    $path = str_replace('/' . BG_LANGCODE . '/', '/', $path);
   }
 
   // Non-clean URLs need removing ?q=
@@ -176,7 +171,7 @@ function render_brilliant_gallery($paramarray = array()) {
       }
       else {
         $slashpcachetemp = '/' . $pcachetemp;
-        $beg_realpcachetemp = realpath(file_directory_path()) . $slashpcachetemp;
+        $beg_realpcachetemp = realpath(FILE_DIRECTORY_PATH) . $slashpcachetemp;
       }
       #watchdog('Brilliant Gal','sakr: '.$beg_realpcachetemp);
       #$mkdirek = $pcachetemp . '/bg_picasa_'. $mgalleryurl;
@@ -426,8 +421,8 @@ function render_brilliant_gallery($paramarray = array()) {
         //$modulepath = url(drupal_get_path('module', 'brilliant_gallery'), array('absolute' => TRUE));
         $modulepath = drupal_get_path('module', 'brilliant_gallery');
         # url() ads i18n codes to the URL ... we need to remove them here...
-        if ($langcode <> '') {
-          $modulepath = str_replace('/' . $langcode . '/', '/', $modulepath);
+        if (BG_LANGCODE <> '') {
+          $modulepath = str_replace('/' . BG_LANGCODE . '/', '/', $modulepath);
         }
         # Non-clean URLs need removing ?q=
         $modulepath = str_replace("?q=", "", $modulepath);
@@ -459,7 +454,7 @@ function render_brilliant_gallery($paramarray = array()) {
         //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_base64.'.'.brilliant_gallery_get_extension($retval[$poct - 1]);
         $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
         //brilliant_gallery_check_or_create_dir($pcache);
-        $imgsrc = file_create_url(file_directory_path() . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
+        $imgsrc = file_create_url(FILE_DIRECTORY_PATH . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
         //$imgsrc = file_create_url(substr(file_directory_path(),1) .'/'. variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR) .'/bg_cached_resized_'.$bgimgproperties_base64.'.'.brilliant_gallery_get_extension($retval[$poct - 1]));
         $result .= '<a href="' . $imgsrc . '"';
         //$result .= '<a href="'.$modulepath .'/image.php?imgp='. base64_encode($absolpath .'/'. $retval[$poct - 1]) .'&imgw='. $imgwbig .'&imgh='. $imghbig.'"';
@@ -529,7 +524,7 @@ function render_brilliant_gallery($paramarray = array()) {
         //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_base64.'.'.brilliant_gallery_get_extension($retval[$poct - 1]);
         $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
         //brilliant_gallery_check_or_create_dir($pcache);
-        $imgsrc = file_create_url(file_directory_path() . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
+        $imgsrc = file_create_url(FILE_DIRECTORY_PATH . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
         $secur = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
         if ($secur == 's') {
           $imgsrc = str_replace('http://', 'https://', $imgsrc);

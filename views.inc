@@ -120,8 +120,7 @@ function brilliant_gallery_views_handler_image_img($fieldinfo, $fielddata, $valu
     return;
   }
   # Now get a list of images and choose one of them.
-  $absolpath = realpath(file_directory_path() . '/' . variable_get('brilliant_gallery_folder', '') . '/' . $string);
-  #$string .= file_directory_path() . '/' . $string;
+  $absolpath = realpath(FILE_DIRECTORY_PATH . '/' . variable_get('brilliant_gallery_folder', '') . '/' . $string);
   # Load Directory Into Array
   $poct   = -1;
   $retval = array();
@@ -144,15 +143,10 @@ function brilliant_gallery_views_handler_image_img($fieldinfo, $fielddata, $valu
   $imgh = 100;
   $imgw = round(($temp[0] / $temp[1]) * $imgh);
   # Get this module's path:
-  # Patching a possible problem with i18n
-  $langcode = '';
-  if (function_exists('i18n_get_lang')) {
-    $langcode = i18n_get_lang();
-  }
   $modulepath = url(drupal_get_path('module', 'brilliant_gallery'), array('absolute' => TRUE));
   # url() ads i18n codes to the URL ... we need to remove them here...
-  if ($langcode <> '') {
-    $modulepath = str_replace('/' . $langcode . '/', '/', $modulepath);
+  if (BG_LANGCODE <> '') {
+    $modulepath = str_replace('/' . BG_LANGCODE . '/', '/', $modulepath);
   }
   # Non-clean URLs need removing ?q=
   $modulepath  = str_replace("?q=", "", $modulepath);

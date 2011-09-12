@@ -65,7 +65,7 @@ function brilliant_gallery_menu() {
    */
   $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
   //brilliant_gallery_check_or_create_dir($pcache);
-  $items[file_directory_path() . '/' . $pcache] = array(
+  $items[FILE_DIRECTORY_PATH . '/' . $pcache] = array(
     'title' => 'render image',
     'page callback' => 'brilliant_gallery_deliver_image',
     'access arguments' => array('access brilliant_gallery'),

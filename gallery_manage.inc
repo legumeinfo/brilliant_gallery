@@ -20,16 +20,16 @@ HEADER;
   $overbrowser = variable_get('brilliant_gallery_overbrowser', 'lightbox');
   $setname = mt_rand(1, 9999999);
   $galleryfolder = variable_get('brilliant_gallery_folder', '');
-  $path = url(file_directory_path() . '/' . $galleryfolder, array('absolute' => TRUE));
+  $path = url(FILE_DIRECTORY_PATH . '/' . $galleryfolder, array('absolute' => TRUE));
 
   # url() ads i18n codes to the URL ... we need to remove them here...
-  if ($langcode <> '') {
-    $path = str_replace('/' . $langcode . '/', '/', $path);
+  if (BG_LANGCODE <> '') {
+    $path = str_replace('/' . BG_LANGCODE . '/', '/', $path);
   }
 
   # Non-clean URLs need removing ?q=
   $path = str_replace("?q=", "", $path);
-  $rp = file_directory_path();
+  $rp = FILE_DIRECTORY_PATH;
   if ($galleryfolder <> '') {
     $rp .= '/' . $galleryfolder;
   }
@@ -37,7 +37,6 @@ HEADER;
   $absolpath = $rp;
   $result .= '<p>';
   $result .= '<p>This page allows you to set or unset visibility of each image (data item) in all Brilliant galleries there are on this website.';
-  #$result .= '<p><b>Files folder:</b> ' . file_directory_path() . '/';
   ob_start();
   #$recurs = bg_iterative_recurse_dir($absolpath);
   $recurs = bg_iterative_recurse_dir(realpath($absolpath));
@@ -58,15 +57,14 @@ HEADER;
     # Get just the folder name in the main gallery folder.
     if ($galleryfolder == '' and $path_middle == '') {
       $rootfolder = '/';
-    }
-    else {
+    } else {
       $rootfolder = '';
     }
     #$path_middle = str_replace($absolpath, '', $key);
     $path_middle = str_replace(realpath($absolpath), '', $key);
     $gallerypath = '/' . $galleryfolder . $path_middle;
     $result .= '<li><a href="?fld=' . $galleryfolder . $path_middle . '">' . $galleryfolder . $path_middle . $rootfolder . '</a></li>';
-    if ($galleryfolder . $path_middle == $_GET['fld']) {
+    if ($galleryfolder . $path_middle == @$_GET['fld']) {
       # User has asked to manage images in this folder.
       $tablerows = array();
       #$temp              = load_dir_to_array($key, variable_get('brilliant_gallery_maximagewidth', 150), variable_get('brilliant_gallery_maxwidth', '1000'), 1, variable_get('brilliant_gallery_crop', FALSE));
@@ -98,8 +96,8 @@ HEADER;
           //$modulepath = url(drupal_get_path('module', 'brilliant_gallery'), array('absolute' => TRUE));
           $modulepath = drupal_get_path('module', 'brilliant_gallery');
           # url() ads i18n codes to the URL ... we need to remove them here...
-          if ($langcode <> '') {
-            $modulepath = str_replace('/' . $langcode . '/', '/', $modulepath);
+          if (BG_LANGCODE <> '') {
+            $modulepath = str_replace('/' . BG_LANGCODE . '/', '/', $modulepath);
           }
           # Non-clean URLs need removing ?q=
           $modulepath = str_replace("?q=", "", $modulepath);
@@ -113,11 +111,11 @@ HEADER;
           #$displayimage .= '<a href="'. $modulepath .'/image.php?imgp='. base64_encode($absolpath . $path_middle .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgwbig .'&amp;imgh='. $imghbig .'"';
           //$displayimage .= '<a href="'.file_create_url($modulepath .'/image.php?imgp='. base64_encode($gallerypath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgwbig .'&amp;imgh='. $imghbig).'"';
           $bgimgproperties_array = array(
-            // This array contains everything that makes the image unique.
-            'imgp' => $gallerypath . '/' . $retval[$poct - 1],
-            //'imgp' => $retval[$poct - 1],
-            'imgw' => $imgwbig,
-            'imgh' => $imghbig,
+              // This array contains everything that makes the image unique.
+              'imgp' => $gallerypath . '/' . $retval[$poct - 1],
+              //'imgp' => $retval[$poct - 1],
+              'imgw' => $imgwbig,
+              'imgh' => $imghbig,
           );
           //$bgimgproperties_base64 = base64_encode(serialize($bgimgproperties_array));
           $bgimgproperties_array_token = brilliant_gallery_image_properties_set($bgimgproperties_array);
@@ -128,7 +126,7 @@ HEADER;
           //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_base64.'.'.brilliant_gallery_get_extension($retval[$poct - 1]);
           $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
           //brilliant_gallery_check_or_create_dir($pcache);
-          $imgsrc = file_create_url(file_directory_path() . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
+          $imgsrc = file_create_url(FILE_DIRECTORY_PATH . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
           $displayimage .= '<a href="' . $imgsrc . '"';
           //$displayimage .= '<a href="'.$modulepath .'/image.php?imgp='. base64_encode($gallerypath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgwbig .'&amp;imgh='. $imghbig.'"';
           #}
@@ -166,11 +164,11 @@ HEADER;
           #$displayimage .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'. $modulepath .'/image.php?imgp='. base64_encode($absolpath . $path_middle .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgw .'&amp;imgh='. $imgh .'" />';
           //$displayimage .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'.file_create_url($modulepath .'/image.php?imgp='. base64_encode($gallerypath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgw .'&amp;imgh='. $imgh).'" />';
           $bgimgproperties_array = array(
-            // This array contains everything that makes the image unique.
-            'imgp' => $gallerypath . '/' . $retval[$poct - 1],
-            //'imgp' => $retval[$poct - 1],
-            'imgw' => $imgw,
-            'imgh' => $imgh,
+              // This array contains everything that makes the image unique.
+              'imgp' => $gallerypath . '/' . $retval[$poct - 1],
+              //'imgp' => $retval[$poct - 1],
+              'imgw' => $imgw,
+              'imgh' => $imgh,
           );
           //$bgimgproperties_base64 = base64_encode(serialize($bgimgproperties_array));
           $bgimgproperties_array_token = brilliant_gallery_image_properties_set($bgimgproperties_array);
@@ -181,7 +179,7 @@ HEADER;
           $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
           // $tst = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
           //brilliant_gallery_check_or_create_dir($pcache);
-          $imgsrc = file_create_url(file_directory_path() . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
+          $imgsrc = file_create_url(FILE_DIRECTORY_PATH . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
           $secur = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
           if ($secur == 's') {
             $imgsrc = str_replace('http://', 'https://', $imgsrc);
@@ -189,8 +187,7 @@ HEADER;
           $displayimage .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="' . $imgsrc . '" />';
           //$displayimage .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'.$modulepath .'/image.php?imgp='. base64_encode($gallerypath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgw .'&amp;imgh='. $imgh.'" />';
           $displayimage .= '</a>';
-        }
-        else {
+        } else {
           $displayimage .= '<a href="' . $fullimgpath . '">';
           #$result .= '<center>' . $retval[$poct-1] . '</center>';
           $displayimage .= $retval[$poct - 1];
