@@ -136,7 +136,7 @@ function brilliant_gallery_image_properties_set($bgimgproperties_array) {
     //echo 2;
     $change = array(
       'datetime' => date('Y-m-d H:i:s', REQUEST_TIME),
-      hash => $bgimgproperties_hash,
+      'hash' => $bgimgproperties_hash,
     );
     drupal_write_record('brilliant_gallery_image_arrays', $change, 'hash');
   }
@@ -561,7 +561,7 @@ function replace_brilliant_gallery_tags($str) {
     }
 
     // If we are using thumbshowbyname and there is just 1 image, force thumbmaxshow to 1 (prevents BG from adjusting the height as it does for a set of images).
-    if ($match[13] <> '' AND strpos($match[13], ',') === FALSE) {
+    if (@$match[13] <> '' AND strpos(@$match[13], ',') === FALSE) {
       $match[5] = 1;
     }
 

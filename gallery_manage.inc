@@ -153,49 +153,33 @@ HEADER;
               break;
           }
 
-          if ($showcaption <> '') {
-            if ($showcaption <> 'filename') {
+          if (@$showcaption <> '') {
+            if (@$showcaption <> 'filename') {
               $caption = $showcaption;
             }
             $displayimage .= ' title="' . $caption . '"';
           }
           $displayimage .= '>';
-          # width="' . $imgw . '"
-          #$displayimage .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'. $modulepath .'/image.php?imgp='. base64_encode($absolpath . $path_middle .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgw .'&amp;imgh='. $imgh .'" />';
-          //$displayimage .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'.file_create_url($modulepath .'/image.php?imgp='. base64_encode($gallerypath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgw .'&amp;imgh='. $imgh).'" />';
           $bgimgproperties_array = array(
               // This array contains everything that makes the image unique.
               'imgp' => $gallerypath . '/' . $retval[$poct - 1],
-              //'imgp' => $retval[$poct - 1],
               'imgw' => $imgw,
               'imgh' => $imgh,
           );
-          //$bgimgproperties_base64 = base64_encode(serialize($bgimgproperties_array));
           $bgimgproperties_array_token = brilliant_gallery_image_properties_set($bgimgproperties_array);
-          //$bgimgproperties_hash = brilliant_gallery_image_properties_set($bgimgproperties_array);
-          //drupal_set_message('bgimgproperties_hash: '.$bgimgproperties_hash);
-          //drupal_set_message(file_create_url('brilliant_gallery/image/').$bgimgproperties_hash);
-          //$imgsrc = file_create_url('brilliant_gallery/image/').$bgimgproperties_hash.'.bgimg';
           $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
-          // $tst = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
-          //brilliant_gallery_check_or_create_dir($pcache);
           $imgsrc = file_create_url(FILE_DIRECTORY_PATH . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_array_token . '.' . brilliant_gallery_get_extension($retval[$poct - 1]));
           $secur = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
           if ($secur == 's') {
             $imgsrc = str_replace('http://', 'https://', $imgsrc);
           }
           $displayimage .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="' . $imgsrc . '" />';
-          //$displayimage .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'.$modulepath .'/image.php?imgp='. base64_encode($gallerypath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgw .'&amp;imgh='. $imgh.'" />';
           $displayimage .= '</a>';
         } else {
           $displayimage .= '<a href="' . $fullimgpath . '">';
-          #$result .= '<center>' . $retval[$poct-1] . '</center>';
           $displayimage .= $retval[$poct - 1];
-          #brokenimage("Error loading PNG");
-          #$result .= '</a>';
           $displayimage .= '</a>';
         }
-        #$result .= '<br><font size="-1">'. $retval[$poct-1] . '</font>'; # $fullimgpath
         $tablerows[$cnt][0] = $displayimage;
         $tablerows[$cnt][1] = '<font size="-1">' . $retval[$poct - 1] . '</font>';
         # We need some code for brilliant_gallery_checklist
@@ -209,7 +193,8 @@ HEADER;
       foreach ($tablerows as $x => $val) {
         $data[] = array('data' => array($tablerows[$x][0], $tablerows[$x][1], $tablerows[$x][2]));
       }
-      $result .= theme_table($header, $data);
+      //$result .= theme_table($header, $data);
+      $result .= theme('table',array('header' => $header, 'rows' => $data));
       $result .= '<p>';
     }
   }

@@ -25,7 +25,8 @@ function brilliant_gallery_clean_table_image_arrays() {
   //echo "DELETE FROM {brilliant_gallery_image_arrays} WHERE datetime < '".$deletecreatedbeforethistime."'"; exit();
   // TODO Please convert this statement to the D7 database API syntax.
   $dbres = db_query("DELETE FROM {brilliant_gallery_image_arrays} WHERE datetime < '" . $deletecreatedbeforethistime . "'");
-  while ($node = db_fetch_object($dbres)) {
+  //while ($node = db_fetch_object($dbres)) {
+  foreach ($dbres as $node) {
     // Perform operations on $node->body, etc. here.
   }
 }

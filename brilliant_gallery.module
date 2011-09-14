@@ -150,7 +150,8 @@ function brilliant_gallery_checklist_loadall($nid = '') {
           "where nid=%d and qid like 'user-%' and user=%d ", $nid, $nid, $uid
   );
   $count = 0;
-  while ($data = db_fetch_object($result)) {
+  //while ($data = db_fetch_object($result)) {
+  foreach ($result as $data) {
     $dcvals[$count] = array(
         qid => $data->qid,
         state => $data->state,
