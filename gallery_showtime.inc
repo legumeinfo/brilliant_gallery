@@ -323,7 +323,7 @@ function render_brilliant_gallery($paramarray = array()) {
        "where nid='$nid' and qid like 'user-%' and user='$uid' ");
        */
       $dbresult = db_query("select qid from {brilliant_gallery_checklist} where qid like 'user-%' and state='1' ");
-      while ($data = db_fetch_object($dbresult)) {
+      foreach ($dbresult as $data) {
         $excludedimgs[] = $data->qid;
       }
       #print_r($excludedimgs);

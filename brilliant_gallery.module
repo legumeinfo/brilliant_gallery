@@ -435,14 +435,27 @@ function bg_iterative_recurse_dir($from = '.') {
 }
 
 #function render_brilliant_gallery($thisfolder = '', $colcountoverride = '', $widthoverride = '', $sortoverride = '', $maximumnumbertoshow = '', $colouroverride = '', $beginfromoverride = 1, $captionyesnotext = '') {
-# Implementation of hook_filter().
-
 /**
  * Implements hook_filter_info().
  */
 function brilliant_gallery_filter_info() {
+  $filters['filter_brilliant_gallery'] = array(
+    'title' => t('Brilliant Gallery tag'),
+    'description' => t('Substitutes a special Brilliant Gallery tag [bg|...] with the actual gallery table.'),
+    'prepare callback' => 'brilliant_gallery_filter_brilliant_gallery_prepare',
+    'process callback' => 'brilliant_gallery_filter_brilliant_gallery_process',
+    //'tips callback' => '_filter_example_filter_time_tips',
+  );
   return $filters;
 }
+function brilliant_gallery_filter_brilliant_gallery_prepare($text, $filter) {
+      return $text;
+}
+function brilliant_gallery_filter_brilliant_gallery_process($text, $filter) {
+      $text = replace_brilliant_gallery_tags($text);
+      return $text;
+}
+
 
 /**
  * @todo Please document this function.
@@ -505,32 +518,3 @@ function brilliant_gallery_get_allowed_params() {
 
   return $allowed_params;
 }
-
-/**
- * Implementation of hook_filter_tips().
- *
- * This hook allows filters to provide help text to users during the content
- * editing process. Short tips are provided on the content editing screen, while
- * long tips are provided on a separate linked page. Short tips are optional,
- * but long tips are highly recommended.
- */
-/*
- function brilliant_gallery_filter_tips($delta, $format, $long = FALSE) {
- switch ($delta) {
- case 0:
- if ($long) {
- return t('Every instance of "foo" in the input text will be replaced with "%replacement".', array('%replacement' => variable_get('filter_example_foo_'. $format, 'bar')));
- }
- break;
-
- case 1:
- if ($long) {
- return t('Every instance of the special &lt;time /&gt; tag will be replaced with the current date and time in the user\'s specified time zone.');
- }
- else {
- return t('Use &lt;time /&gt; to display the current date/time.');
- }
- break;
- }
- }
- */
