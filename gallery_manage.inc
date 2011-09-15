@@ -23,8 +23,8 @@ HEADER;
   $path = url(file_directory_path() . '/' . $galleryfolder, array('absolute' => TRUE));
 
   # url() ads i18n codes to the URL ... we need to remove them here...
-  if ($langcode <> '') {
-    $path = str_replace('/' . $langcode . '/', '/', $path);
+  if (BG_LANGCODE <> '') {
+    $path = str_replace('/' . BG_LANGCODE . '/', '/', $path);
   }
 
   # Non-clean URLs need removing ?q=
@@ -97,8 +97,8 @@ HEADER;
           //$modulepath = url(drupal_get_path('module', 'brilliant_gallery'), array('absolute' => TRUE));
           $modulepath = drupal_get_path('module', 'brilliant_gallery');
           # url() ads i18n codes to the URL ... we need to remove them here...
-          if ($langcode <> '') {
-            $modulepath = str_replace('/' . $langcode . '/', '/', $modulepath);
+          if (BG_LANGCODE <> '') {
+            $modulepath = str_replace('/' . BG_LANGCODE . '/', '/', $modulepath);
           }
           # Non-clean URLs need removing ?q=
           $modulepath = str_replace("?q=", "", $modulepath);

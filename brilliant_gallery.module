@@ -4,6 +4,12 @@
  * Default directory (path) within the /files dir for temp (cache) files.
  */
 define('BRILLIANT_GALLERY_DEFAULT_CACHE_DIR', 'brilliant_gallery_temp');
+# Patching a possible problem with i18n
+if (function_exists('i18n_get_lang')) {
+  define('BG_LANGCODE', i18n_get_lang());
+} else {
+  define('BG_LANGCODE', '');
+}
 
 #sess_write('vacilando', 'this is a test');
 
@@ -31,16 +37,10 @@ module_load_include('inc', 'brilliant_gallery', 'cron');
  * @return help text for section
  */
 function brilliant_gallery_help($path, $arg) {
-
-  $output = '';
-
-  switch ($section) {
+  switch ($path) {
     case "admin/help#brilliant_gallery":
-      $output = '<p>' . t("Highly customizable Drupal module creating a table gallery of quality-scaled images from any number of folders.") . '</p>';
-      break;
+      return '<h3>' . t('About') . '</h3>' . '<p>' . t("Highly customizable Drupal module creating a table gallery of quality-scaled images from any number of folders.") . '</p>';
   }
-
-  return $output;
 }
 
 // function brilliant_gallery_help
@@ -184,7 +184,7 @@ function brilliant_gallery_admin() {
       '#default_value' => variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR),
       '#size' => 77,
       '#maxlength' => 333,
-      '#description' => t("Images fetched from Picasa will be temporarily stored there.
+      '#description' => t("Temporary storage (cache) for resized local images and for images fetched from Picasa.
         <br />It is OK to leave this field empty. If such case, a directory called 'brilliant_gallery_temp' will automatically be created in your /files directory.
         (FYI: your /files directory is defined at /admin/settings/file-system)
         <br />Otherwise, you can set here a custom path to a caching directory within your /files directory. Exclude trailing slashes. Example: <i>my_brilliant_gallery_temp</i>.
@@ -343,8 +343,6 @@ function brilliant_gallery_admin_validate($form, &$form_state) {
     }
     }
    */
-
-
 }
 
 function brilliant_gallery_perms() {
@@ -450,32 +448,3 @@ function brilliant_gallery_get_allowed_params() {
 
   return $allowed_params;
 }
-
-/**
-* Implementation of hook_filter_tips().
-*
-* This hook allows filters to provide help text to users during the content
-* editing process. Short tips are provided on the content editing screen, while
-* long tips are provided on a separate linked page. Short tips are optional,
-* but long tips are highly recommended.
-*/
-/*
-function brilliant_gallery_filter_tips($delta, $format, $long = FALSE) {
-switch ($delta) {
-case 0:
-if ($long) {
-return t('Every instance of "foo" in the input text will be replaced with "%replacement".', array('%replacement' => variable_get('filter_example_foo_'. $format, 'bar')));
-}
-break;
-
-case 1:
-if ($long) {
-return t('Every instance of the special &lt;time /&gt; tag will be replaced with the current date and time in the user\'s specified time zone.');
-}
-else {
-return t('Use &lt;time /&gt; to display the current date/time.');
-}
-break;
-}
-}
-*/

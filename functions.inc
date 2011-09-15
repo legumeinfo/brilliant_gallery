@@ -119,7 +119,7 @@ function brilliant_gallery_image_properties_set($bgimgproperties_array) {
   } else {
     // Run an update
     //echo 2;
-    $change = array('datetime' => date('Y-m-d H:i:s', time()), hash => $bgimgproperties_hash);
+    $change = array('datetime' => date('Y-m-d H:i:s', time()), 'hash' => $bgimgproperties_hash);
     drupal_write_record('brilliant_gallery_image_arrays', $change, 'hash');
   }
   //echo 3;
