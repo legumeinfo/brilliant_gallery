@@ -32,8 +32,7 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
 
   if (empty($filearray)) {
     watchdog('Brilliant Gal', 'No displayable images in ' . $absolpath . '! Elapsed time: ' . (REQUEST_TIME - $timenow) . ' seconds.');
-  }
-  else {
+  } else {
     foreach ($filearray as $file) {
       # Index of a real image or something we are going to display.
       $poct += 1;
@@ -53,22 +52,19 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
         if ($imagecrop == 'yes') {
           $retval_dimensions[$poct]['imgw'] = $imagewidth;
           $retval_dimensions[$poct]['imgh'] = $imagewidth;
-        }
-        else {
+        } else {
           $retval_dimensions[$poct]['imgw'] = $imagewidth;
           $retval_dimensions[$poct]['imgh'] = round(($temp[1] / $temp[0]) * $imagewidth);
           #watchdog('Brilliant Gal','1imgw: '.$imagewidth.'/'.$imagecrop);
         }
         $retval_dimensions[$poct]['imgwbig'] = $fullresolutionmaxwidth;
         $retval_dimensions[$poct]['imghbig'] = round(($temp[1] / $temp[0]) * $fullresolutionmaxwidth);
-      }
-      else {
+      } else {
         // This is a vertical image
         if ($imagecrop == 'yes') {
           $retval_dimensions[$poct]['imgw'] = round(($temp[0] / $temp[1]) * $imagewidth);
           $retval_dimensions[$poct]['imgh'] = $imagewidth;
-        }
-        else {
+        } else {
           $retval_dimensions[$poct]['imgw'] = round(($temp[0] / $temp[1]) * ($temp[0] / $temp[1]) * $imagewidth);
           $retval_dimensions[$poct]['imgh'] = round(($temp[0] / $temp[1]) * $imagewidth);
           #watchdog('Brilliant Gal','2imgw: '.$imagewidth.'/'.$imagecrop);
@@ -86,8 +82,7 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
 
   if ($brilliant_gallery_sort == '1') {
     @sort($retval_dimensions);
-  }
-  else {
+  } else {
     shuffle($retval_dimensions);
   }
   return array($retval_dimensions, $imagemaxh);
@@ -118,7 +113,6 @@ function brilliant_gallery_image_properties_set($bgimgproperties_array) {
   $bgimgproperties_hash = md5(serialize($bgimgproperties_array));
 
   // Let's keep the array in cache. Check if it is in cache. If not, write it.
-  //echo 0;
   // TODO Please convert this statement to the D7 database API syntax.
   $countie = db_query("SELECT COUNT(*) FROM {brilliant_gallery_image_arrays} WHERE hash = '" . $bgimgproperties_hash . "'")->fetchField();
   if ($countie == 0) {
@@ -128,19 +122,15 @@ function brilliant_gallery_image_properties_set($bgimgproperties_array) {
     $fields->hash = $bgimgproperties_hash;
     $fields->array = serialize($bgimgproperties_array);
     $fields->datetime = date('Y-m-d H:i:s', REQUEST_TIME);
-    //$fields = array("hash" => $bgimgproperties_hash, "array" => $bgimgproperties_array, "datetime" => date( 'Y-m-d H:i:s', time() ));
     drupal_write_record("brilliant_gallery_image_arrays", $fields);
-  }
-  else {
+  } else {
     // Run an update
-    //echo 2;
     $change = array(
-      'datetime' => date('Y-m-d H:i:s', REQUEST_TIME),
-      'hash' => $bgimgproperties_hash,
+        'datetime' => date('Y-m-d H:i:s', REQUEST_TIME),
+        'hash' => $bgimgproperties_hash,
     );
     drupal_write_record('brilliant_gallery_image_arrays', $change, 'hash');
   }
-  //echo 3;
 
   return $bgimgproperties_hash;
 }
@@ -218,18 +208,18 @@ function brilliant_gallery_deliver_image() {
   }
 
   /*
-   drupalize();
-   function drupalize() {
-   while (!@stat('./includes/bootstrap.inc')) {
-   chdir('..');
-   }
-   #module_load_include('/includes/bootstrap.inc', 'image', 'includes/bootstrap');
-   require_once './includes/bootstrap.inc';
-   require_once './includes/file.inc';
-   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL); // See http://drupal.org/node/211378#comment-924059
-   #drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
-   #drupal_cron_run();
-   }
+    drupalize();
+    function drupalize() {
+    while (!@stat('./includes/bootstrap.inc')) {
+    chdir('..');
+    }
+    #module_load_include('/includes/bootstrap.inc', 'image', 'includes/bootstrap');
+    require_once './includes/bootstrap.inc';
+    require_once './includes/file.inc';
+    drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL); // See http://drupal.org/node/211378#comment-924059
+    #drupal_bootstrap(DRUPAL_BOOTSTRAP_DATABASE);
+    #drupal_cron_run();
+    }
    */
   $imagepath = realpath(FILE_DIRECTORY_PATH . $urlpath);
   #watchdog('Brilliant Gal','imgp: '.$imagepath);
@@ -242,17 +232,17 @@ function brilliant_gallery_deliver_image() {
   #drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
   #if ( $_SERVER['SERVER_ADDR'] == '64.13.192.90' ) {
   /*
-   if (variable_get('brilliant_gallery_cache', 'd') == 'f') {
-   #echo '.....................' . $_SERVER['SERVER_ADDR'];
-   #drupal_set_message('cachetype1 '.variable_get('brilliant_gallery_cache', 'd'));
-   #watchdog('Brilliant Gal', '1 '.variable_get('brilliant_gallery_cache'));
-   $my_data = resizeimage_wrapper_filecache();
-   }
-   else {
-   #drupal_set_message('cachetype2 '.variable_get('brilliant_gallery_cache', 'd'));
-   #watchdog('Brilliant Gal', '2 '.variable_get('brilliant_gallery_cache'));
-   $my_data = resizeimage_wrapper_dbcache();
-   }
+    if (variable_get('brilliant_gallery_cache', 'd') == 'f') {
+    #echo '.....................' . $_SERVER['SERVER_ADDR'];
+    #drupal_set_message('cachetype1 '.variable_get('brilliant_gallery_cache', 'd'));
+    #watchdog('Brilliant Gal', '1 '.variable_get('brilliant_gallery_cache'));
+    $my_data = resizeimage_wrapper_filecache();
+    }
+    else {
+    #drupal_set_message('cachetype2 '.variable_get('brilliant_gallery_cache', 'd'));
+    #watchdog('Brilliant Gal', '2 '.variable_get('brilliant_gallery_cache'));
+    $my_data = resizeimage_wrapper_dbcache();
+    }
    */
   //brilliant_gallery_brokenimage($bgcacheid.' :g: '.time(),1900,500); exit();
   $my_data = resizeimage_wrapper_dbcache(FALSE, $imagepath, $bgimgproperties_hash);
@@ -267,58 +257,58 @@ function brilliant_gallery_deliver_image() {
   // IMPORTANT to exit() - otherwise some process after BG adds strings and breaks the image!
   exit();
   /*
-   function resizeimage_wrapper_filecache() {
-   $bgcacheid = 'bg_'. md5($_GET['imgp'] . $_GET['imgw'] . $_GET['imgh']);
-   #echo '. 0.... ';
-   $bgcachexpire = variable_get('brilliant_gallery_cache_duration',90) * 24 * 3600; // Cache expiration time in days.
-   // Tested that both relative (eg sites/all/files/cache) and absolute (eg /home/data/tmp) tmp path settings work OK here.
-   $cachetemp = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
-   $cachedfile = $cachetemp .'/'. $bgcacheid;
-   $fileexists = false;
-   $fileexists = file_exists($cachedfile);
-   $timenow = time();
-   $lastchanged = $timenow;
-   $lastchanged = @filemtime($cachedfile);
-   $fileexpired = false;
-   if ($timenow - $lastchanged > $bgcachexpire){
-   $fileexpired = true;
-   // If the image is expired, we need to actively delete it, for the case that it was removed / hidden by the owner.
-   @unlink($cachedfile);
-   }
-   if (!$fileexists or $fileexpired) {
-   #echo '. 1.... ';
-   // Cache file does not exist or is too old.
-   #$my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh']);
-   $my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh'], $_GET['imgcrop']);
-   // Now put $my_data to cache!
-   $fh = fopen($cachedfile, "w+");
-   fwrite($fh, $my_data);
-   fclose($fh);
-   $my_data = unserialize($my_data);
-   }
-   else {
-   #echo '. 2.... ';
-   // Cache file exists.
-   $my_data = unserialize(file_get_contents($cachedfile));
-   }
-   return $my_data;
-   }
+    function resizeimage_wrapper_filecache() {
+    $bgcacheid = 'bg_'. md5($_GET['imgp'] . $_GET['imgw'] . $_GET['imgh']);
+    #echo '. 0.... ';
+    $bgcachexpire = variable_get('brilliant_gallery_cache_duration',90) * 24 * 3600; // Cache expiration time in days.
+    // Tested that both relative (eg sites/all/files/cache) and absolute (eg /home/data/tmp) tmp path settings work OK here.
+    $cachetemp = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
+    $cachedfile = $cachetemp .'/'. $bgcacheid;
+    $fileexists = false;
+    $fileexists = file_exists($cachedfile);
+    $timenow = time();
+    $lastchanged = $timenow;
+    $lastchanged = @filemtime($cachedfile);
+    $fileexpired = false;
+    if ($timenow - $lastchanged > $bgcachexpire){
+    $fileexpired = true;
+    // If the image is expired, we need to actively delete it, for the case that it was removed / hidden by the owner.
+    @unlink($cachedfile);
+    }
+    if (!$fileexists or $fileexpired) {
+    #echo '. 1.... ';
+    // Cache file does not exist or is too old.
+    #$my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh']);
+    $my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh'], $_GET['imgcrop']);
+    // Now put $my_data to cache!
+    $fh = fopen($cachedfile, "w+");
+    fwrite($fh, $my_data);
+    fclose($fh);
+    $my_data = unserialize($my_data);
+    }
+    else {
+    #echo '. 2.... ';
+    // Cache file exists.
+    $my_data = unserialize(file_get_contents($cachedfile));
+    }
+    return $my_data;
+    }
    */
 
   /*
-   brilliant_gallery_brokenimage($showthis,500,500); exit();
+    brilliant_gallery_brokenimage($showthis,500,500); exit();
    */
 
   /*
-   $result = '';
+    $result = '';
 
-   // $bgimgproperties_hash looks like d48a36adcaff5b04858e6ae8e8d2b81a.bgimg -- let's lose the extension.
-   $bgimgproperties_hash = explode('.',$bgimgproperties_hash);
-   $bgimgproperties_hash = $bgimgproperties_hash[0];
+    // $bgimgproperties_hash looks like d48a36adcaff5b04858e6ae8e8d2b81a.bgimg -- let's lose the extension.
+    $bgimgproperties_hash = explode('.',$bgimgproperties_hash);
+    $bgimgproperties_hash = $bgimgproperties_hash[0];
 
-   drupal_set_message('hashed array: '.$bgimgproperties_hash);
+    drupal_set_message('hashed array: '.$bgimgproperties_hash);
 
-   $result .= $bgimgproperties_hash;
+    $result .= $bgimgproperties_hash;
    */
 
   return $result;
@@ -337,31 +327,31 @@ function resizeimage_wrapper_dbcache($reset = FALSE, $imagepath, $bgimgpropertie
 
 
   /*
-   $reset = true;
-   if (!isset($my_data) || $reset) {
-   if (!$reset and ($cache = cache_get($bgcacheid)) and !empty($cache->data)) {
-   #$my_data = $cache->data; echo '-1.... ' . $my_data;
-   // Crucial to unserialize for the immediate use!
-   $my_data = unserialize($cache->data);
-   #echo $my_data;
-   //brilliant_gallery_brokenimage($bgcacheid.' :1: '.time(),1900,500); exit();
-   }
-   else {
-   // Do your expensive calculations here, and populate $my_data
-   // with the correct stuff..
-   #$my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh']);
-   //$my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh'], $_GET['imgcrop'],$imagepath);
-   #echo ' -2.... ' . $bgcachexpire . ' // ' . $my_data;
-   # For some reason I could not use: mysql_escape_string($my_data)
-   #cache_set($bgcacheid, 'cache', time() + $bgcachexpire, $my_data);
-   cache_set($bgcacheid, $my_data, 'cache', time() + $bgcachexpire);
-   //brilliant_gallery_brokenimage($_GET['imgp']. $_GET['imgw']. $_GET['imgh']. $_GET['imgcrop'].' :3: '.time(),1900,500); exit();
-   # FOR DRUPAL6 MUST USE:
-   #cache_set($bgcacheid,  $my_data, time() + $bgcachexpire); # For some reason I could not use: mysql_escape_string($my_data)
-   // Crucial to unserialize for the immediate use!
-   $my_data = unserialize($my_data);
-   }
-   }
+    $reset = true;
+    if (!isset($my_data) || $reset) {
+    if (!$reset and ($cache = cache_get($bgcacheid)) and !empty($cache->data)) {
+    #$my_data = $cache->data; echo '-1.... ' . $my_data;
+    // Crucial to unserialize for the immediate use!
+    $my_data = unserialize($cache->data);
+    #echo $my_data;
+    //brilliant_gallery_brokenimage($bgcacheid.' :1: '.time(),1900,500); exit();
+    }
+    else {
+    // Do your expensive calculations here, and populate $my_data
+    // with the correct stuff..
+    #$my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh']);
+    //$my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh'], $_GET['imgcrop'],$imagepath);
+    #echo ' -2.... ' . $bgcachexpire . ' // ' . $my_data;
+    # For some reason I could not use: mysql_escape_string($my_data)
+    #cache_set($bgcacheid, 'cache', time() + $bgcachexpire, $my_data);
+    cache_set($bgcacheid, $my_data, 'cache', time() + $bgcachexpire);
+    //brilliant_gallery_brokenimage($_GET['imgp']. $_GET['imgw']. $_GET['imgh']. $_GET['imgcrop'].' :3: '.time(),1900,500); exit();
+    # FOR DRUPAL6 MUST USE:
+    #cache_set($bgcacheid,  $my_data, time() + $bgcachexpire); # For some reason I could not use: mysql_escape_string($my_data)
+    // Crucial to unserialize for the immediate use!
+    $my_data = unserialize($my_data);
+    }
+    }
    */
 
 
@@ -370,20 +360,20 @@ function resizeimage_wrapper_dbcache($reset = FALSE, $imagepath, $bgimgpropertie
   $foqen = FILE_DIRECTORY_PATH . '/' . $pcache . '/bg_cached_resized_' . $bgimgproperties_hash;
   $lastchanged = @filemtime($foqen); // Last file modification time, or FALSE on error.
   /*
-   global $user; $userId = $user->uid;
-   if ($userId == 1){
-   drupal_set_message('pic '.($timenow - $lastchanged).' > '.$bgcachexpire.' ... '.$foqen);
-   }
+    global $user; $userId = $user->uid;
+    if ($userId == 1){
+    drupal_set_message('pic '.($timenow - $lastchanged).' > '.$bgcachexpire.' ... '.$foqen);
+    }
    */
   #if ($_GET['fetchnow']==1){ $lastchanged = FALSE; } // Debugging!
   if ($lastchanged === FALSE OR (REQUEST_TIME - $lastchanged > $bgcachexpire)) {
     // If the image is expired, we need to actively delete it, for the case that it was removed / hidden by the owner.
     @unlink($foqen);
     /*
-     global $user; $userId = $user->uid;
-     if ($userId == 1){
-     drupal_set_message('in!');
-     }
+      global $user; $userId = $user->uid;
+      if ($userId == 1){
+      drupal_set_message('in!');
+      }
      */
     ///*
     $my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh'], $_GET['imgcrop'], $imagepath);
@@ -422,16 +412,14 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
     if (!$img) {
       brilliant_gallery_brokenimage("Error loading GIF", $imgw, $imgh);
     }
-  }
-  else if ($suffix == ".jpg" or $suffix == "jpeg") {
+  } else if ($suffix == ".jpg" or $suffix == "jpeg") {
     #$head = "Content-type: image/jpeg";
     //brilliant_gallery_brokenimage($imagepath.' :1: '.time(),1900,500); exit();
     $img = @imagecreatefromjpeg($imagepath);
     if (!$img) {
       brilliant_gallery_brokenimage("Error loading JPG", $imgw, $imgh);
     }
-  }
-  else if ($suffix == ".png") {
+  } else if ($suffix == ".png") {
     #$head = "Content-type: image/png";
     $img = @imagecreatefrompng($imagepath);
     if (!$img) {
@@ -449,14 +437,12 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
       // portrait
       $dst_img = imagecreatetruecolor($imgh, $imgh);
       imagecopyresampled($dst_img, $img, 0, 0, 0, ($src_h - $src_w) / 2, $imgh, $imgh, $src_w, $src_w);
-    }
-    else {
+    } else {
       // landscape
       $dst_img = imagecreatetruecolor($imgw, $imgw);
       imagecopyresampled($dst_img, $img, 0, 0, ($src_w - $src_h) / 2, 0, $imgw, $imgw, $src_h, $src_h);
     }
-  }
-  else {
+  } else {
     $dst_img = imagecreatetruecolor($imgw, $imgh);
     imagecopyresampled($dst_img, $img, 0, 0, 0, 0, $imgw, $imgh, $src_w, $src_h);
   }
@@ -466,11 +452,9 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
   ob_start();
   if ($suffix == ".gif") {
     Imagegif($img);
-  }
-  else if ($suffix == ".jpg" or $suffix == ".jpeg") {
+  } else if ($suffix == ".jpg" or $suffix == ".jpeg") {
     Imagejpeg($img, '', 80);
-  }
-  else if ($suffix == ".png") {
+  } else if ($suffix == ".png") {
     Imagepng($img);
   }
   $result = ob_get_clean();
@@ -521,14 +505,12 @@ function replace_brilliant_gallery_tags($str) {
           // The value MAY be none here, to allow re-setting some parameters.
           if (in_array($tmp2[0], $allowed_params)) {
             $newgenmatch[$tmp2[0]] = $tmp2[1];
-          }
-          else {
+          } else {
             $msg = 'Parameter ' . $tmp2[0] . ' is invalid!';
             #drupal_set_message($msg);
             watchdog('Brilliant Gal', $msg);
           }
-        }
-        else {
+        } else {
           // Takes care of compatibility with old-style BG tags (one line, no attribution).
           // If one or more of the parameters does not use attribution, the whole tag is treated as an old generation one. Except for 'bg', which is not an attribution parameter.
           if ($tmp <> 'bg') {
@@ -542,20 +524,19 @@ function replace_brilliant_gallery_tags($str) {
     if (!$isnewgettag) {
       // Plain old tag
       $match = $newmatch;
-    }
-    else {
+    } else {
       // OK, we've got the new generation params in $newgenmatch
       // The order of params to feed into render_brilliant_gallery() is the same as with the old-style tag.
       $match = array();
       foreach ($newgenmatch as $key => $val) {
         $match[array_search($key, $allowed_params)] = $val; // E.g. 'location = myalbum' will become $match[1] = 'myalbum'
         /*
-         if (arg(1) == 264402){
-         #drupal_set_message('...');
-         #var_dump($newgenmatch);
-         #var_dump($match);
-         echo array_search($key,$allowed_params)." $key // $val\n";
-         }
+          if (arg(1) == 264402){
+          #drupal_set_message('...');
+          #var_dump($newgenmatch);
+          #var_dump($match);
+          echo array_search($key,$allowed_params)." $key // $val\n";
+          }
          */
       }
     }
@@ -574,8 +555,7 @@ function replace_brilliant_gallery_tags($str) {
     if ($cache = cache_get('bg_gallery_table_' . $mbgtag) and !empty($cache->data)) {
       #if (false) {
       $galhere = $cache->data;
-    }
-    else {
+    } else {
       # render_brilliant_gallery takes parameters in a fixed order:
       # 1 path/to/gallery_folder
       # 2 colcountoverride

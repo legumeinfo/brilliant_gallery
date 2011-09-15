@@ -55,18 +55,7 @@ function brilliant_gallery_menu() {
       'type' => MENU_CALLBACK,
   );
 
-  //$items['brilliant_gallery/image'] = array(
-  // We need $bgimgproperties_hash
-  /*
-    drupal_set_message('............'.arg(1));
-    drupal_set_message('............'.$_GET['q']);
-    echo $_GET['q']; flush();exit();
-    $bgimgproperties_hash = explode(variable_get('brilliant_gallery_pcache', ''),$_GET['q']);
-    $bgimgproperties_hash = $bgimgproperties_hash[1];
-    drupal_set_message('............'.file_directory_path() .'/'. variable_get('brilliant_gallery_pcache', '').'....g....'.$_SERVER['REQUEST_URI']);
-   */
   $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
-  //brilliant_gallery_check_or_create_dir($pcache);
   $items[FILE_DIRECTORY_PATH . '/' . $pcache] = array(
       'title' => 'render image',
       'page callback' => 'brilliant_gallery_deliver_image',

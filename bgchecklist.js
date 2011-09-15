@@ -7,7 +7,7 @@ function () {
     var nodeid=9999999;
     //alert(nodeid);
     // load the current state of the checkboxes once on loading page
-    $.getJSON(Drupal.settings.basePath + "/bgchecklist/loadall/"+nodeid, 
+    $.getJSON(Drupal.settings.basePath + "/bgchecklist/loadall/"+nodeid,
     function(json) {
         //alert(json);
         for( i=0; i < json.length; i++ ) {
@@ -17,14 +17,14 @@ function () {
                 $("#"+json[i].qid).removeAttr("checked").next().html('<font color=green>visible</font>');
             }
         }
-    }); 
+    });
 
     // setup an onclick for each checkbox that writes it state back to the database
     // when toggled. The label text is turned red while writing to the db.
     //$("div.bgchecklist/div.form-item/>").each(
     $("input.form-brilliant_gallery_checklist-checkbox").each(
     function () {
-        $(this).click( 
+        $(this).click(
         function () {
             //var thislabel=$(this).parent();
             var thislabel=$(this).next();
@@ -32,19 +32,19 @@ function () {
             //alert("/bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/1");
             //if ( $(this).attr("checked") == undefined ) {
             if ( $(this).attr("checked") == false ) {
-                //$(thislabel).css("color","red"); 
+                //$(thislabel).css("color","red");
                 $(thislabel).html("saving...").css("color","red");
                 $.get(Drupal.settings.basePath + "/bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/0",
                 function() {
-                    //$(thislabel).css("color",colorbefore); 
+                    //$(thislabel).css("color",colorbefore);
                     $(thislabel).html('<font color=green>visible</font>').css("color","green");
                 });
             } else {
-                //$(thislabel).css("color","green"); 
+                //$(thislabel).css("color","green");
                 $(thislabel).html("saving...").css("color","red");
                 $.get(Drupal.settings.basePath + "/bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/1",
                 function() {
-                    //$(thislabel).css("color",colorbefore); 
+                    //$(thislabel).css("color",colorbefore);
                     $(thislabel).html('<font color=red>invisible</font>').css("color","red");
                 });
             }
