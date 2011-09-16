@@ -5,9 +5,9 @@ function () {
     //var nodeid=$("div#nodeid/").val();
     //var nodeid=$("input#edit-nid").val(); # WORKED but we actually don't need node ID - so let's use some static number:
     var nodeid=9999999;
-    //alert(nodeid);
+    // alert(Drupal.settings.basePath); // Contains "/" if Drupal is installed inthe root!
     // load the current state of the checkboxes once on loading page
-    $.getJSON(Drupal.settings.basePath + "/bgchecklist/loadall/"+nodeid,
+    $.getJSON(Drupal.settings.basePath + "bgchecklist/loadall/"+nodeid,
     function(json) {
         //alert(json);
         for( i=0; i < json.length; i++ ) {
@@ -34,7 +34,7 @@ function () {
             if ( $(this).attr("checked") == false ) {
                 //$(thislabel).css("color","red");
                 $(thislabel).html("saving...").css("color","red");
-                $.get(Drupal.settings.basePath + "/bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/0",
+                $.get(Drupal.settings.basePath + "bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/0",
                 function() {
                     //$(thislabel).css("color",colorbefore);
                     $(thislabel).html('<font color=green>visible</font>').css("color","green");
@@ -42,7 +42,7 @@ function () {
             } else {
                 //$(thislabel).css("color","green");
                 $(thislabel).html("saving...").css("color","red");
-                $.get(Drupal.settings.basePath + "/bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/1",
+                $.get(Drupal.settings.basePath + "bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/1",
                 function() {
                     //$(thislabel).css("color",colorbefore);
                     $(thislabel).html('<font color=red>invisible</font>').css("color","red");

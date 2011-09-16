@@ -153,8 +153,8 @@ function brilliant_gallery_checklist_loadall($nid = '') {
   //while ($data = db_fetch_object($result)) {
   foreach ($result as $data) {
     $dcvals[$count] = array(
-        qid => $data->qid,
-        state => $data->state,
+        'qid' => $data->qid,
+        'state' => $data->state,
     );
     $count++;
   }
