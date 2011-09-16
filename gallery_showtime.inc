@@ -1,32 +1,32 @@
 <?php
 
 function render_brilliant_gallery($paramarray = array()) {
-  $thisfolder = $paramarray[1];
+  $thisfolder = @$paramarray[1];
 
-  $colcountoverride = $paramarray[2];
+  $colcountoverride = @$paramarray[2];
 
-  $widthoverride = $paramarray[3];
+  $widthoverride = @$paramarray[3];
   #drupal_set_message('was set '.$widthoverride);
 
-  $sortoverride = $paramarray[4];
+  $sortoverride = @$paramarray[4];
 
-  $maximumnumbertoshow = $paramarray[5];
+  $maximumnumbertoshow = @$paramarray[5];
   #if (arg(1)==264544){
   #watchdog('Brilliant Gal', 'aftera: '.vacilando_echo_array($paramarray));
   #watchdog('Brilliant Gal', 'afterb: '.$maximumnumbertoshow);
   #}
 
-  $colouroverride = $paramarray[6];
+  $colouroverride = @$paramarray[6];
 
-  $beginfromoverride = $paramarray[7];
+  $beginfromoverride = @$paramarray[7];
   if ($beginfromoverride == '') {
     $beginfromoverride = 1;
   }
 
-  $captionyesnotext = $paramarray[8];
+  $captionyesnotext = @$paramarray[8];
 
   // Test whether 'thumbsquared' is set.
-  $paramarray[10] = strtolower($paramarray[10]);
+  $paramarray[10] = strtolower(@$paramarray[10]);
   if ($paramarray[10] == 'yes' or $paramarray[10] == 'no') {
     $imagecrop = $paramarray[10];
     #drupal_set_message('was set '.$imagecrop);
@@ -35,12 +35,12 @@ function render_brilliant_gallery($paramarray = array()) {
     #drupal_set_message('was NOT set '.$imagecrop);
   }
 
-  if ($paramarray[12] == '') {
+  if (@$paramarray[12] == '') {
     $paramarray[12] = 'no';
   }
   $bgcachexpire = brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration', 90));
 
-  $thumbalignincell = strtolower($paramarray[15]);
+  $thumbalignincell = strtolower(@$paramarray[15]);
   if ($thumbalignincell <> 'center' and $thumbalignincell <> 'left' and $thumbalignincell <> 'right') {
     $thumbalignincell = 'center';
   }
@@ -58,7 +58,7 @@ function render_brilliant_gallery($paramarray = array()) {
 
   // See if one or more particular images were asked to be shown.
   $thumbshowbyname = array();
-  $tmp = explode(',', $paramarray[13]);
+  $tmp = explode(',', @$paramarray[13]);
   if (is_array($tmp)) {
     foreach ($tmp as $val) {
       $val = trim($val);

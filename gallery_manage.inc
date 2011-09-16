@@ -154,8 +154,8 @@ HEADER;
               break;
           }
 
-          if ($showcaption <> '') {
-            if ($showcaption <> 'filename') {
+          if (@$showcaption <> '') {
+            if (@$showcaption <> 'filename') {
               $caption = $showcaption;
             }
             $displayimage .= ' title="' . $caption . '"';

@@ -355,7 +355,7 @@ function resizeimage_wrapper_dbcache($reset = FALSE, $imagepath, $bgimgpropertie
       }
      */
     ///*
-    $my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh'], $_GET['imgcrop'], $imagepath);
+    $my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh'], @$_GET['imgcrop'], $imagepath);
     $image = $my_data;
     //*/
     #watchdog('bg', $imager->code.' ... '.$imgurl.' =imgurl');
@@ -521,7 +521,7 @@ function replace_brilliant_gallery_tags($str) {
     }
 
     // If we are using thumbshowbyname and there is just 1 image, force thumbmaxshow to 1 (prevents BG from adjusting the height as it does for a set of images).
-    if ($match[13] <> '' AND strpos($match[13], ',') === FALSE)
+    if (@$match[13] <> '' AND strpos(@$match[13], ',') === FALSE)
       $match[5] = 1;
 
     #watchdog('Brilliant Gal', 'Got the array: '.vacilando_echo_array($match));
