@@ -35,7 +35,7 @@ function () {
             if ( $(this).attr("checked") == false ) {
                 //$(thislabel).css("color","red");
                 $(thislabel).html("saving...").css("color","red");
-                $.get(Drupal.settings.basePath + "/bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/0",
+                $.get(Drupal.settings.basePath + "bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/0",
                 function() {
                     //$(thislabel).css("color",colorbefore);
                     $(thislabel).html('<font color=green>visible</font>').css("color","green");
@@ -43,7 +43,7 @@ function () {
             } else {
                 //$(thislabel).css("color","green");
                 $(thislabel).html("saving...").css("color","red");
-                $.get(Drupal.settings.basePath + "/bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/1",
+                $.get(Drupal.settings.basePath + "bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/1",
                 function() {
                     //$(thislabel).css("color",colorbefore);
                     $(thislabel).html('<font color=red>invisible</font>').css("color","red");
