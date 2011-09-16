@@ -4,7 +4,7 @@ function brilliant_gallery_cron() {
     // Delete all expired images from the file cache folder brilliant_gallery_pcache
     $last_bg_cron = variable_get('brilliant_gallery_last_cron',0);
     // brilliant_gallery_cleantmpdir also needs to clear Drupal cache, but we don't want that to happen at every cron, so let's limit BG cron running to once in the cache expiration period.
-    if (time()-$last_bg_cron > brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration',90))) {
+    if (time()-$last_bg_cron > brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration',9))) {
         variable_set('brilliant_gallery_last_cron',time());
         brilliant_gallery_cleantmpdir();
         brilliant_gallery_clean_table_image_arrays();
@@ -15,6 +15,7 @@ function brilliant_gallery_clean_table_image_arrays(){
     $deletecreatedbeforethistime = time()-brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration',90));
     $deletecreatedbeforethistime = date( 'Y-m-d H:i:s', $deletecreatedbeforethistime );
     //echo "DELETE FROM {brilliant_gallery_image_arrays} WHERE datetime < '".$deletecreatedbeforethistime."'"; exit();
+    //$test = "DELETE FROM {brilliant_gallery_image_arrays} WHERE datetime < '".$deletecreatedbeforethistime."'";
     $dbres = db_query("DELETE FROM {brilliant_gallery_image_arrays} WHERE datetime < '".$deletecreatedbeforethistime."'");
     while ($node = db_fetch_object($dbres)) {
         // Perform operations on $node->body, etc. here.

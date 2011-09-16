@@ -5,10 +5,10 @@ function () {
     //var nodeid=$("div#nodeid/").val();
     //var nodeid=$("input#edit-nid").val(); # WORKED but we actually don't need node ID - so let's use some static number:
     var nodeid=9999999;
-    //alert(nodeid);
     // load the current state of the checkboxes once on loading page
-    //$.getJSON(Drupal.settings.basePath + "/bgchecklist/loadall/"+nodeid,
-    $.getJSON("./bgchecklist/loadall",
+    // alert(Drupal.settings.basePath); // Contains "/" if Drupal is installed inthe root!
+    $.getJSON(Drupal.settings.basePath + "bgchecklist/loadall/"+nodeid,
+    //window.location.href = Drupal.settings.basePath,
     function(json) {
         //alert(json);
         for( i=0; i < json.length; i++ ) {
