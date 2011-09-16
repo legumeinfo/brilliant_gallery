@@ -65,7 +65,7 @@ HEADER;
     $path_middle = str_replace(realpath($absolpath), '', $key);
     $gallerypath = '/' . $galleryfolder . $path_middle;
     $result .= '<li><a href="?fld=' . $galleryfolder . $path_middle . '">' . $galleryfolder . $path_middle . $rootfolder . '</a></li>';
-    if ($galleryfolder . $path_middle == $_GET['fld']) {
+    if ($galleryfolder . $path_middle == @$_GET['fld']) {
       # User has asked to manage images in this folder.
       $tablerows = array();
       #$temp              = load_dir_to_array($key, variable_get('brilliant_gallery_maximagewidth', 150), variable_get('brilliant_gallery_maxwidth', '1000'), 1, variable_get('brilliant_gallery_crop', FALSE));
@@ -90,11 +90,7 @@ HEADER;
           $imgh = $retval_dimensions[$poct - 1]['imgh'];
           $imgwbig = $retval_dimensions[$poct - 1]['imgwbig'];
           $imghbig = $retval_dimensions[$poct - 1]['imghbig'];
-          #@$smallenough = $retval_dimensions[$poct - 1]['smallenough'];
-          #$style_li = "float: left; width: " . $imagewidth . "px; list-style: none; background: " . $bgcolour . "; height: " . $imagemaxh . "px; padding: " . $padding . "px; text-align: center; margin: 0; border: none;"; #$style_li = "float: left; list-style: none; background: #000; width: 44px; height: 33px; padding: 4px; text-align: center; margin: 0; border: none;";
-          #$result .= ('<li style="' . $style_li . '">' . "\n");
           # Get this module's path:
-          //$modulepath = url(drupal_get_path('module', 'brilliant_gallery'), array('absolute' => TRUE));
           $modulepath = drupal_get_path('module', 'brilliant_gallery');
           # url() ads i18n codes to the URL ... we need to remove them here...
           if (BG_LANGCODE <> '') {
@@ -114,7 +110,6 @@ HEADER;
           $bgimgproperties_array = array(
               // This array contains everything that makes the image unique.
               'imgp' => $gallerypath . '/' . $retval[$poct - 1],
-              //'imgp' => $retval[$poct - 1],
               'imgw' => $imgwbig,
               'imgh' => $imghbig
           );
@@ -202,7 +197,8 @@ HEADER;
         # We need some code for brilliant_gallery_checklist
         $tmp = '';
         # E.g. albums/2008/20080321-25_belgicko_zasypane_snehom/dsc02784_w1000.jpg
-        $tmp .= '<div class="bgchecklist"> <div class="form-item"> <input name="' . 'user-' . md5($_GET['fld'] . '/' . $retval[$poct - 1]) . '" id="' . 'user-' . md5($_GET['fld'] . '/' . $retval[$poct - 1]) . '" value="1" class="form-brilliant_gallery_checklist-checkbox" type="checkbox"> <label class="option"> <font color=green>visible</font> </label> </div></div>';
+        $mdfpath = md5($_GET['fld'] . '/' . $retval[$poct - 1]);
+        $tmp .= '<div class="bgchecklist"> <div class="form-item"> <input name="' . 'user-' . $mdfpath . '" id="' . 'user-' . $mdfpath . '" value="1" class="form-brilliant_gallery_checklist-checkbox" type="checkbox"> <label class="option"> <font color=green>visible</font> </label> </div></div>';
         $tablerows[$cnt][2] = $tmp;
       }
       $header = array('File name', 'Thumbnail', 'Gallery display');

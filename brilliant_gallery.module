@@ -106,6 +106,7 @@ function brilliant_gallery_all($switch = '') {
 // note that checkboxes that has never been checked will not have an entry in the database
 function brilliant_gallery_checklist_loadall($nid = '') {
   global $user;
+  drupal_goto('http://google.com');
   $GLOBALS['devel_shutdown'] = FALSE;
   $uid = $user->uid;
   $dcvals = array();
@@ -237,6 +238,8 @@ function brilliant_gallery_admin() {
       '#default_value' => variable_get('brilliant_gallery_crop', 'no'),
       '#description' => t("If selected, all image thumbnails will have the same square shape."),
   );
+
+  /*
   $form['brilliant_gallery_bcgcolour'] = array(
       '#type' => 'colorpicker',
       '#title' => t('Table background colour'),
@@ -247,11 +250,20 @@ function brilliant_gallery_admin() {
   );
   $form['brilliant_gallery_bcgcolour_textfield'] = array(
       '#type' => 'colorpicker_textfield',
-      '#title' => t('Current background color'),
+      '#title' => t('Current background colour'),
       '#description' => t(''),
       '#default_value' => variable_get('brilliant_gallery_bcgcolour_textfield', '#000000'),
       '#colorpicker' => 'brilliant_gallery_bcgcolour',
   );
+  */
+  $color_field_type = (function_exists('colorpicker_2_or_later') ? 'colorpicker_' : '') .'textfield';
+  $form['brilliant_gallery_bcgcolour_textfield'] = array(
+    '#type' => $color_field_type,
+    '#title' => t('Background colour'),
+    '#description' => t('Please enter a color value in the form #RRGGBB'),
+    '#default_value' => variable_get('brilliant_gallery_bcgcolour_textfield', '#000000'),
+  );
+
   $form['brilliant_gallery_padding'] = array(
       '#type' => 'textfield',
       '#title' => t('Table cell padding'),
