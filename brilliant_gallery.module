@@ -176,18 +176,18 @@ function brilliant_gallery_checklist_save($nid, $qid, $state) {
 
   // TODO Please convert this statement to the D7 database API syntax.
   $existing = db_query("select count(state) from {brilliant_gallery_checklist} " .
-          "where nid=%d and user=%d and qid='%s'", $nid, $uid, $qid
+          "where nid=:nid and user=:uid and qid=:qid", array(':nid' => $nid, ':uid' => $uid, ':qid' => $qid)
           )->fetchField();
   if ($existing == 0) {
     // TODO Please convert this statement to the D7 database API syntax.
-    db_query("insert into {brilliant_gallery_checklist} (nid,user,qid,state) " . "values (%d,%d,'%s',%d)", $nid, $uid, $qid, $state);
+    db_query("insert into {brilliant_gallery_checklist} (nid,user,qid,state) " . "values (:nid,:uid,:qid,:state)", array(':nid' => $nid, ':uid' => $uid, ':qid' => $qid, ':state' =>  $state));
   } else {
     // TODO Please convert this statement to the D7 database API syntax.
-    $current = db_query("select state from {brilliant_gallery_checklist} " . " where nid=%d and user=%d and qid='%s'", $nid, $uid, $qid)->fetchField();
+    $current = db_query("select state from {brilliant_gallery_checklist} " . " where nid=:nid and user=:uid and qid=:qid", array(':nid' => $nid, ':uid' => $uid, ':qid' => $qid))->fetchField();
 
     if ($current != $state) {
       // TODO Please convert this statement to the D7 database API syntax.
-      db_query("update {brilliant_gallery_checklist} " . "set state=%d where nid=%d and user=%d and qid='%s'", $state, $nid, $uid, $qid);
+      db_query("update {brilliant_gallery_checklist} " . "set state=:state where nid=:nid and user=:uid and qid=:qid", array(':state' =>  $state, ':nid' => $nid, ':uid' => $uid, ':qid' => $qid));
     }
   }
   print drupal_json_encode("1");
