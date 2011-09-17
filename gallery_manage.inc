@@ -3,7 +3,7 @@
 function render_brilliant_gallery_manage() {
 
   // Only on this management page - include the brilliant_gallery_checklist .js file.
-  drupal_add_js(drupal_get_path('module', 'brilliant_gallery') . '/bgchecklist.js');
+ drupal_add_js(drupal_get_path('module', 'brilliant_gallery') . '/bgchecklist.js');
 
   $result = '';
   # Beginning of brilliant_gallery_checklist form.

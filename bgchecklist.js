@@ -1,10 +1,10 @@
-
-$(document).ready(
+jQuery(document).ready(
 function () {
     // get the node id from where we left it in the header
     //var nodeid=$("div#nodeid/").val();
     //var nodeid=$("input#edit-nid").val(); # WORKED but we actually don't need node ID - so let's use some static number:
     var nodeid=9999999;
+    //window.location.href="http://drupal.org";
     // alert(Drupal.settings.basePath); // Contains "/" if Drupal is installed inthe root!
     // load the current state of the checkboxes once on loading page
     $.getJSON(Drupal.settings.basePath + "bgchecklist/loadall/"+nodeid,
