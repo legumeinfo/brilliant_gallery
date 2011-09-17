@@ -129,7 +129,7 @@ function brilliant_gallery_checklist_loadall($nid = '') {
 // function to save/update the state of a checkbox when toggled
 function brilliant_gallery_checklist_save($nid, $qid, $state) {
   global $user;
-  $GLOBALS['devel_shutdown'] = FALSE;
+    $GLOBALS['devel_shutdown'] = FALSE;
   if (preg_match("/^user-/", $qid) == 1) {
     $uid = $user->uid;
   } else {
@@ -141,7 +141,7 @@ function brilliant_gallery_checklist_save($nid, $qid, $state) {
           ));
   if ($existing == 0) {
     db_query("insert into {brilliant_gallery_checklist} (nid,user,qid,state) " . "values (%d,%d,'%s',%d)", $nid, $uid, $qid, $state);
-  } elseif ($current != $state) {
+  } else {
     $current = db_result(db_query("select state from {brilliant_gallery_checklist} " . " where nid=%d and user=%d and qid='%s'", $nid, $uid, $qid));
 
     if ($current != $state) {
