@@ -31,7 +31,7 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
   @closedir($handle);
 
   if (empty($filearray)) {
-    watchdog('Brilliant Gal', 'No displayable images in ' . $absolpath . '! Elapsed time: ' . (REQUEST_TIME - $timenow) . ' seconds.');
+    watchdog('Brilliant Gal', 'No displayable images in ' . $absolpath . '!');
   } else {
     foreach ($filearray as $file) {
       # Index of a real image or something we are going to display.

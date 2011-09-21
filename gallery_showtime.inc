@@ -1,7 +1,7 @@
 <?php
 
 function render_brilliant_gallery($paramarray = array()) {
-  $thisfolder = $paramarray[1];
+  $thisfolder = @$paramarray[1];
 
   $colcountoverride = @$paramarray[2];
 
