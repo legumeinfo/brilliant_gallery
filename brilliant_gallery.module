@@ -72,7 +72,7 @@ function brilliant_gallery_permission() {
  */
 function brilliant_gallery_block_info() {
   if (TRUE) {
-    $block[0]["info"] = t("Brilliant gallery");
+    $block[0]["info"] = t("Brilliant Gallery");
     return $block;
   }
 }
