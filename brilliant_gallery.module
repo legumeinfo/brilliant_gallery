@@ -406,7 +406,7 @@ function brilliant_gallery_admin_validate($form, &$form_state) {
  * @see http://drupal.org/node/1354
  */
 function brilliant_gallery_perms() {
-  drupal_goto('admin/user/permissions', array('fragment' => 'module-brilliant_gallery'));
+  drupal_goto('admin/people/permissions', array('fragment' => 'module-brilliant_gallery'));
 }
 
 function bg_iterative_recurse_dir($from = '.') {
