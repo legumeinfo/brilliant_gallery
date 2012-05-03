@@ -148,7 +148,7 @@ function brilliant_gallery_update_6003() {
       ),
       'datetime' => array(
         'description' => t('Date and time of last value refresh.'),
-        'mysql_type' => 'datetime',
+        'type' => 'datetime',
         'not null' => TRUE,
       ),
     ),
