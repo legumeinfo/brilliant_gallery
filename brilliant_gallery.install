@@ -59,7 +59,7 @@ function brilliant_gallery_schema() {
       ),
       'datetime' => array(
         'description' => 'Date and time of last value refresh.',
-        'mysql_type' => 'datetime',
+        'type' => 'datetime',
         'not null' => TRUE,
       ),
     ),
