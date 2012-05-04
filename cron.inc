@@ -21,7 +21,7 @@ function brilliant_gallery_cron() {
  */
 function brilliant_gallery_clean_table_image_arrays() {
   $deletecreatedbeforethistime = REQUEST_TIME -brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration', 90));
-  $deletecreatedbeforethistime = date( 'Y-m-d H:i:s', $deletecreatedbeforethistime );
+  //$deletecreatedbeforethistime = date( 'Y-m-d H:i:s', $deletecreatedbeforethistime );
   //echo "DELETE FROM {brilliant_gallery_image_arrays} WHERE datetime < '".$deletecreatedbeforethistime."'"; exit();
   // TODO Please convert this statement to the D7 database API syntax.
   $dbres = db_query("DELETE FROM {brilliant_gallery_image_arrays} WHERE datetime < '" . $deletecreatedbeforethistime . "'");

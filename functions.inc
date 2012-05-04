@@ -121,12 +121,14 @@ function brilliant_gallery_image_properties_set($bgimgproperties_array) {
     $fields = new stdClass();
     $fields->hash = $bgimgproperties_hash;
     $fields->array = serialize($bgimgproperties_array);
-    $fields->datetime = date('Y-m-d H:i:s', REQUEST_TIME);
+    //$fields->datetime = date('Y-m-d H:i:s', REQUEST_TIME);
+    $fields->datetime = REQUEST_TIME;
     drupal_write_record("brilliant_gallery_image_arrays", $fields);
   } else {
     // Run an update
     $change = array(
-        'datetime' => date('Y-m-d H:i:s', REQUEST_TIME),
+        //'datetime' => date('Y-m-d H:i:s', REQUEST_TIME),
+        'datetime' => REQUEST_TIME,
         'hash' => $bgimgproperties_hash,
     );
     drupal_write_record('brilliant_gallery_image_arrays', $change, 'hash');
