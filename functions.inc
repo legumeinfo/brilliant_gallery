@@ -40,7 +40,6 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
       $retval_dimensions[$poct]['imgcrop'] = $imagecrop;
 
       # Is image horizontally or vertically oriented?
-      #$temp = getimagesize($absolpath .'/'. $file);
       $temp = getimagesize($actualpath . '/' . $file);
       if ($temp === false) {
         continue;
