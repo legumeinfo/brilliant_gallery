@@ -92,6 +92,8 @@ function brilliant_gallery_block_view($delta) {
 
     $block_content .= render_brilliant_gallery();
 
+    $block = array();
+
     // set up the block
     $block['subject'] = 'Brilliant gallery';
     $block['content'] = $block_content;

@@ -3,7 +3,7 @@
 function render_brilliant_gallery_manage() {
 
   // Only on this management page - include the brilliant_gallery_checklist .js file.
- drupal_add_js(drupal_get_path('module', 'brilliant_gallery') . '/bgchecklist.js');
+  drupal_add_js(drupal_get_path('module', 'brilliant_gallery') . '/bgchecklist.js');
 
   $result = '';
   # Beginning of brilliant_gallery_checklist form.
@@ -55,9 +55,10 @@ HEADER;
   $result .= '<p><b>Select an image folder:</b><ol>';
   foreach ($dirshavefiles as $key => $val) {
     # Get just the folder name in the main gallery folder.
-    if ($galleryfolder == '' and $path_middle == '') {
+    if ($galleryfolder == '' AND @$path_middle == '') { // ??? needed? @$path_middle
       $rootfolder = '/';
-    } else {
+    }
+    else {
       $rootfolder = '';
     }
     #$path_middle = str_replace($absolpath, '', $key);
@@ -111,11 +112,11 @@ HEADER;
           #$displayimage .= '<a href="'. $modulepath .'/image.php?imgp='. base64_encode($absolpath . $path_middle .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgwbig .'&amp;imgh='. $imghbig .'"';
           //$displayimage .= '<a href="'.file_create_url($modulepath .'/image.php?imgp='. base64_encode($gallerypath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgwbig .'&amp;imgh='. $imghbig).'"';
           $bgimgproperties_array = array(
-              // This array contains everything that makes the image unique.
-              'imgp' => $gallerypath . '/' . $retval[$poct - 1],
-              //'imgp' => $retval[$poct - 1],
-              'imgw' => $imgwbig,
-              'imgh' => $imghbig,
+            // This array contains everything that makes the image unique.
+            'imgp' => $gallerypath . '/' . $retval[$poct - 1],
+            //'imgp' => $retval[$poct - 1],
+            'imgw' => $imgwbig,
+            'imgh' => $imghbig,
           );
           //$bgimgproperties_base64 = base64_encode(serialize($bgimgproperties_array));
           $bgimgproperties_array_token = brilliant_gallery_image_properties_set($bgimgproperties_array);
@@ -161,10 +162,10 @@ HEADER;
           }
           $displayimage .= '>';
           $bgimgproperties_array = array(
-              // This array contains everything that makes the image unique.
-              'imgp' => $gallerypath . '/' . $retval[$poct - 1],
-              'imgw' => $imgw,
-              'imgh' => $imgh,
+            // This array contains everything that makes the image unique.
+            'imgp' => $gallerypath . '/' . $retval[$poct - 1],
+            'imgw' => $imgw,
+            'imgh' => $imgh,
           );
           $bgimgproperties_array_token = brilliant_gallery_image_properties_set($bgimgproperties_array);
           $pcache = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
@@ -175,7 +176,8 @@ HEADER;
           }
           $displayimage .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="' . $imgsrc . '" />';
           $displayimage .= '</a>';
-        } else {
+        }
+        else {
           $displayimage .= '<a href="' . $fullimgpath . '">';
           $displayimage .= $retval[$poct - 1];
           $displayimage .= '</a>';
@@ -194,7 +196,7 @@ HEADER;
         $data[] = array('data' => array($tablerows[$x][0], $tablerows[$x][1], $tablerows[$x][2]));
       }
       //$result .= theme_table($header, $data);
-      $result .= theme('table',array('header' => $header, 'rows' => $data));
+      $result .= theme('table', array('header' => $header, 'rows' => $data));
       $result .= '<p>';
     }
   }

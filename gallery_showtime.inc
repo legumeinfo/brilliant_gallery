@@ -1,7 +1,11 @@
 <?php
 
 function render_brilliant_gallery($paramarray = array()) {
-  $thisfolder = @$paramarray[1];
+
+  $thisfolder = '';
+  if (isset($paramarray[1])) {
+    $thisfolder = $paramarray[1];
+  }
 
   $colcountoverride = @$paramarray[2];
 
@@ -72,24 +76,23 @@ function render_brilliant_gallery($paramarray = array()) {
   }
   #watchdog('Brilliant Gal', 's1: '.implode(' ... ',$thumbshowbyname));
   #drupal_add_css(drupal_get_path('module', 'brilliant_gallery') .'/brilliant_gallery.css');
-
   #$result = '</p>';
   $result = '';
   $galleryfolder = variable_get('brilliant_gallery_folder', '');
   /*
-   if (substr($galleryfolder, strlen($galleryfolder) - 1, 1) == '/' or substr($galleryfolder, 0, 1) == '/') {
-   #watchdog('error', 'failed to notify "weblogs.com" (site)');
-   #form_set_error('yemail', t('Header injection attempt detected.  Do not enter line feed characters into the from field!'));
-   $bgmsg = 'Main gallery folder path must not begin or end with a slash; please fix it at /admin/settings/brilliant_gallery';
-   drupal_set_message($bgmsg);
-   watchdog('Brilliant Gal',$bgmsg);
-   return;
-   }
+    if (substr($galleryfolder, strlen($galleryfolder) - 1, 1) == '/' or substr($galleryfolder, 0, 1) == '/') {
+    #watchdog('error', 'failed to notify "weblogs.com" (site)');
+    #form_set_error('yemail', t('Header injection attempt detected.  Do not enter line feed characters into the from field!'));
+    $bgmsg = 'Main gallery folder path must not begin or end with a slash; please fix it at /admin/settings/brilliant_gallery';
+    drupal_set_message($bgmsg);
+    watchdog('Brilliant Gal',$bgmsg);
+    return;
+    }
    */
   /*
-   if ($thisfolder <> '') {
-   $galleryfolder .= '/'. $thisfolder;
-   }
+    if ($thisfolder <> '') {
+    $galleryfolder .= '/'. $thisfolder;
+    }
    */
   if ($thisfolder <> '') {
     if ($galleryfolder <> '') {
@@ -190,10 +193,10 @@ function render_brilliant_gallery($paramarray = array()) {
       //exec('mkdir '.$mkdirek);
       #watchdog('Brilliant Gal', mt_rand(1000,9999) . ' ' . arg(1).' pinc '.microtime());
       /*
-       ob_start();
-       debug_print_backtrace();
-       $btrace = ob_get_contents();
-       ob_end_clean();
+        ob_start();
+        debug_print_backtrace();
+        $btrace = ob_get_contents();
+        ob_end_clean();
        */
       #watchdog('Brilliant Gal', mt_rand(1000,9999) . ' ' . arg(1).' pinc '.$btrace);
 
@@ -206,10 +209,10 @@ function render_brilliant_gallery($paramarray = array()) {
       if ($cache = cache_get($cacheid_url_to_fetch) and !empty($cache->data)) {
         $html = $cache->data;
         /*
-         global $user; $userId = $user->uid;
-         if ($userId == 1){
-         drupal_set_message('got it from cache '.$url_to_fetch);
-         }
+          global $user; $userId = $user->uid;
+          if ($userId == 1){
+          drupal_set_message('got it from cache '.$url_to_fetch);
+          }
          */
       }
       else {
@@ -221,10 +224,10 @@ function render_brilliant_gallery($paramarray = array()) {
         #drupal_set_message('...2'.$html);
         watchdog('Brilliant Gal', 'Fetched XML from ' . $url_to_fetch . ' (' . strlen($html) . ' bytes). Elapsed time: ' . (REQUEST_TIME - $timenow) . ' seconds.');
         /*
-         global $user; $userId = $user->uid;
-         if ($userId == 1){
-         drupal_set_message('again fetched '.$url_to_fetch);
-         }
+          global $user; $userId = $user->uid;
+          if ($userId == 1){
+          drupal_set_message('again fetched '.$url_to_fetch);
+          }
          */
       }
 
@@ -253,20 +256,20 @@ function render_brilliant_gallery($paramarray = array()) {
 
         $lastchanged = @filemtime($foqen); // Last file modification time, or FALSE on error.
         /*
-         global $user; $userId = $user->uid;
-         if ($userId == 1){
-         drupal_set_message('pic '.($timenow - $lastchanged).' > '.$bgcachexpire.' ... '.$foqen);
-         }
+          global $user; $userId = $user->uid;
+          if ($userId == 1){
+          drupal_set_message('pic '.($timenow - $lastchanged).' > '.$bgcachexpire.' ... '.$foqen);
+          }
          */
         #if ($_GET['fetchnow']==1){ $lastchanged = FALSE; } // Debugging!
         if ($lastchanged === FALSE OR ($timenow - $lastchanged > $bgcachexpire)) {
           // If the image is expired, we need to actively delete it, for the case that it was removed / hidden by the owner.
           @unlink($foqen);
           /*
-           global $user; $userId = $user->uid;
-           if ($userId == 1){
-           drupal_set_message('in!');
-           }
+            global $user; $userId = $user->uid;
+            if ($userId == 1){
+            drupal_set_message('in!');
+            }
            */
           ///*
           $imager = drupal_http_request($imgurl);
@@ -316,11 +319,11 @@ function render_brilliant_gallery($paramarray = array()) {
       // any checkbox id that starts with user- we remember the current user's settings
       // any other id is global and we use user=0
       /*
-       $result=db_query("select qid,state from {brilliant_gallery_checklist} ".
-       " where nid='$nid' and qid not like 'user-%' and user=0 ".
-       " union ".
-       "select qid,state from {brilliant_gallery_checklist} ".
-       "where nid='$nid' and qid like 'user-%' and user='$uid' ");
+        $result=db_query("select qid,state from {brilliant_gallery_checklist} ".
+        " where nid='$nid' and qid not like 'user-%' and user=0 ".
+        " union ".
+        "select qid,state from {brilliant_gallery_checklist} ".
+        "where nid='$nid' and qid like 'user-%' and user='$uid' ");
        */
       $dbresult = db_query("select qid from {brilliant_gallery_checklist} where qid like 'user-%' and state='1' ");
       foreach ($dbresult as $data) {
@@ -490,13 +493,13 @@ function render_brilliant_gallery($paramarray = array()) {
         $result .= '>';
         # Important to begin with the "/" otherwise thumbnails in non-root folders fail. See http://drupal.org/node/175292
         /*
-         $modulepath = url(drupal_get_path('module', 'brilliant_gallery'), array('absolute' => TRUE));
-         # url() ads i18n codes to the URL ... we need to remove them here...
-         if ( $langcode <> '' ) {
-         $modulepath = str_replace( '/' . $langcode . '/', '/', $modulepath );
-         }
-         # Non-clean URLs need removing ?q=
-         $modulepath = str_replace( "?q=", "",  $modulepath );
+          $modulepath = url(drupal_get_path('module', 'brilliant_gallery'), array('absolute' => TRUE));
+          # url() ads i18n codes to the URL ... we need to remove them here...
+          if ( $langcode <> '' ) {
+          $modulepath = str_replace( '/' . $langcode . '/', '/', $modulepath );
+          }
+          # Non-clean URLs need removing ?q=
+          $modulepath = str_replace( "?q=", "",  $modulepath );
          */
 
         #$result .= '<img style="display: block;border:0" src="' . $modulepath .'/image.php?imgp=' . base64_encode( $absolpath . '/' . $retval[$poct-1] ) . '&imgw=' . $imgw . '&imgh=' . $imgh . '" />'; # width="' . $imgw . '"
@@ -504,8 +507,8 @@ function render_brilliant_gallery($paramarray = array()) {
         # width="' . $imgw . '"
         #$result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'. $modulepath .'/image.php?imgp='. base64_encode($absolpath .'/'. $retval[$poct - 1]) .'&imgw='. $imgw .'&imgh='. $imgh .'" />';
         /*
-         $imgsrc = file_create_url($modulepath .'/image.php?imgp='. base64_encode($absolpath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgw .'&amp;tst=3&amp;imgh='. $imgh . '&amp;imgcrop='. $imgcrop);
-         $result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'.$imgsrc.'" />';
+          $imgsrc = file_create_url($modulepath .'/image.php?imgp='. base64_encode($absolpath .'/'. $retval[$poct - 1]) .'&amp;imgw='. $imgw .'&amp;tst=3&amp;imgh='. $imgh . '&amp;imgcrop='. $imgcrop);
+          $result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="'.$imgsrc.'" />';
          */
         $bgimgproperties_array = array(
           // This array contains everything that makes the image unique.

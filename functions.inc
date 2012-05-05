@@ -378,7 +378,7 @@ function resizeimage_wrapper_dbcache($reset = FALSE, $imagepath, $bgimgpropertie
       }
      */
     ///*
-    $my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh'], $_GET['imgcrop'], $imagepath);
+    $my_data = resizeimage($_GET['imgp'], $_GET['imgw'], $_GET['imgh'], @$_GET['imgcrop'], $imagepath);
     $image = $my_data;
     //*/
     #watchdog('bg', $imager->code.' ... '.$imgurl.' =imgurl');
