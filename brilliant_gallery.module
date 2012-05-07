@@ -72,10 +72,11 @@ function brilliant_gallery_permission() {
  * Implements hook_block_info().
  */
 function brilliant_gallery_block_info() {
-  if (TRUE) {
-    $block[0]["info"] = t("Brilliant Gallery");
-    return $block;
-  }
+  $block = array();
+  // if (TRUE) {
+  $block[0]["info"] = t("Brilliant Gallery");
+  return $block;
+  // }
 }
 
 /**
@@ -443,6 +444,7 @@ function bg_iterative_recurse_dir($from = '.') {
  */
 
 function brilliant_gallery_filter_info() {
+  $filters = array();
   $filters['filter_brilliant_gallery'] = array(
     'title' => t('Brilliant Gallery tag'),
     'description' => t('Substitutes a special Brilliant Gallery tag [bg|...] with the actual gallery table.'),

@@ -32,7 +32,8 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
 
   if (empty($filearray)) {
     watchdog('Brilliant Gal', 'No displayable images in ' . $absolpath . '!');
-  } else {
+  }
+  else {
     foreach ($filearray as $file) {
       # Index of a real image or something we are going to display.
       $poct += 1;
@@ -52,19 +53,22 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
         if ($imagecrop == 'yes') {
           $retval_dimensions[$poct]['imgw'] = $imagewidth;
           $retval_dimensions[$poct]['imgh'] = $imagewidth;
-        } else {
+        }
+        else {
           $retval_dimensions[$poct]['imgw'] = $imagewidth;
           $retval_dimensions[$poct]['imgh'] = round(($temp[1] / $temp[0]) * $imagewidth);
           #watchdog('Brilliant Gal','1imgw: '.$imagewidth.'/'.$imagecrop);
         }
         $retval_dimensions[$poct]['imgwbig'] = $fullresolutionmaxwidth;
         $retval_dimensions[$poct]['imghbig'] = round(($temp[1] / $temp[0]) * $fullresolutionmaxwidth);
-      } else {
+      }
+      else {
         // This is a vertical image
         if ($imagecrop == 'yes') {
           $retval_dimensions[$poct]['imgw'] = round(($temp[0] / $temp[1]) * $imagewidth);
           $retval_dimensions[$poct]['imgh'] = $imagewidth;
-        } else {
+        }
+        else {
           $retval_dimensions[$poct]['imgw'] = round(($temp[0] / $temp[1]) * ($temp[0] / $temp[1]) * $imagewidth);
           $retval_dimensions[$poct]['imgh'] = round(($temp[0] / $temp[1]) * $imagewidth);
           #watchdog('Brilliant Gal','2imgw: '.$imagewidth.'/'.$imagecrop);
@@ -82,7 +86,8 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
 
   if ($brilliant_gallery_sort == '1') {
     @sort($retval_dimensions);
-  } else {
+  }
+  else {
     shuffle($retval_dimensions);
   }
   return array($retval_dimensions, $imagemaxh);
@@ -124,12 +129,13 @@ function brilliant_gallery_image_properties_set($bgimgproperties_array) {
     //$fields->datetime = date('Y-m-d H:i:s', REQUEST_TIME);
     $fields->datetime = REQUEST_TIME;
     drupal_write_record("brilliant_gallery_image_arrays", $fields);
-  } else {
+  }
+  else {
     // Run an update
     $change = array(
-        //'datetime' => date('Y-m-d H:i:s', REQUEST_TIME),
-        'datetime' => REQUEST_TIME,
-        'hash' => $bgimgproperties_hash,
+      //'datetime' => date('Y-m-d H:i:s', REQUEST_TIME),
+      'datetime' => REQUEST_TIME,
+      'hash' => $bgimgproperties_hash,
     );
     drupal_write_record('brilliant_gallery_image_arrays', $change, 'hash');
   }
@@ -199,11 +205,11 @@ function brilliant_gallery_deliver_image() {
   $urlpath = $_GET['imgp'];
   //brilliant_gallery_brokenimage($urlpath.' :0: '.time(),1900,500); exit();
   if (sizeof($_GET) > 5 ||
-          strpos($urlpath, "://") !== false ||
-          strpos($urlpath, "..") !== false ||
-          preg_match('/\D/', ($_GET['imgw'] . $_GET['imgh'])) > 0 ||
-          ($_GET['imgw'] + $_GET['imgh']) < 10 ||
-          ($_GET['imgw'] + $_GET['imgh']) > 20000
+      strpos($urlpath, "://") !== false ||
+      strpos($urlpath, "..") !== false ||
+      preg_match('/\D/', ($_GET['imgw'] . $_GET['imgh'])) > 0 ||
+      ($_GET['imgw'] + $_GET['imgh']) < 10 ||
+      ($_GET['imgw'] + $_GET['imgh']) > 20000
   ) {
     header("HTTP/1.0 404 Not Found");
     exit();
@@ -313,14 +319,15 @@ function brilliant_gallery_deliver_image() {
     $result .= $bgimgproperties_hash;
    */
 
-  return $result;
+  //return $result;
+  return;
 }
 
 function resizeimage_wrapper_dbcache($reset = FALSE, $imagepath, $bgimgproperties_hash) {
   #global $user;
   #$userId = $user->uid;
   $bgcachexpire = brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration', 90)); // Cache expiration time in days.
-  $bgcacheid = 'bg_' . md5($_GET['imgp'] . $_GET['imgw'] . $_GET['imgh']);
+  //$bgcacheid = 'bg_' . md5($_GET['imgp'] . $_GET['imgw'] . $_GET['imgh']);
   //brilliant_gallery_brokenimage($bgcacheid.' :0: '.time(),1900,500); exit();
   #echo $bgcacheid;
   static $my_data;
@@ -414,14 +421,16 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
     if (!$img) {
       brilliant_gallery_brokenimage("Error loading GIF", $imgw, $imgh);
     }
-  } else if ($suffix == ".jpg" or $suffix == "jpeg") {
+  }
+  else if ($suffix == ".jpg" or $suffix == "jpeg") {
     #$head = "Content-type: image/jpeg";
     //brilliant_gallery_brokenimage($imagepath.' :1: '.time(),1900,500); exit();
     $img = @imagecreatefromjpeg($imagepath);
     if (!$img) {
       brilliant_gallery_brokenimage("Error loading JPG", $imgw, $imgh);
     }
-  } else if ($suffix == ".png") {
+  }
+  else if ($suffix == ".png") {
     #$head = "Content-type: image/png";
     $img = @imagecreatefrompng($imagepath);
     if (!$img) {
@@ -439,12 +448,14 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
       // portrait
       $dst_img = imagecreatetruecolor($imgh, $imgh);
       imagecopyresampled($dst_img, $img, 0, 0, 0, ($src_h - $src_w) / 2, $imgh, $imgh, $src_w, $src_w);
-    } else {
+    }
+    else {
       // landscape
       $dst_img = imagecreatetruecolor($imgw, $imgw);
       imagecopyresampled($dst_img, $img, 0, 0, ($src_w - $src_h) / 2, 0, $imgw, $imgw, $src_h, $src_h);
     }
-  } else {
+  }
+  else {
     $dst_img = imagecreatetruecolor($imgw, $imgh);
     imagecopyresampled($dst_img, $img, 0, 0, 0, 0, $imgw, $imgh, $src_w, $src_h);
   }
@@ -454,9 +465,11 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
   ob_start();
   if ($suffix == ".gif") {
     Imagegif($img);
-  } else if ($suffix == ".jpg" or $suffix == ".jpeg") {
+  }
+  else if ($suffix == ".jpg" or $suffix == ".jpeg") {
     Imagejpeg($img, '', 80);
-  } else if ($suffix == ".png") {
+  }
+  else if ($suffix == ".png") {
     Imagepng($img);
   }
   $result = ob_get_clean();
@@ -476,6 +489,7 @@ function replace_brilliant_gallery_tags($str) {
 
   $matchlink = '';
   $orig_match = '';
+  $matches = '';
   preg_match_all("/(\[)bg(\|)[^\]]*(\])/s", $str, $matches);
   foreach ($matches[0] as $match) {
     $omatch = $match;
@@ -507,12 +521,14 @@ function replace_brilliant_gallery_tags($str) {
           // The value MAY be none here, to allow re-setting some parameters.
           if (in_array($tmp2[0], $allowed_params)) {
             $newgenmatch[$tmp2[0]] = $tmp2[1];
-          } else {
+          }
+          else {
             $msg = 'Parameter ' . $tmp2[0] . ' is invalid!';
             #drupal_set_message($msg);
             watchdog('Brilliant Gal', $msg);
           }
-        } else {
+        }
+        else {
           // Takes care of compatibility with old-style BG tags (one line, no attribution).
           // If one or more of the parameters does not use attribution, the whole tag is treated as an old generation one. Except for 'bg', which is not an attribution parameter.
           if ($tmp <> 'bg') {
@@ -526,7 +542,8 @@ function replace_brilliant_gallery_tags($str) {
     if (!$isnewgettag) {
       // Plain old tag
       $match = $newmatch;
-    } else {
+    }
+    else {
       // OK, we've got the new generation params in $newgenmatch
       // The order of params to feed into render_brilliant_gallery() is the same as with the old-style tag.
       $match = array();
@@ -557,7 +574,8 @@ function replace_brilliant_gallery_tags($str) {
     if ($cache = cache_get('bg_gallery_table_' . $mbgtag) and !empty($cache->data)) {
       #if (false) {
       $galhere = $cache->data;
-    } else {
+    }
+    else {
       # render_brilliant_gallery takes parameters in a fixed order:
       # 1 path/to/gallery_folder
       # 2 colcountoverride

@@ -1,8 +1,8 @@
 /*
 ul.brilliant_gallery {
 */
-/* 
-Total 'width' controls the number of thumbnails in each row. 
+/*
+Total 'width' controls the number of thumbnails in each row.
 The number, in pixels, should be calculated thusly:
 [maximum width desired for thumbnails] + [padding - if any, x 2] + [margin - if any, x 2] + [border - if any, x 2] x [number of thumbnails desired in each row]
 */
@@ -12,7 +12,7 @@ width: 174px;
 /*
 }
 */
-/*	
+/*
 ul.brilliant_gallery li {
 float: left;
 list-style: none;
@@ -27,7 +27,7 @@ border: none;
 */
 
 ul.brilliant_gallery img, ul.brilliant_gallery li a {
-    border: none;
+  border: none;
 }
 /*
 .brilliant_gallery {

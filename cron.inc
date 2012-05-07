@@ -8,7 +8,7 @@ function brilliant_gallery_cron() {
   // Delete all expired images from the file cache folder brilliant_gallery_pcache
   $last_bg_cron = variable_get('brilliant_gallery_last_cron', 0);
   // brilliant_gallery_cleantmpdir also needs to clear Drupal cache, but we don't want that to happen at every cron, so let's limit BG cron running to once in the cache expiration period.
-  if (REQUEST_TIME -$last_bg_cron > brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration', 90))) {
+  if (REQUEST_TIME - $last_bg_cron > brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration', 90))) {
     variable_set('brilliant_gallery_last_cron', REQUEST_TIME);
     brilliant_gallery_cleantmpdir();
     brilliant_gallery_clean_table_image_arrays();
@@ -20,7 +20,7 @@ function brilliant_gallery_cron() {
  * @see http://drupal.org/node/1354
  */
 function brilliant_gallery_clean_table_image_arrays() {
-  $deletecreatedbeforethistime = REQUEST_TIME -brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration', 90));
+  $deletecreatedbeforethistime = REQUEST_TIME - brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration', 90));
   //$deletecreatedbeforethistime = date( 'Y-m-d H:i:s', $deletecreatedbeforethistime );
   //echo "DELETE FROM {brilliant_gallery_image_arrays} WHERE datetime < '".$deletecreatedbeforethistime."'"; exit();
   // TODO Please convert this statement to the D7 database API syntax.
@@ -39,16 +39,16 @@ function brilliant_gallery_cleantmpdir() {
   // Delete files and directories from the file cache directory if their time is up!
   $timenow = REQUEST_TIME;
   $bgcachexpire = brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration', 90));
-  $timestampexpired = REQUEST_TIME -$bgcachexpire;
+  $timestampexpired = REQUEST_TIME - $bgcachexpire;
   $cachetempdirectory = variable_get('brilliant_gallery_pcache', BRILLIANT_GALLERY_DEFAULT_CACHE_DIR);
   //brilliant_gallery_check_or_create_dir($cachetempdirectory);
   /*
-   if ($cachetempdirectory == ''){
-   // If there is no cache directory in the files folder, then we need to use the default temp dir
-   $cachetempdirectory = file_directory_temp();
-   } else {
-   $cachetempdirectory = realpath(file_directory_path()) . '/' . $cachetempdirectory;
-   }
+    if ($cachetempdirectory == ''){
+    // If there is no cache directory in the files folder, then we need to use the default temp dir
+    $cachetempdirectory = file_directory_temp();
+    } else {
+    $cachetempdirectory = realpath(file_directory_path()) . '/' . $cachetempdirectory;
+    }
    */
   $cachetempdirectory = realpath(FILE_DIRECTORY_PATH) . '/' . $cachetempdirectory;
 
@@ -60,7 +60,7 @@ function brilliant_gallery_cleantmpdir() {
   // Also clear the Drupal cache - otherwise there might be some cached HTML pointing to files that are no longer in the file cache.
   cache_clear_all();
 
-  watchdog('Brilliant Gal', 'Cleared ' . $GLOBALS['bg_removedcnt'] . ' files from the temp directory ' . $cachetempdirectory . ' after ' . variable_get('brilliant_gallery_cache_duration', 90) . ' days. Elapsed time: ' . (REQUEST_TIME -$timenow) . ' seconds.');
+  watchdog('Brilliant Gal', 'Cleared ' . $GLOBALS['bg_removedcnt'] . ' files from the temp directory ' . $cachetempdirectory . ' after ' . variable_get('brilliant_gallery_cache_duration', 90) . ' days. Elapsed time: ' . (REQUEST_TIME - $timenow) . ' seconds.');
 }
 
 /*
@@ -69,6 +69,7 @@ function brilliant_gallery_cleantmpdir() {
  * The function determines if argument is a regular file or a directory. If it is a regular file, it will remove the file. If it is a directory, it will remove its contents first by calling the function itself, and then removes the empty directory.
  * This requires PHP 5 (because of 'scandir').
  */
+
 /**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
@@ -90,8 +91,8 @@ function brilliant_gallery_rmdir_recursive($dir, $timestampexpired) {
     //drupal_set_message('1: '.$timestampexpired);
     if (is_dir($file)) {
       if (substr(strtolower($filename), 0, strlen('bg_picasa_orig_')) == 'bg_picasa_orig_'
-            //OR substr(strtolower($filename), 0, strlen('bg_cached_resized_')) == 'bg_cached_resized_'
-            ) {
+      //OR substr(strtolower($filename), 0, strlen('bg_cached_resized_')) == 'bg_cached_resized_'
+      ) {
         // Only delete files that start 'bg_picasa_orig_' OR 'bg_cached_resized_'
         //drupal_set_message('folder: '.$filename);
         //watchdog('Brilliant Gal Cron','folder: '.$filename);
@@ -105,12 +106,12 @@ function brilliant_gallery_rmdir_recursive($dir, $timestampexpired) {
       $suffix = strtolower(brilliant_gallery_get_extension($filename));
       //drupal_set_message('2: '.$filename.'...'.$suffix);
       if (
-            $suffix == 'jpg'
-             OR $suffix == 'jpeg'
-             OR $suffix == 'png'
-             OR $suffix == 'gif'
-            //OR (strtolower(substr($filename, 0, 3)) == 'bg_cached_resized_' ) // Files like e.g. bg_ffbbaff39504d459ed277714786267b8
-            ) {
+          $suffix == 'jpg'
+          OR $suffix == 'jpeg'
+          OR $suffix == 'png'
+          OR $suffix == 'gif'
+      //OR (strtolower(substr($filename, 0, 3)) == 'bg_cached_resized_' ) // Files like e.g. bg_ffbbaff39504d459ed277714786267b8
+      ) {
         # It is a file in the specified BG cache directory
         //drupal_set_message('3: '.$file.'...'.$suffix);
         //watchdog('Brilliant Gal Cron','3: '.$file.'...'.$suffix);

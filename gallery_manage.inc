@@ -71,7 +71,7 @@ HEADER;
       #$temp              = load_dir_to_array($key, variable_get('brilliant_gallery_maximagewidth', 150), variable_get('brilliant_gallery_maxwidth', '1000'), 1, variable_get('brilliant_gallery_crop', FALSE));
       $temp = load_dir_to_array($gallerypath, variable_get('brilliant_gallery_maximagewidth', 150), variable_get('brilliant_gallery_maxwidth', '1000'), 1, variable_get('brilliant_gallery_crop', 'no'));
       $retval_dimensions = $temp[0];
-      $imagemaxh = $temp[1];
+      //$imagemaxh = $temp[1];
       $maxpoct = count($retval_dimensions);
       #echo '<p>max: ' . $maxpoct;
       #ob_start(); echo '<pre>'; print_r( $retval_dimensions ); echo '</pre>'; $result .= ob_get_contents();
