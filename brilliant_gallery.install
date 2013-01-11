@@ -83,9 +83,9 @@ return $schema;
 }
 
 /**
- * Adjust type of the datetime column.
+ * Adjust type of the datetime column to int type.
  */
-function brilliant_gallery_update_7203() {
+function brilliant_gallery_update_7204() {
 
   // Precaution (the table might have been made before without deletion).
   if (db_table_exists('brilliant_gallery_image_arrays_old')) {
@@ -111,8 +111,8 @@ function brilliant_gallery_update_7203() {
         ),
       'datetime' => array(
         'description' => t('Date and time of last value refresh.'),
-        'mysql_type' => 'DATETIME', // http://drupal.org/update/modules/6/7#db_specific_types
-        'pgsql_type' => 'timestamp without time zone', // http://drupal.org/update/modules/6/7#db_specific_types
+        'type' => 'int',
+        'unsigned' => TRUE,
         'not null' => TRUE,
         ),
       ),
