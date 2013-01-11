@@ -333,8 +333,6 @@ function resizeimage_wrapper_dbcache($reset = FALSE, $imagepath, $bgimgpropertie
   static $my_data;
   #echo '0.... ';
 
-
-
   /*
     $reset = true;
     if (!isset($my_data) || $reset) {
