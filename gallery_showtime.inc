@@ -50,8 +50,36 @@ function render_brilliant_gallery($paramarray = array()) {
     $thumbalignincell = 'center';
   }
 
-  // Is this a Picasa gallery?
   $picasafolder = false;
+  // Is this a Google+ Photos album page?
+  // E.g. https://plus.google.com/photos/104031880678382567653/albums/5591422169328270129
+  // E.g. https://plus.google.com/photos/104031880678382567653/albums/5414337846751631057?authkey=CLa-o8OXyqC-kAE
+  $picasawebsignature = 'http://plus.google.com/photos/';
+  $picasawebsignaturesecure = 'https://plus.google.com/photos/';
+  if (substr($thisfolder, 0, strlen($picasawebsignature)) == $picasawebsignature OR substr($thisfolder, 0, strlen($picasawebsignaturesecure)) == $picasawebsignaturesecure) {
+    // Get the authkey, if any, from the URL query
+    $urlquery = parse_url($thisfolder,PHP_URL_QUERY);
+    parse_str($urlquery, $parsedquery);
+    $authkey = '';
+    if (@$parsedquery['authkey'] <> ''){
+      $authkey = 'Gv1sRg'.$parsedquery['authkey'];
+      //dpm($authkey);
+    }
+    // Get the IDs from URL path
+    $urlpath = parse_url($thisfolder,PHP_URL_PATH);
+    $urlpath = explode('/',$urlpath);
+    if ($urlpath[1] == 'photos' AND $urlpath[3] == 'albums' AND is_numeric($urlpath[2]) AND is_numeric($urlpath[4])){
+      // OK we've got all needed to construct a picasaweb feed URL
+      $picasauserid = $urlpath[2];
+      $picasaalbumid = $urlpath[4];
+      $thisfolder = 'https://picasaweb.google.com/data/feed/base/user/'.$picasauserid.'/albumid/'.$picasaalbumid.'?alt=rss&kind=photo';
+      if ($authkey <> ''){
+        $thisfolder .= '&authkey='.$authkey;
+      }
+      //dpm('>>> '.$thisfolder);
+    }
+  }
+  // Is this a Picasa gallery?
   $picasawebsignature = 'http://picasaweb.google.';
   $picasawebsignaturesecure = 'https://picasaweb.google.';
   if (substr($thisfolder, 0, strlen($picasawebsignature)) == $picasawebsignature OR substr($thisfolder, 0, strlen($picasawebsignaturesecure)) == $picasawebsignaturesecure) {
