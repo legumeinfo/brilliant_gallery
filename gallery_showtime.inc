@@ -45,7 +45,6 @@ function render_brilliant_gallery($paramarray = array()) {
     $thumbalignincell = 'center';
   }
 
-  $picasafolder = false;
   // Is this a Google+ Photos album page?
   // E.g. https://plus.google.com/photos/104031880678382567653/albums/5591422169328270129
   // E.g. https://plus.google.com/photos/104031880678382567653/albums/5414337846751631057?authkey=CLa-o8OXyqC-kAE
@@ -75,6 +74,7 @@ function render_brilliant_gallery($paramarray = array()) {
     }
   }
   // Is this a Picasa gallery?
+  $picasafolder = false;
   $picasawebsignature = 'http://picasaweb.google.';
   $picasawebsignaturesecure = 'https://picasaweb.google.';
   if (substr($thisfolder, 0, strlen($picasawebsignature)) == $picasawebsignature OR substr($thisfolder, 0, strlen($picasawebsignaturesecure)) == $picasawebsignaturesecure) {
