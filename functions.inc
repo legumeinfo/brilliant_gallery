@@ -458,17 +458,17 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
     imagecopyresampled($dst_img, $img, 0, 0, 0, 0, $imgw, $imgh, $src_w, $src_h);
   }
   $img = $dst_img;
-  imageinterlace($img, 1);
-  imagecolortransparent($img);
+  //imageinterlace($img, 1);
+  //imagecolortransparent($img);
   ob_start();
   if ($suffix == ".gif") {
     Imagegif($img);
   }
   else if ($suffix == ".jpg" or $suffix == ".jpeg") {
-    Imagejpeg($img, '', 90);
+    Imagejpeg($img, NULL, 90);
   }
   else if ($suffix == ".png") {
-    Imagepng($img, '', 9);
+    Imagepng($img, NULL, 9);
   }
   $result = ob_get_clean();
   #ImageDestroy($img);
