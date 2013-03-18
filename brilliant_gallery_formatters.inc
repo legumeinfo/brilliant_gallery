@@ -27,7 +27,8 @@ function brilliant_gallery_field_formatter_view($entity_type, $entity, $field, $
         $pathurl = trim($item['value']);
         if (function_exists('replace_brilliant_gallery_tags') AND $pathurl <> ''){
           $result = '';
-          $bgcode = '[bg|'.$pathurl.'|0|107|sort|100000|#ffffff]';
+          //$bgcode = '[bg|'.$pathurl.'|0|107|sort|100000|#ffffff]';
+          $bgcode = '[bg|'.$pathurl.']';
           $gallery = replace_brilliant_gallery_tags($bgcode);
           //dpm(strip_tags($gallery));
           if (strip_tags($gallery) <> ''){ // Useful?
