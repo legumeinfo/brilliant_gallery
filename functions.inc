@@ -465,10 +465,10 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
     Imagegif($img);
   }
   else if ($suffix == ".jpg" or $suffix == ".jpeg") {
-    Imagejpeg($img, '', 80);
+    Imagejpeg($img, '', 90);
   }
   else if ($suffix == ".png") {
-    Imagepng($img);
+    Imagepng($img, '', 9);
   }
   $result = ob_get_clean();
   #ImageDestroy($img);
