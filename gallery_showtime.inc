@@ -377,10 +377,10 @@ function render_brilliant_gallery($paramarray = array()) {
     // If $columns is 0, columns will fill up the available space.
     if ($columns <> 0) {
       // Total 'width' controls the number of thumbnails in each row. The number, in pixels, should be calculated thusly: [maximum width desired for thumbnails] + [padding - if any, x 2] + [margin - if any, x 2] + [border - if any, x 2] x [number of thumbnails desired in each row]
-      $style_ul = "font-size:0; margin:0px; dummy: 0; padding:0px; width: " . (($imagewidth + 2 * $padding) * $columns) . "px;";
+      $style_ul = "font-size: 0px; margin: 0px; padding: 0px; width: " . (($imagewidth + 2 * $padding) * $columns) . "px;";
     }
     else {
-      $style_ul = "font-size:0; margin:0px; dummy: 0; padding:0px;";
+      $style_ul = "font-size: 0; margin: 0px; padding: 0px;";
     }
     $column_count = 0;
     #$pocetobr = 0;
@@ -455,7 +455,7 @@ function render_brilliant_gallery($paramarray = array()) {
           $imagewidth_here = $imgw;
         }
 
-        $style_li = "font-size:0; float: left; width: " . $imagewidth_here . "px; list-style: none; background: " . $bgcolour . "; height: " . $imagemaxh_here . "px; padding: " . $padding . "px; text-align: " . $thumbalignincell . "; margin: 0px; border: none;";
+        $style_li = "font-size: 0px; float: left; width: " . $imagewidth_here . "px; list-style: none; background: " . $bgcolour . "; height: " . $imagemaxh_here . "px; padding: " . $padding . "px; text-align: " . $thumbalignincell . "; margin: 0px; border: none;";
         $result .= ( '<li style="' . $style_li . '">' . "\n");
         # Get this module's path:
         //$modulepath = url(drupal_get_path('module', 'brilliant_gallery'), array('absolute' => TRUE));
@@ -569,7 +569,7 @@ function render_brilliant_gallery($paramarray = array()) {
         if ($secur == 's') {
           $imgsrc = str_replace('http://', 'https://', $imgsrc);
         }
-        $result .= '<img style="border: 0; margin:0px; padding:0px;" alt="" src="' . $imgsrc . '" />';
+        $result .= '<img style="border: 0px; margin: 0px; padding: 0px;" alt="" src="' . $imgsrc . '" />';
         #$result .= '<br>.................................'.$imgsrc;
         #$result .= '</a>';
         $result .= '</a>' . "\n";
@@ -595,6 +595,7 @@ function render_brilliant_gallery($paramarray = array()) {
     #if ($column_count <> 0) { $result .= ("</tr>\n"); }
     #$result .= "</table>\n";
     $result .= "</ul>\n";
+    $result .= "<div style=\"clear: both;\"></div>\n"; // Add a new line (needed because of the float). See http://stackoverflow.com/questions/2580772/how-do-i-get-a-new-line-after-using-floatleft
     #$result .= '<br style="clear: both;" />';
     #$result .= '<p>';
   }

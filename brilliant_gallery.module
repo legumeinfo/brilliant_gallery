@@ -24,6 +24,8 @@ module_load_include('inc', 'brilliant_gallery', 'functions');
 module_load_include('inc', 'brilliant_gallery', 'gallery_manage');
 module_load_include('inc', 'brilliant_gallery', 'gallery_showtime');
 module_load_include('inc', 'brilliant_gallery', 'cron');
+module_load_include('inc', 'brilliant_gallery', 'cron');
+require_once('brilliant_gallery_formatters.inc');
 
 #drupal_set_message('bgc '.$bgcachexpire . ' / '.$GLOBALS['bgcachexpire']);
 #$bgcachexpire = 3600 * 24 * 3;
