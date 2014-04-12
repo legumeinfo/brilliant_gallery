@@ -13,7 +13,7 @@ function brilliant_gallery_menu() {
     'description' => 'Brilliant gallery module settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('brilliant_gallery_admin'),
-    'access arguments' => array('access administration pages'),
+    'access arguments' => array('administer brilliant_gallery'),
     'type' => MENU_NORMAL_ITEM,
   );
   // Same as 'admin/config/brilliant_gallery' -- just for the convenience/clarity in a dropdown menu.
@@ -22,7 +22,7 @@ function brilliant_gallery_menu() {
     'description' => 'Brilliant gallery module settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('brilliant_gallery_admin'),
-    'access arguments' => array('access administration pages'),
+    'access arguments' => array('administer brilliant_gallery'),
     'type' => MENU_NORMAL_ITEM,
   );
 
@@ -33,7 +33,7 @@ function brilliant_gallery_menu() {
     'description' => 'Configure access permissions for the Brilliant gallery module',
     'page callback' => 'brilliant_gallery_perms',
     #'page arguments' => 'brilliant_gallery_perms',
-    'access arguments' => array('access administration pages'),
+    'access arguments' => array('administer brilliant_gallery'),
     'type' => MENU_NORMAL_ITEM,
   );
 
@@ -44,7 +44,7 @@ function brilliant_gallery_menu() {
     //'page callback' => 'drupal_get_form',
     //'page arguments' => '',
     #'page arguments' => 'brilliant_gallery_perms',
-    'access arguments' => array('access administration pages'),
+    'access arguments' => array('administer brilliant_gallery'),
     'type' => MENU_NORMAL_ITEM,
   );
 
@@ -72,7 +72,7 @@ function brilliant_gallery_menu() {
   $items['bgchecklist/save'] = array(
     'page callback' => 'brilliant_gallery_checklist_save',
     'type' => MENU_CALLBACK,
-    'access arguments' => array('access administration pages'),
+    'access arguments' => array('administer brilliant_gallery'),
   );
 
   return $items;

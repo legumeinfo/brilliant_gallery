@@ -317,7 +317,7 @@ function render_brilliant_gallery($paramarray = array()) {
           if (strlen($image) > 0) {
             $fp = fopen($foqen, 'w');
             #drupal_set_message($foqen.'<br>');
-            #watchdog('bg', $foqen.' ...ok<br>');
+            watchdog('bg', $foqen.' ...ok<br>');
             fwrite($fp, $image);
             fclose($fp);
             $fetchingnow++;
