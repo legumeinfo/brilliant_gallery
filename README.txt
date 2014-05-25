@@ -1,7 +1,7 @@
 
 Highly customizable table gallery of quality-scaled images from multiple defined folders, or from a Picasa gallery.
 
-Installation, demo and tips are all at http://vacilando.net/bg
+Installation, demo and tips are all at http://vacilando.org/en/article/brilliant-gallery
 
 
 Author: Tomas Fulopp (Vacilando)
