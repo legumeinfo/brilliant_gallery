@@ -409,18 +409,19 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
   #flush();die(' stop!');
   //global $imagepath;
 
-  $suffix = strtolower(substr($imagepath, -4));
+  //$suffix = strtolower(substr($imagepath, -4));
+  $suffix = end(explode('.', strtolower($imagepath)));
   //$imgsize = @getimagesize($imagepath);
   # http://be.php.net/getimagesize
   //$head = "Content-type: {$imgsize['mime']}";
-  if ($suffix == ".gif") {
+  if ($suffix == "gif") {
     #$head = "Content-type: image/gif";
     $img = @imagecreatefromgif($imagepath);
     if (!$img) {
       brilliant_gallery_brokenimage("Error loading GIF", $imgw, $imgh);
     }
   }
-  else if ($suffix == ".jpg" or $suffix == "jpeg") {
+  else if ($suffix == "jpg" or $suffix == "jpeg") {
     #$head = "Content-type: image/jpeg";
     //brilliant_gallery_brokenimage($imagepath.' :1: '.time(),1900,500); exit();
     $img = @imagecreatefromjpeg($imagepath);
@@ -428,7 +429,7 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
       brilliant_gallery_brokenimage("Error loading JPG", $imgw, $imgh);
     }
   }
-  else if ($suffix == ".png") {
+  else if ($suffix == "png") {
     #$head = "Content-type: image/png";
     $img = @imagecreatefrompng($imagepath);
     if (!$img) {
@@ -461,13 +462,13 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
   //imageinterlace($img, 1);
   //imagecolortransparent($img);
   ob_start();
-  if ($suffix == ".gif") {
+  if ($suffix == "gif") {
     Imagegif($img);
   }
-  else if ($suffix == ".jpg" or $suffix == ".jpeg") {
+  else if ($suffix == "jpg" or $suffix == "jpeg") {
     Imagejpeg($img, NULL, 90);
   }
-  else if ($suffix == ".png") {
+  else if ($suffix == "png") {
     Imagepng($img, NULL, 9);
   }
   $result = ob_get_clean();
