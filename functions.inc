@@ -410,7 +410,8 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
   //global $imagepath;
 
   //$suffix = strtolower(substr($imagepath, -4));
-  $suffix = end(explode('.', strtolower($imagepath)));
+  $imagepathexploded = explode('.', strtolower($imagepath));
+  $suffix = end($imagepathexploded);
   //$imgsize = @getimagesize($imagepath);
   # http://be.php.net/getimagesize
   //$head = "Content-type: {$imgsize['mime']}";
