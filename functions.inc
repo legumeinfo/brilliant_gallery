@@ -19,6 +19,9 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
   $handle = @opendir($actualpath);
   $imagemaxh = 0;
 
+  // Get a list of files that should be hidden (based on .picasa.ini, if present)
+  $hidden_file_names = brilliant_gallery_get_picasa_hidden_imagenames($actualpath);
+
   // Load the directory into an array first.
   $filearray = array();
   while ($file = @readdir($handle)) {
@@ -26,6 +29,10 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
     if (!testext($file) and strtolower($testending) <> '.mpg' and strtolower($testending) <> '.swf' and strtolower($testending) <> '.mov' and strtolower($testending) <> '.avi') {
       continue;
     }
+
+    // Hide images listed as hidden if they are present in .picasa.ini
+    if (in_array($file, $hidden_file_names)) continue;
+
     $filearray[] = $file;
   }
   @closedir($handle);
@@ -644,4 +651,50 @@ function brilliant_gallery_pathurl_btsync_check($pathurl){
 function brilliant_gallery_get_time_this_many_seconds_from_now($period) {
   $period = REQUEST_TIME + $period;
   return $period;
+}
+
+/**
+ * Get a list of files that should be hidden (based on .picasa.ini, if present)
+ */
+function brilliant_gallery_get_picasa_hidden_imagenames($absolute_album_path){
+
+  // Skip processing if there is no .picasa.ini inside
+  if (file_exists($absolute_album_path."/.picasa.ini")){
+
+    // Skip if the .picasa.ini file lists no hidden images
+    $picasaini = file_get_contents($absolute_album_path."/.picasa.ini");
+    if (strpos($picasaini, "hidden=yes") !== FALSE){
+      $picasaini_lines = file($absolute_album_path."/.picasa.ini");
+      $picasaini_lines = array_map('trim', $picasaini_lines);
+
+      $dir_files = scandir($absolute_album_path);
+      // Skip ., .., and .picasa.ini
+      $dir_files = array_diff($dir_files, array('..', '.', '.picasa.ini'));
+
+      $filenames = array();
+      foreach ($dir_files as $key => $filename) {
+
+            /* Check if the filename is hidden in .picasa.ini
+             * Hidden entry example:
+             * [2_dsc05981.jpg]
+             * hidden=yes
+             */
+            $searched_filename = '['.$filename.']';
+            $is_in_picasaini = array_search($searched_filename, $picasaini_lines);
+            // If the file name is not in .picasa.ini, skip
+            if ($is_in_picasaini === FALSE) continue;
+            // Ok so it's in .picasa.ini, but is it currently hidden?
+            if (@$picasaini_lines[$is_in_picasaini+1] != 'hidden=yes') continue;
+
+            $filenames[] = $filename;
+
+      }
+
+    }
+
+  }
+
+  //dpm($filenames);
+  return $filenames;
+
 }
