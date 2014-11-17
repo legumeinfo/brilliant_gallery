@@ -676,7 +676,9 @@ function brilliant_gallery_get_picasa_hidden_imagenames($absolute_album_path){
 
             /* Check if the filename is hidden in .picasa.ini
              * Hidden entry example:
-             * [2_dsc05981.jpg]
+             * [02_011_08a.jpg]
+             * rotate=rotate(2)
+             * backuphash=53332
              * hidden=yes
              */
             $searched_filename = '['.$filename.']';
@@ -684,7 +686,19 @@ function brilliant_gallery_get_picasa_hidden_imagenames($absolute_album_path){
             // If the file name is not in .picasa.ini, skip
             if ($is_in_picasaini === FALSE) continue;
             // Ok so it's in .picasa.ini, but is it currently hidden?
-            if (@$picasaini_lines[$is_in_picasaini+1] != 'hidden=yes') continue;
+            $ishidden = FALSE;
+            foreach($picasaini_lines as $key=>$val){
+              // Iterate to the line AFTER the matching file name
+              if ($key <= $is_in_picasaini) continue;
+              // If the line is "hidden=yes" then the file name is hidden
+              if ($val == 'hidden=yes') {
+                $ishidden = TRUE;
+                break;
+              }
+              // If we reach a line starting with "[" then we assume that the searched file name is NOT hidden
+              if (substr($val, 0, 1) == '[') break;
+            }
+            if (!$ishidden) continue;
 
             $filenames[] = $filename;
 
