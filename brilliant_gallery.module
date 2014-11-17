@@ -20,12 +20,11 @@ if (module_exists('views')) {
   #require(drupal_get_path('module', 'brilliant_gallery') .'/views.inc');
 }
 
-module_load_include('inc', 'brilliant_gallery', 'menu');
-module_load_include('inc', 'brilliant_gallery', 'functions');
-module_load_include('inc', 'brilliant_gallery', 'gallery_manage');
-module_load_include('inc', 'brilliant_gallery', 'gallery_showtime');
-module_load_include('inc', 'brilliant_gallery', 'cron');
-module_load_include('inc', 'brilliant_gallery', 'cron');
+module_load_include('inc', 'brilliant_gallery', 'brilliant_gallery_menu');
+module_load_include('inc', 'brilliant_gallery', 'brilliant_gallery_functions');
+module_load_include('inc', 'brilliant_gallery', 'brilliant_gallery_manage');
+module_load_include('inc', 'brilliant_gallery', 'brilliant_gallery_showtime');
+module_load_include('inc', 'brilliant_gallery', 'brilliant_gallery_cron');
 require_once('brilliant_gallery_formatters.inc');
 
 #drupal_set_message('bgc '.$bgcachexpire . ' / '.$GLOBALS['bgcachexpire']);

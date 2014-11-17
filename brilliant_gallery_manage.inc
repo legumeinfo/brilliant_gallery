@@ -83,7 +83,7 @@ HEADER;
         $cnt += 1;
         $retval[$poct - 1] = $retval_dimensions[$poct - 1]['file'];
         $fullimgpath = $path . $path_middle . '/' . $retval[$poct - 1];
-        if (testext($retval[$poct - 1])) {
+        if (brilliant_gallery_testext($retval[$poct - 1])) {
           $caption = str_replace(array('.', '_'), ' ', basename($retval[$poct - 1], strrchr($retval[$poct - 1], '.')));
           #$smallenough = false;
           $imgw = $retval_dimensions[$poct - 1]['imgw'];

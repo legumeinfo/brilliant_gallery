@@ -436,7 +436,7 @@ function render_brilliant_gallery($paramarray = array()) {
       #$result .= ('<td align="center" bgcolor="' . $bgcolour . '" style="padding: ' . $padding . 'px ' . $padding . 'px ' . $padding . 'px ' . $padding . 'px;vertical-align: middle;">');
       #$result .= ('<td align="center" bgcolor="' . $bgcolour . '" style="padding: ' . $padding . 'px ' . $padding . 'px ' . $padding . 'px ' . $padding . 'px;vertical-align: middle;">' . "\n");
       #$pocetobr += 1;
-      if (testext($retval[$poct - 1])) {
+      if (brilliant_gallery_testext($retval[$poct - 1])) {
         $caption = str_replace(array('.', '_'), ' ', basename($retval[$poct - 1], strrchr($retval[$poct - 1], '.')));
         #$smallenough = false;
         $imgw = $retval_dimensions[$poct - 1]['imgw'];
