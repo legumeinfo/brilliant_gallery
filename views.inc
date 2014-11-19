@@ -93,19 +93,6 @@ function brilliant_gallery_views_tables() {
  * Views handler for displaying the image.
  */
 function brilliant_gallery_views_handler_image_img($fieldinfo, $fielddata, $value, $data) {
-  /*
-    $node = node_load($data->nid);
-    return image_display($node, $fielddata['options']);
-   */
-
-  /*
-    $tmp = '.1. ' . implode( ' // ', $fieldinfo );
-    $tmp .= '<br>.2. ' . implode( ' // ', $fielddata );
-    $tmp .= '<br>.3. ' . implode( ' // ', $value );
-    $tmp .= '<br>.4. ' . implode( ' // ', $data );
-    $tmp .= '<br>.5. ' . $data->field_gallery_value;
-    #field_gallery_value
-   */
 
   $tmp = $data->nid;
   $query = "SELECT SQL_CACHE `field_gallery_value` FROM `content_type_page` WHERE `nid` = '" . $tmp . "' ORDER BY `vid` DESC LIMIT 1";
@@ -150,28 +137,22 @@ function brilliant_gallery_views_handler_image_img($fieldinfo, $fielddata, $valu
   # Non-clean URLs need removing ?q=
   $modulepath = str_replace("?q=", "", $modulepath);
   $result = '<a href="' . file_create_url($modulepath . '/image.php?imgp=' . base64_encode($absolpath . '/' . $retval[$randimg]) . '&imgw=' . $imgw * 6 . '&imgh=' . $imgh * 6) . '"';
-  $setname = mt_rand(1, 9999999);
-  $overbrowser = variable_get('brilliant_gallery_overbrowser', 'thickbox');
+  //$setname = mt_rand(1, 9999999);
+  $setname = md5($absolpath);
+  $overbrowser = variable_get('brilliant_gallery_overbrowser', 'colorbox');
   switch ($overbrowser) {
-    case 'thickbox':
-      $result .= ' class="thickbox"';
-      $result .= ' rel="img_' . $setname . '"';
-      #$attributes['class'] = $link_class;
-      #$attributes['rel'] = 'img_' . ($node->nid? $node->nid: time()); // 'insert' has no $node->nid
+
+    case 'colorbox':
+      $result .= ' class="colorbox cboxElement" rel="bg-' . $setname . '"';
       break;
 
     case 'lightbox':
       $result .= ' rel="lightbox[' . $setname . ']"';
-      #$attributes['rel'] = 'lightbox[' . ($node->nid? $node->nid: time()) . ']'; // 'insert' has no $node->nid
-      break;
-
-    case 'greyboxr':
-      $result .= ' class="greybox"';
-      #$result .= ' rel="gb_imageset[' . $setname . ']"';
       break;
 
     default:
       break;
+
   }
 
   if ($showcaption <> '') {

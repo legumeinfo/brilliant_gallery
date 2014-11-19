@@ -17,8 +17,7 @@ function render_brilliant_gallery_manage() {
       </div>
 HEADER;
   $result .= $ac_header;
-  $overbrowser = variable_get('brilliant_gallery_overbrowser', 'lightbox');
-  $setname = mt_rand(1, 9999999);
+  $overbrowser = variable_get('brilliant_gallery_overbrowser', 'colorbox');
   $galleryfolder = variable_get('brilliant_gallery_folder', '');
   $path = url(FILE_DIRECTORY_PATH . '/' . $galleryfolder, array('absolute' => TRUE));
 
@@ -64,6 +63,8 @@ HEADER;
     #$path_middle = str_replace($absolpath, '', $key);
     $path_middle = str_replace(realpath($absolpath), '', $key);
     $gallerypath = '/' . $galleryfolder . $path_middle;
+    //$setname = mt_rand(1, 9999999);
+    $setname = md5($gallerypath);
     $result .= '<li><a href="?fld=' . $galleryfolder . $path_middle . '">' . $galleryfolder . $path_middle . $rootfolder . '</a></li>';
     if ($galleryfolder . $path_middle == @$_GET['fld']) {
       # User has asked to manage images in this folder.
@@ -134,20 +135,12 @@ HEADER;
 
           switch ($overbrowser) {
 
-            case 'thickbox':
-              $displayimage .= ' class="thickbox"';
-              $displayimage .= ' rel="img_' . $setname . '"';
-              #$attributes['class'] = $link_class;
-              #$attributes['rel'] = 'img_' . ($node->nid? $node->nid: time()); // 'insert' has no $node->nid
+            case 'colorbox':
+              $displayimage .= ' class="colorbox cboxElement" rel="bg-' . $setname . '"';
               break;
 
             case 'lightbox':
               $displayimage .= ' rel="lightbox[' . $setname . ']"';
-              #$attributes['rel'] = 'lightbox[' . ($node->nid? $node->nid: time()) . ']'; // 'insert' has no $node->nid
-              break;
-
-            case 'greybox':
-              $displayimage .= ' class="greybox"';
               break;
 
             default:

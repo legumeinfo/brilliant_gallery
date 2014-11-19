@@ -178,7 +178,7 @@ function render_brilliant_gallery($paramarray = array()) {
     $showcaption = $captionyesnotext;
   }
   $padding = variable_get('brilliant_gallery_padding', 3);
-  $overbrowser = variable_get('brilliant_gallery_overbrowser', 'lightbox');
+  $overbrowser = variable_get('brilliant_gallery_overbrowser', 'colorbox');
   // Totally full resolution display would be impractical, so this is the maximum width of "full" resolution.
   $fullresolutionmaxwidth = variable_get('brilliant_gallery_maxwidth', '1000');
   $path = url(FILE_DIRECTORY_PATH . '/' . $galleryfolder, array('absolute' => TRUE));
@@ -384,7 +384,8 @@ function render_brilliant_gallery($paramarray = array()) {
     }
     $column_count = 0;
     #$pocetobr = 0;
-    $setname = mt_rand(1, 9999999);
+    //$setname = mt_rand(1, 9999999);
+    $setname = md5($absolpath);
     #$result .= '<!-- Brilliant Gallery Table Beginning --><table border="0" rules="none" frame="box" cellpadding="0" cellspacing="0" bgcolor="' . $bgcolour . '"';
     #$result .= '<!-- Brilliant Gallery Table Beginning -->';
     #$result .= '<ul class="brilliant_gallery" style="' . $style_ul . '">';
@@ -501,24 +502,18 @@ function render_brilliant_gallery($paramarray = array()) {
         #}
 
         switch ($overbrowser) {
-          case 'thickbox':
-            $result .= ' class="thickbox"';
-            $result .= ' rel="img_' . $setname . '"';
-            #$attributes['class'] = $link_class;
-            #$attributes['rel'] = 'img_' . ($node->nid? $node->nid: time()); // 'insert' has no $node->nid
+
+          case 'colorbox':
+            $result .= ' class="colorbox cboxElement" rel="bg-' . $setname . '"';
             break;
 
           case 'lightbox':
             $result .= ' rel="lightbox[' . $setname . ']"';
-            #$attributes['rel'] = 'lightbox[' . ($node->nid? $node->nid: time()) . ']'; // 'insert' has no $node->nid
-            break;
-
-          case 'greybox':
-            $result .= ' class="greybox"';
             break;
 
           default:
             break;
+
         }
 
         if ($showcaption <> '') {
