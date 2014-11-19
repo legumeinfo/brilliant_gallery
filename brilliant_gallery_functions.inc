@@ -14,9 +14,7 @@ function brilliant_gallery_testext($filename) {
 function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $brilliant_gallery_sort, $imagecrop, $maximumnumbertoshow = '') {
   $poct = -1;
   $retval_dimensions = array();
-  #$handle            = @opendir($absolpath);
   $actualpath = realpath(FILE_DIRECTORY_PATH) . $absolpath;
-  #watchdog('Brilliant Gal','absol3: '.$actualpath);
   $handle = @opendir($actualpath);
   $imagemaxh = 0;
 
@@ -54,7 +52,6 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
       $retval_dimensions[$poct]['imgcrop'] = $imagecrop;
 
       # Is image horizontally or vertically oriented?
-      #$temp = getimagesize($absolpath .'/'. $file);
       $temp = getimagesize($actualpath . '/' . $file);
       if ($temp === false) {
         continue;
@@ -62,7 +59,6 @@ function load_dir_to_array($absolpath, $imagewidth, $fullresolutionmaxwidth, $br
       if ((($temp[0] - $temp[1]) >= 0) OR $maximumnumbertoshow == 1) {
         // This is a horizontal image.
         // Treat single images just as horizontal images (no need to fit their height to the height of horizontals)! The specified width of an image is authoritative for both horizontal images and also vertical if they show alone.
-        #if ($imagecrop == 'yes' and $maximumnumbertoshow <> 1){
         if ($imagecrop == 'yes') {
           $retval_dimensions[$poct]['imgw'] = $imagewidth;
           $retval_dimensions[$poct]['imgh'] = $imagewidth;
@@ -271,34 +267,22 @@ function resizeimage_wrapper_dbcache($reset = FALSE, $imagepath, $bgimgpropertie
 }
 
 function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
-  #$imagepath = base64_decode($imgp);
-  #echo '.... ' . base64_decode( $imgp );
-  #flush();die(' stop!');
-  //global $imagepath;
 
-  //$suffix = strtolower(substr($imagepath, -4));
   $imagepathexploded = explode('.', strtolower($imagepath));
   $suffix = end($imagepathexploded);
-  //$imgsize = @getimagesize($imagepath);
-  # http://be.php.net/getimagesize
-  //$head = "Content-type: {$imgsize['mime']}";
   if ($suffix == "gif") {
-    #$head = "Content-type: image/gif";
     $img = @imagecreatefromgif($imagepath);
     if (!$img) {
       brilliant_gallery_brokenimage("Error loading GIF", $imgw, $imgh);
     }
   }
   else if ($suffix == "jpg" or $suffix == "jpeg") {
-    #$head = "Content-type: image/jpeg";
-    //brilliant_gallery_brokenimage($imagepath.' :1: '.time(),1900,500); exit();
     $img = @imagecreatefromjpeg($imagepath);
     if (!$img) {
       brilliant_gallery_brokenimage("Error loading JPG", $imgw, $imgh);
     }
   }
   else if ($suffix == "png") {
-    #$head = "Content-type: image/png";
     $img = @imagecreatefrompng($imagepath);
     if (!$img) {
       brilliant_gallery_brokenimage("Error loading PNG", $imgw, $imgh);
@@ -307,8 +291,6 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
   # Resize the image
   $src_h = ImageSY($img);
   $src_w = ImageSX($img);
-  #$dst_img = imagecreatetruecolor($imgw, $imgh);
-  #imagecopyresampled($dst_img, $img, 0, 0, 0, 0, $imgw, $imgh, $src_w, $src_h);
   $dst_img = 0;
   if ($imgcrop == 'yes') {
     if ($src_h > $src_w) {
@@ -327,8 +309,6 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
     imagecopyresampled($dst_img, $img, 0, 0, 0, 0, $imgw, $imgh, $src_w, $src_h);
   }
   $img = $dst_img;
-  //imageinterlace($img, 1);
-  //imagecolortransparent($img);
   ob_start();
   if ($suffix == "gif") {
     Imagegif($img);
@@ -416,14 +396,6 @@ function replace_brilliant_gallery_tags($str) {
       $match = array();
       foreach ($newgenmatch as $key => $val) {
         $match[array_search($key, $allowed_params)] = $val; // E.g. 'location = myalbum' will become $match[1] = 'myalbum'
-        /*
-          if (arg(1) == 264402){
-          #drupal_set_message('...');
-          #var_dump($newgenmatch);
-          #var_dump($match);
-          echo array_search($key,$allowed_params)." $key // $val\n";
-          }
-         */
       }
     }
 
@@ -436,14 +408,11 @@ function replace_brilliant_gallery_tags($str) {
       $match[5] = 1;
     }
 
-    #watchdog('Brilliant Gal', 'Got the array: '.vacilando_echo_array($match));
-    #watchdog('Brilliant Gal', 'Got the new array: '.vacilando_echo_array($newgenmatch));
     // Cache the result if it comes from a non-random tag
     $bgcachexpire = brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration', 90)); // Cache expiration time in days.
     $mbgtag = md5($omatch);
     #########x TEMPORARILY SET TO FALSE!!
     if ($cache = cache_get('bg_gallery_table_' . $mbgtag) and !empty($cache->data)) {
-      #if (false) {
       $galhere = $cache->data;
     }
     else {
@@ -568,7 +537,6 @@ function brilliant_gallery_get_picasa_hidden_imagenames($absolute_album_path){
 
   }
 
-  //dpm($filenames);
   return $filenames;
 
 }

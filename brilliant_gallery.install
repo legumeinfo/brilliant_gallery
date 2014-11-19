@@ -38,7 +38,7 @@ function brilliant_gallery_schema() {
         #'unsigned' => FALSE,
         'not null' => TRUE,
         'size' => 'normal',
-      #'default' => '', # brilliant_gallery_checklist.qid is type text and may not have a default value
+        #'default' => '', # brilliant_gallery_checklist.qid is type text and may not have a default value
         ),
       'state' => array(
         'description' => t('Visible or invisible.'),
