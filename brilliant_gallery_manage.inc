@@ -136,7 +136,7 @@ HEADER;
           switch ($overbrowser) {
 
             case 'colorbox':
-              $displayimage .= ' class="colorbox cboxElement" rel="bg-' . $setname . '"';
+              $displayimage .= ' class="colorbox" rel="bg-' . $setname . '"';
               break;
 
             case 'lightbox':

@@ -143,7 +143,7 @@ function brilliant_gallery_views_handler_image_img($fieldinfo, $fielddata, $valu
   switch ($overbrowser) {
 
     case 'colorbox':
-      $result .= ' class="colorbox cboxElement" rel="bg-' . $setname . '"';
+      $result .= ' class="colorbox" rel="bg-' . $setname . '"';
       break;
 
     case 'lightbox':

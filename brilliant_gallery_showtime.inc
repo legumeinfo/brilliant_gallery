@@ -504,7 +504,7 @@ function render_brilliant_gallery($paramarray = array()) {
         switch ($overbrowser) {
 
           case 'colorbox':
-            $result .= ' class="colorbox cboxElement" rel="bg-' . $setname . '"';
+            $result .= ' class="colorbox" rel="bg-' . $setname . '"';
             break;
 
           case 'lightbox':
