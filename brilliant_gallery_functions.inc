@@ -399,7 +399,7 @@ function replace_brilliant_gallery_tags($str) {
       }
     }
 
-    $pathurl_btsync_check = brilliant_gallery_pathurl_btsync_check($match[1]);
+    $pathurl_btsync_check = brilliant_gallery_pathurl_btsync_check(@$match[1]);
     // If this is a BT Sync folder (secret), change $match[1]
     if ($pathurl_btsync_check) $match[1] = $pathurl_btsync_check;
 
