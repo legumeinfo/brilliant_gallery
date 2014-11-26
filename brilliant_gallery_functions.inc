@@ -487,6 +487,8 @@ function brilliant_gallery_get_time_this_many_seconds_from_now($period) {
  */
 function brilliant_gallery_get_picasa_hidden_imagenames($absolute_album_path){
 
+  $filenames = array();
+
   // Skip processing if there is no .picasa.ini inside
   if (file_exists($absolute_album_path."/.picasa.ini")){
 
@@ -500,7 +502,6 @@ function brilliant_gallery_get_picasa_hidden_imagenames($absolute_album_path){
       // Skip ., .., and .picasa.ini
       $dir_files = array_diff($dir_files, array('..', '.', '.picasa.ini'));
 
-      $filenames = array();
       foreach ($dir_files as $key => $filename) {
 
             /* Check if the filename is hidden in .picasa.ini
