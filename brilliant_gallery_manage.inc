@@ -180,7 +180,7 @@ HEADER;
         # We need some code for brilliant_gallery_checklist
         $tmp = '';
         # E.g. albums/2008/20080321-25_belgicko_zasypane_snehom/dsc02784_w1000.jpg
-        $tmp .= '<div class="bgchecklist"> <div class="form-item"> <input name="' . 'user-' . md5($_GET['fld'] . '/' . $retval[$poct - 1]) . '" id="' . 'user-' . md5($_GET['fld'] . '/' . $retval[$poct - 1]) . '" value="1" class="form-brilliant_gallery_checklist-checkbox" type="checkbox"> <label class="option"> <font color=green>visible</font> </label> </div></div>';
+        $tmp .= '<div class="bgchecklist"> <div class="form-item"> <input name="' . 'uid-' . md5($_GET['fld'] . '/' . $retval[$poct - 1]) . '" id="' . 'uid-' . md5($_GET['fld'] . '/' . $retval[$poct - 1]) . '" value="1" class="form-brilliant_gallery_checklist-checkbox" type="checkbox"> <label class="option"> <font color=green>visible</font> </label> </div></div>';
         $tablerows[$cnt][2] = $tmp;
       }
       $header = array('File name', 'Thumbnail', 'Gallery display');

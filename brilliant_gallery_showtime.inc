@@ -362,7 +362,7 @@ function render_brilliant_gallery($paramarray = array()) {
         "select qid,state from {brilliant_gallery_checklist} ".
         "where nid='$nid' and qid like 'user-%' and user='$uid' ");
        */
-      $dbresult = db_query("select qid from {brilliant_gallery_checklist} where qid like 'user-%' and state='1' ");
+      $dbresult = db_query("select qid from {brilliant_gallery_checklist} where qid like 'uid-%' and state='1' ");
       foreach ($dbresult as $data) {
         $excludedimgs[] = $data->qid;
       }
@@ -407,7 +407,7 @@ function render_brilliant_gallery($paramarray = array()) {
       if (!$picasafolder) {
         # Skip any images that were excluded from display.
         # md5() must be made of the main gallery path etc. ending with the file name (unique identifier). E.g. albums/2008/20080321-25_belgicko_zasypane_snehom/dsc02784_w1000.jpg
-        if (array_search('user-' . md5($galleryfolder . '/' . $retval_dimensions[$poct - 1]['file']), $excludedimgs) !== false) {
+        if (array_search('uid-' . md5($galleryfolder . '/' . $retval_dimensions[$poct - 1]['file']), $excludedimgs) !== false) {
           continue;
         }
       }

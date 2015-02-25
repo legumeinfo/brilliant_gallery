@@ -132,7 +132,7 @@ function brilliant_gallery_image_properties_set($bgimgproperties_array) {
     //echo 1;
     $fields = new stdClass();
     $fields->hash = $bgimgproperties_hash;
-    $fields->array = serialize($bgimgproperties_array);
+    $fields->parameter_array = serialize($bgimgproperties_array);
     //$fields->datetime = date('Y-m-d H:i:s', REQUEST_TIME);
     $fields->datetime = REQUEST_TIME;
     drupal_write_record("brilliant_gallery_image_arrays", $fields);
@@ -157,7 +157,7 @@ function brilliant_gallery_image_properties_set($bgimgproperties_array) {
 function brilliant_gallery_image_properties_get($bgimgproperties_hash) {
 
   // TODO Please convert this statement to the D7 database API syntax.
-  $bgimgproperties_array = db_query("SELECT array FROM {brilliant_gallery_image_arrays} WHERE hash = '" . $bgimgproperties_hash . "' LIMIT 1")->fetchField();
+  $bgimgproperties_array = db_query("SELECT parameter_array FROM {brilliant_gallery_image_arrays} WHERE hash = '" . $bgimgproperties_hash . "' LIMIT 1")->fetchField();
   $bgimgproperties_array = unserialize($bgimgproperties_array);
 
   return $bgimgproperties_array;
