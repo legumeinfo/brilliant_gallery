@@ -30,13 +30,13 @@
               //alert("/bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/1");
               if ( $(this).attr("checked") == false ) {
                 $(thislabel).html("saving...").css("color","red");
-                $.get(Drupal.settings.basePath + "bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/0",
+                $.get(Drupal.settings.basePath + "bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/0/"+$('#bgchecklist').attr('class'),
                   function() {
                     $(thislabel).html('<font color=green>visible</font>').css("color","green");
                   });
               } else {
                 $(thislabel).html("saving...").css("color","red");
-                $.get(Drupal.settings.basePath + "bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/1",
+                $.get(Drupal.settings.basePath + "bgchecklist/save/"+nodeid+"/"+$(this).attr("id")+"/1/"+$('#bgchecklist').attr('class'),
                   function() {
                     $(thislabel).html('<font color=red>invisible</font>').css("color","red");
                   });

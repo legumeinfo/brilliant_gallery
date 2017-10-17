@@ -140,9 +140,36 @@ function brilliant_gallery_checklist_loadall($nid = '') {
 /**
  * Function to save/update the state of a checkbox when toggled
  */
-function brilliant_gallery_checklist_save($nid, $qid, $state) {
+function brilliant_gallery_checklist_save($nid = '', $qid = '', $state = '', $token = '') {
   global $user;
   $GLOBALS['devel_shutdown'] = FALSE;
+
+  // Prevent possible damage from loading path bgchecklist/save directly.
+  if (drupal_valid_token($token, 'render_brilliant_gallery_manage')) {
+    // Token valid.
+  }
+  else {
+    watchdog('Brilliant Gal', 'Invalid token submitted from bgchecklist/save', NULL, WATCHDOG_ALERT);
+    return;
+  }
+  // First try to check whether we got here by an AJAX request. See https://drupal.stackexchange.com/questions/54296/how-can-i-detect-ajax-request-inside-drupal/54317#54317
+  if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+    // AJAX request.
+  }
+  else {
+    watchdog('Brilliant Gal', 'Not an AJAX request from bgchecklist/save', NULL, WATCHDOG_ALERT);
+    return;
+  }
+  // Verify that the submitted values are of expected type and range.
+  if ($nid == 9999999 && $qid <> '' && ($state == 0 || $state == 1)) {
+    // Seems like a valid request.
+    $qid = check_plain($qid);
+  }
+  else {
+    watchdog('Brilliant Gal', 'Invalid request from bgchecklist/save', NULL, WATCHDOG_ALERT);
+    return;
+  }
+
   if (preg_match("/^user-/", $qid) == 1) {
     $uid = $user->uid;
   }

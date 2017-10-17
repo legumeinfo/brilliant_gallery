@@ -1,11 +1,9 @@
 <?php
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Delete all expired images from the file cache folder brilliant_gallery_pcache.
  */
 function brilliant_gallery_cron() {
-  // Delete all expired images from the file cache folder brilliant_gallery_pcache
   $last_bg_cron = variable_get('brilliant_gallery_last_cron', 0);
   // brilliant_gallery_cleantmpdir also needs to clear Drupal cache, but we don't want that to happen at every cron, so let's limit BG cron running to once in the cache expiration period.
   if (REQUEST_TIME - $last_bg_cron > brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration', 90))) {
@@ -21,10 +19,8 @@ function brilliant_gallery_cron() {
  */
 function brilliant_gallery_clean_table_image_arrays() {
   $deletecreatedbeforethistime = REQUEST_TIME - brilliant_gallery_get_days_in_seconds(variable_get('brilliant_gallery_cache_duration', 90));
-  //$deletecreatedbeforethistime = date( 'Y-m-d H:i:s', $deletecreatedbeforethistime );
-  //echo "DELETE FROM {brilliant_gallery_image_arrays} WHERE datetime < '".$deletecreatedbeforethistime."'"; exit();
   // TODO Please convert this statement to the D7 database API syntax.
-  $dbres = db_query("DELETE FROM {brilliant_gallery_image_arrays} WHERE datetime < '" . $deletecreatedbeforethistime . "'");
+  $dbres = db_query("DELETE FROM {brilliant_gallery_image_arrays} WHERE datetime < :deletecreatedbeforethistime", array(':deletecreatedbeforethistime' => $deletecreatedbeforethistime));
   foreach ($dbres as $node) {
     // Perform operations on $node->body, etc. here.
   }

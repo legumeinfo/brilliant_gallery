@@ -8,44 +8,42 @@ function brilliant_gallery_menu() {
 
   $items = array();
 
-  $items['admin/config/brilliant_gallery'] = array(
+  $items['admin/config/media/brilliant_gallery'] = array(
     'title' => 'Brilliant gallery',
-    'description' => 'Brilliant gallery module settings',
+    'description' => 'Brilliant gallery module settings.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('brilliant_gallery_admin'),
     'access arguments' => array('administer brilliant_gallery'),
     'type' => MENU_NORMAL_ITEM,
   );
-  // Same as 'admin/config/brilliant_gallery' -- just for the convenience/clarity in a dropdown menu.
-  $items['admin/config/brilliant_gallery/settings'] = array(
+  // Same as 'admin/config/media/brilliant_gallery' -- just for the convenience/clarity in a dropdown menu.
+  $items['admin/config/media/brilliant_gallery/settings'] = array(
     'title' => 'Brilliant gallery',
-    'description' => 'Brilliant gallery module settings',
+    'description' => 'Brilliant gallery module settings.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('brilliant_gallery_admin'),
     'access arguments' => array('administer brilliant_gallery'),
-    'type' => MENU_NORMAL_ITEM,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 10,
   );
 
   # A shortcut to the permissions settings for this module.
-  $items['admin/config/brilliant_gallery/permissions'] = array(
-    #'path' => 'admin/user/access#module-brilliant_gallery',
+  $items['admin/config/media/brilliant_gallery/permissions'] = array(
     'title' => 'Configure permissions',
-    'description' => 'Configure access permissions for the Brilliant gallery module',
+    'description' => 'Configure access permissions for the Brilliant gallery module.',
     'page callback' => 'brilliant_gallery_perms',
-    #'page arguments' => 'brilliant_gallery_perms',
     'access arguments' => array('administer brilliant_gallery'),
-    'type' => MENU_NORMAL_ITEM,
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 12,
   );
 
-  $items['admin/config/brilliant_gallery/manage'] = array(
+  $items['admin/config/media/brilliant_gallery/manage'] = array(
     'title' => 'Manage galleries',
     //'description' => 'Manage galleries displayed using the Brilliant gallery module - e.g. visibility of individual images, etc.',
     'page callback' => 'render_brilliant_gallery_manage',
-    //'page callback' => 'drupal_get_form',
-    //'page arguments' => '',
-    #'page arguments' => 'brilliant_gallery_perms',
     'access arguments' => array('administer brilliant_gallery'),
-    'type' => MENU_NORMAL_ITEM,
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 11,
   );
 
   $items['brilliant_gallery'] = array(

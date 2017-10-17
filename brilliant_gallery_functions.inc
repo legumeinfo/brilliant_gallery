@@ -125,8 +125,7 @@ function brilliant_gallery_image_properties_set($bgimgproperties_array) {
   $bgimgproperties_hash = md5(serialize($bgimgproperties_array));
 
   // Let's keep the array in cache. Check if it is in cache. If not, write it.
-  // TODO Please convert this statement to the D7 database API syntax.
-  $countie = db_query("SELECT COUNT(*) FROM {brilliant_gallery_image_arrays} WHERE hash = '" . $bgimgproperties_hash . "'")->fetchField();
+  $countie = db_query("SELECT COUNT(*) FROM {brilliant_gallery_image_arrays} WHERE hash = :hash", array(':hash' => $bgimgproperties_hash))->fetchField();
   if ($countie == 0) {
     // Run an insert
     //echo 1;
@@ -156,8 +155,7 @@ function brilliant_gallery_image_properties_set($bgimgproperties_array) {
  */
 function brilliant_gallery_image_properties_get($bgimgproperties_hash) {
 
-  // TODO Please convert this statement to the D7 database API syntax.
-  $bgimgproperties_array = db_query("SELECT array FROM {brilliant_gallery_image_arrays} WHERE hash = '" . $bgimgproperties_hash . "' LIMIT 1")->fetchField();
+  $bgimgproperties_array = db_query("SELECT array FROM {brilliant_gallery_image_arrays} WHERE hash = :hash LIMIT 1", array(':hash' => $bgimgproperties_hash))->fetchField();
   $bgimgproperties_array = unserialize($bgimgproperties_array);
 
   return $bgimgproperties_array;
@@ -188,16 +186,12 @@ function brilliant_gallery_get_days_in_seconds($days) {
 function brilliant_gallery_deliver_image() {
 
   $queryexplode = explode('/', $_GET['q']);
-  //$bgimgproperties_hash_position = sizeof($queryexplode)+1;
   $bgimgproperties_hash = array_pop($queryexplode); // Get the last item in the query.
   $bgimgproperties_hash = substr($bgimgproperties_hash, strlen('bg_cached_resized_')); // Remove prefix.
-  //return (base64_decode($bgimgproperties_hash));
-  //include 'image.inc';
   // The file name contains a hash token that corresponds to the image parameter array; this relation is in cache.
   $bgimgproperties_hash_array = explode('.', $bgimgproperties_hash);
   $bgimgproperties_hash_array = $bgimgproperties_hash_array[0];
   $bgimgproperties_array = brilliant_gallery_image_properties_get($bgimgproperties_hash_array);
-  //print_r($bgimgproperties_array); flush(); exit();
   if (!is_array($bgimgproperties_array)) {
     watchdog('Brilliant Gal', 'Wrong image: ' . $bgimgproperties_hash);
     return;
@@ -210,7 +204,6 @@ function brilliant_gallery_deliver_image() {
 
   /* Check for bad URL inputs */
   $urlpath = $_GET['imgp'];
-  //brilliant_gallery_brokenimage($urlpath.' :0: '.time(),1900,500); exit();
   if (sizeof($_GET) > 5 ||
       strpos($urlpath, "://") !== false ||
       strpos($urlpath, "..") !== false ||
@@ -234,8 +227,7 @@ function brilliant_gallery_deliver_image() {
   $head = "Content-type: {$imgsize['mime']}";
   header($head);
   echo $my_data;
-  // IMPORTANT to exit() - otherwise some process after BG adds strings and breaks the image!
-  exit();
+  exit(); // IMPORTANT to exit() - otherwise some process after BG adds strings and breaks the image!
 
   return;
 }
@@ -261,7 +253,6 @@ function resizeimage_wrapper_dbcache($reset = FALSE, $imagepath, $bgimgpropertie
       fclose($fp);
     }
   }
-
 
   return $my_data;
 }
@@ -321,7 +312,6 @@ function resizeimage($imgp, $imgw, $imgh, $imgcrop, $imagepath) {
   }
   $result = ob_get_clean();
   #ImageDestroy($img);
-  //$result = serialize(array($head, base64_encode($result)));
   $result = $result;
   return $result;
 }
@@ -443,7 +433,7 @@ function brilliant_gallery_pathurl_btsync_check($pathurl){
     return FALSE;
   }
   // Only continue if the main gallery folder has been configured.
-  if (variable_get('brilliant_gallery_folder', '') == '') break;
+  if (variable_get('brilliant_gallery_folder', '') == '') return;
   $btsyncdir = 'public://'.variable_get('brilliant_gallery_folder', '').'/btsync';
   $dirtest = file_prepare_directory($btsyncdir, FILE_CREATE_DIRECTORY);
   // Only continue if the special btsync directory exists and is writable
