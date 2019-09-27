@@ -324,9 +324,9 @@ function replace_brilliant_gallery_tags($str) {
   #
   #
 
-  $matchlink = '';
-  $orig_match = '';
-  $matches = '';
+  $matchlink = array();
+  $orig_match = array();
+  $matches = array();
   preg_match_all("/(\[)bg(\|)[^\]]*(\])/s", $str, $matches);
   foreach ($matches[0] as $match) {
     $omatch = $match;
