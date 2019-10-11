@@ -110,16 +110,16 @@ function brilliant_gallery_all($switch = '') {
  * Note that checkboxes that have never been checked will not have an entry in the database.
  */
 function brilliant_gallery_checklist_loadall($nid = '') {
-  global $user;
+  global $uid;
   $GLOBALS['devel_shutdown'] = FALSE;
-  $uid = $user->uid;
+  $uid = $uid->uid;
   $dcvals = array();
-  // Any checkbox id that starts with user- we remember the current user's settings
-  // Any other id is global and we use user=0
+  // Any checkbox id that starts with uid- we remember the current uid's settings
+  // Any other id is global and we use uid=0
   // TODO Please convert this statement to the D7 database API syntax.
-  $result = db_query("select qid,state from {brilliant_gallery_checklist} where nid=:nid1 and qid not like 'user-%' and user=0 " .
+  $result = db_query("select qid,state from {brilliant_gallery_checklist} where nid=:nid1 and qid not like 'uid-%' and uid=0 " .
     " union " .
-    "select qid,state from {brilliant_gallery_checklist} where nid=:nid2 and qid like 'user-%' and user=:uid ", array(
+    "select qid,state from {brilliant_gallery_checklist} where nid=:nid2 and qid like 'uid-%' and uid=:uid ", array(
       ':nid1' => $nid,
       ':nid2' => $nid,
       ':uid' => $uid
@@ -141,7 +141,7 @@ function brilliant_gallery_checklist_loadall($nid = '') {
  * Function to save/update the state of a checkbox when toggled
  */
 function brilliant_gallery_checklist_save($nid = '', $qid = '', $state = '', $token = '') {
-  global $user;
+  global $uid;
   $GLOBALS['devel_shutdown'] = FALSE;
 
   // Prevent possible damage from loading path bgchecklist/save directly.
@@ -170,8 +170,8 @@ function brilliant_gallery_checklist_save($nid = '', $qid = '', $state = '', $to
     return;
   }
 
-  if (preg_match("/^user-/", $qid) == 1) {
-    $uid = $user->uid;
+  if (preg_match("/^uid-/", $qid) == 1) {
+    $uid = $uid->uid;
   }
   else {
     $uid = 0;
@@ -179,7 +179,7 @@ function brilliant_gallery_checklist_save($nid = '', $qid = '', $state = '', $to
 
   // TODO Please convert this statement to the D7 database API syntax.
   $existing = db_query("select count(state) from {brilliant_gallery_checklist} " .
-    "where nid=:nid and user=:uid and qid=:qid", array(
+    "where nid=:nid and uid=:uid and qid=:qid", array(
       ':nid' => $nid,
       ':uid' => $uid,
       ':qid' => $qid
@@ -187,7 +187,7 @@ function brilliant_gallery_checklist_save($nid = '', $qid = '', $state = '', $to
   )->fetchField();
   if ($existing == 0) {
     // TODO Please convert this statement to the D7 database API syntax.
-    db_query("insert into {brilliant_gallery_checklist} (nid,user,qid,state) " . "values (:nid,:uid,:qid,:state)", array(
+    db_query("insert into {brilliant_gallery_checklist} (nid,uid,qid,state) " . "values (:nid,:uid,:qid,:state)", array(
       ':nid' => $nid,
       ':uid' => $uid,
       ':qid' => $qid,
@@ -196,7 +196,7 @@ function brilliant_gallery_checklist_save($nid = '', $qid = '', $state = '', $to
   }
   else {
     // TODO Please convert this statement to the D7 database API syntax.
-    $current = db_query("select state from {brilliant_gallery_checklist} " . " where nid=:nid and user=:uid and qid=:qid", array(
+    $current = db_query("select state from {brilliant_gallery_checklist} " . " where nid=:nid and uid=:uid and qid=:qid", array(
       ':nid' => $nid,
       ':uid' => $uid,
       ':qid' => $qid
@@ -204,7 +204,7 @@ function brilliant_gallery_checklist_save($nid = '', $qid = '', $state = '', $to
 
     if ($current != $state) {
       // TODO Please convert this statement to the D7 database API syntax.
-      db_query("update {brilliant_gallery_checklist} " . "set state=:state where nid=:nid and user=:uid and qid=:qid", array(
+      db_query("update {brilliant_gallery_checklist} " . "set state=:state where nid=:nid and uid=:uid and qid=:qid", array(
         ':state' => $state,
         ':nid' => $nid,
         ':uid' => $uid,

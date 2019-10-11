@@ -24,7 +24,7 @@ function brilliant_gallery_schema() {
         'size' => 'normal',
         'default' => 0,
         ),
-      'user' => array(
+      'uid' => array(
         'description' => t('User ID.'),
         'type' => 'int',
         'unsigned' => TRUE,
@@ -49,7 +49,7 @@ function brilliant_gallery_schema() {
         'default' => 0,
         ),
       ),
-    'primary key' => array('nid', 'user', array('qid', 255)),
+    'primary key' => array('nid', 'uid', 'qid'),
     );
 
 $schema['brilliant_gallery_image_arrays'] = array(
@@ -61,7 +61,7 @@ $schema['brilliant_gallery_image_arrays'] = array(
       'length' => '32',
       'not null' => TRUE,
       ),
-    'array' => array(
+    'parameter_array' => array(
       'description' => 'Array of image parametres.',
       'type' => 'text',
       'not null' => TRUE,
